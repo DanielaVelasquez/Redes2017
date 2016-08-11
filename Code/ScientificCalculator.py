@@ -17,10 +17,3 @@ class ScientificCalculator(Calculator):
 	def pot(self):
 		return self.first_operand ** self.second_operand
 
-
-"""
-a = ScientificCalculator()
-a.first_operand = 4.2
-a.second_operand = 3
-print("%s" % (a.add()))
-""

@@ -1,12 +1,10 @@
 import sys
-#sys.path.insert(0,'../GUI')
-#sys.path.insert(0, "..GUI")
 
 
 FILE_NAME = "input.txt"
 SEP = " , "
 
-class Calculator:
+class Calculator(object):
 
 	def __init__(self,first_op=0,second_op=0):
 		self.first_operand = first_op
@@ -63,11 +61,3 @@ class Calculator:
 			if(vals[0] == username):
 				return True
 		return False
-
-
-
-
-a = Calculator()
-a.first_operand = 2
-a.second_operand = 0
-a.addUser("root","root")
