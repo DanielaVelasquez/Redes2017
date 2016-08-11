@@ -14,6 +14,9 @@ EQUAL_SYMBOL = "="
 IMAGE_LOCATION = "icon/add-user.png"
 INIT_ROW_NUMBERS = 3
 COLS = 3
+INVALID_OPERATION = "Operación inválida"
+MODULE_NAME = "mod"
+POT_NAME = "^"
 
 class CalculatorGUI:
 
@@ -89,6 +92,63 @@ class CalculatorGUI:
 		self.grid.addWidget(self.btn_div,3,3)
 		self.btn_div.setMaximumWidth(WIDTH_BUTTON)
 
+		#Configuración de los eventos
+		buttons = self.btn_numbers
+		buttons.append(self.btn_punto)
+		buttons.append(self.btn_add)
+		buttons.append(self.btn_sub)
+		buttons.append(self.btn_mul)
+		buttons.append(self.btn_div)
+
+		for but in buttons:
+			but.clicked.connect(self.displayText)
+
+		self.btn_igual.clicked.connect(self.operate)
+		"""
+		self.btn_mod =  QtGui.QPushButton(MODULE_NAME,self.widget)
+		self.btn_pot =  QtGui.QPushButton(POT_NAME,self.widget)
+
+		#Configuración elementos de la GUI
+		self.grid.addWidget(self.btn_mod,7,0,2,1)
+		
+		"""
 		self.widget.show()
+		
+
+	def displayText(self):
+		button = self.widget.sender()
+		value = button.text()
+
+		self.txt_input.setText(self.txt_input.text() + value)
+		
+
+	def operate(self):
+		text = self.txt_input.text()
+		operator = ""
+		operate = True
+		if DIV_SYMBOL in text:
+			operator = DIV_SYMBOL
+		elif MUL_SYMBOL in text:
+			operator = MUL_SYMBOL
+		elif SUBSTRACT_SYMBOL in text:
+			operator = SUBSTRACT_SYMBOL
+		elif ADD_SYMBOL in text:
+			operator = ADD_SYMBOL
+		else:
+			self.txt_input.setText(INVALID_OPERATION)
+			operate = False
+
+		if operate:
+			nums = text.split(operator,2)
+			try:
+				first = float(nums[0])
+				second = float(nums[1])
+			except ValueError:
+				self.txt_input.setText(INVALID_OPERATION)
+			print("%s"%type(a))
+			print("%s"%(nums))
+
+		
+
 
 a = CalculatorGUI()
