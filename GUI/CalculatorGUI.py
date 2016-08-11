@@ -15,8 +15,6 @@ IMAGE_LOCATION = "icon/add-user.png"
 INIT_ROW_NUMBERS = 3
 COLS = 3
 INVALID_OPERATION = "Operación inválida"
-MODULE_NAME = "mod"
-POT_NAME = "^"
 
 class CalculatorGUI:
 
@@ -104,14 +102,7 @@ class CalculatorGUI:
 			but.clicked.connect(self.displayText)
 
 		self.btn_igual.clicked.connect(self.operate)
-		"""
-		self.btn_mod =  QtGui.QPushButton(MODULE_NAME,self.widget)
-		self.btn_pot =  QtGui.QPushButton(POT_NAME,self.widget)
-
-		#Configuración elementos de la GUI
-		self.grid.addWidget(self.btn_mod,7,0,2,1)
 		
-		"""
 		self.widget.show()
 		
 

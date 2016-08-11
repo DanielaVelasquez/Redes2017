@@ -1,11 +1,20 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import sys
 from PyQt4 import QtGui
+
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from Code.Calculator import Calculator
+from Code.ScientificCalculator import ScientificCalculator
+from Constants.Constants import *
 
 TITLE_ADD_USER = "Nuevo usuario"
 
 class AddUserGUI():
 
-	def __init__(self):
+	def __init__(self,cal):
+		self.calculator = cal
 		self.initGUI()
 
 	def initGUI(self):
@@ -37,10 +46,23 @@ class AddUserGUI():
 		self.grid.addWidget(self.txt_pass,1,1)
 		self.grid.addWidget(self.btn_add,2,1)
 
-		self.widget.show()
+		self.txt_pass.setEchoMode(QtGui.QLineEdit.Password)
 
-	#def login(self):
+		#Configuración eventos
+		self.btn_add.clicked.connect(self.addUser)
+
+		self.widget.show()
+		
+	def addUser(self):
+		user = self.txt_user.text()
+		pas = self.txt_pass.text()
+		if self.calculator.addUser(user,pas):
+			QtGui.QMessageBox.information(self, "Informacion", "Usuario registrado con éxito",QtGui.QMessageBox.Ok)
+
+
+
+
 
 		
-a = AddUserGUI()
+
 

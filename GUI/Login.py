@@ -35,9 +35,11 @@ class Login():
 		self.grid.addWidget(self.txt_pass,1,1)
 		self.grid.addWidget(self.btn_login,2,1)
 
+		self.txt_pass.setEchoMode(QtGui.QLineEdit.Password)
+
 		self.widget.show()
 
-	#def login(self):
+	def login(self):
 
 		
 a = Login()
