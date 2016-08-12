@@ -1,24 +1,22 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import sys
 from PyQt4 import QtGui
 from PyQt4.QtGui import *
 from ButtonImage import ButtonImage
+from AddUserGUI import AddUserGUI
 
-WIDTH_BUTTON = 64
-WIDTH_BUTTON_IMG = 32
-POINT_SYMBOL = "."
-ADD_SYMBOL = "+"
-SUBSTRACT_SYMBOL = "-"
-DIV_SYMBOL = "/"
-MUL_SYMBOL = "*"
-EQUAL_SYMBOL = "="
-IMAGE_LOCATION = "icon/add-user.png"
-INIT_ROW_NUMBERS = 3
-COLS = 3
-INVALID_OPERATION = "Operación inválida"
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from Code.Calculator import Calculator
+from Code.ScientificCalculator import ScientificCalculator
+from Constants.Constants import *
 
 class CalculatorGUI:
 
-	def __init__(self):
+	def __init__(self,cal = ScientificCalculator()):
+		self.calculator = cal
+		self.wrote = False
 		self.initGUI()
 
 	def initGUI(self):
@@ -102,11 +100,43 @@ class CalculatorGUI:
 			but.clicked.connect(self.displayText)
 
 		self.btn_igual.clicked.connect(self.operate)
-		
-		self.widget.show()
+		self.btn_addUser.clicked.connect(self.newUser)
+		self.txt_input.textChanged.connect(self.onTextChanged)
+
+		self.newAddUser = None 
+
+		#self.widget.show()
+		#sys.exit(self.app.exec_())
+
 		
 
+	def onTextChanged(self):
+		text = self.txt_input.text()
+		if self.wrote:
+			val = text[len(text)-1]
+			self.txt_input.setText(val)
+			self.wrote = False
+			
+
+		if EQUAL_SYMBOL in text:
+			self.deleteLasDigit()
+			self.operate()
+
+	def deleteLasDigit(self):
+		text = self.txt_input.text()
+		val = text[0:len(text)-1]
+		self.txt_input.setText(val)
+		
+	def newUser(self):
+		self.newAddUser = AddUserGUI(self.calculator)
+		self.widget.close()
+
 	def displayText(self):
+
+		if self.wrote:
+			self.txt_input.setText("")
+			self.wrote = False
+
 		button = self.widget.sender()
 		value = button.text()
 
@@ -134,12 +164,25 @@ class CalculatorGUI:
 			try:
 				first = float(nums[0])
 				second = float(nums[1])
+
+				self.calculator.first_operand = first
+				self.calculator.second_operand = second
+				
+				resultado = None
+
+				if DIV_SYMBOL in operator:
+					resultado = self.calculator.divide()
+				elif MUL_SYMBOL in operator:
+					resultado = self.calculator.multiply()
+				elif SUBSTRACT_SYMBOL in operator:
+					resultado = self.calculator.substract()
+				else:
+					resultado = self.calculator.add()
+				
+				self.txt_input.setText(str(resultado))
+
 			except ValueError:
 				self.txt_input.setText(INVALID_OPERATION)
-			print("%s"%type(a))
-			print("%s"%(nums))
 
-		
+		self.wrote = True
 
-
-a = CalculatorGUI()

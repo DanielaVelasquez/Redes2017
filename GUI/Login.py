@@ -1,9 +1,19 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import sys
 from PyQt4 import QtGui
+
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+
+from Code.ScientificCalculator import ScientificCalculator
+from Constants.Constants import *
+from ScientificCalculatorGUI import ScientificCalculatorGUI
 
 class Login():
 
 	def __init__(self):
+		self.calculator = ScientificCalculator()
 		self.initGUI()
 
 	def initGUI(self):
@@ -11,7 +21,7 @@ class Login():
 		
 		#Creación y configuración del widget
 		self.widget = QtGui.QWidget()
-		self.widget.setWindowTitle('Login')
+		self.widget.setWindowTitle(TITLE_LOGIN)
 		self.widget.resize(250,150)
 		self.widget.move(500,300)
 
@@ -20,13 +30,13 @@ class Login():
 		self.widget.setLayout(self.grid)
 
 		#Declaración elementos de la GUI
-		self.lb_user = QtGui.QLabel("Usuario",self.widget)
-		self.lb_pass = QtGui.QLabel("Password",self.widget)
+		self.lb_user = QtGui.QLabel(TITLE_USER,self.widget)
+		self.lb_pass = QtGui.QLabel(TITLE_PASS,self.widget)
 
 		self.txt_user = QtGui.QLineEdit(self.widget)
 		self.txt_pass = QtGui.QLineEdit(self.widget)
 
-		self.btn_login = QtGui.QPushButton('Ingresar',self.widget)
+		self.btn_login = QtGui.QPushButton(TITLE_IN,self.widget)
 
 		#Configuración elementos de la GUI 
 		self.grid.addWidget(self.lb_user,0,0)
@@ -36,11 +46,28 @@ class Login():
 		self.grid.addWidget(self.btn_login,2,1)
 
 		self.txt_pass.setEchoMode(QtGui.QLineEdit.Password)
+		self.btn_login.clicked.connect(self.login)
+
+		self.calculatorGUI = None
 
 		self.widget.show()
+		sys.exit(self.app.exec_())
 
 	def login(self):
+		user = self.txt_user.text()
+		pas = self.txt_pass.text()
+		
+
+		if len(user) ==0 or len(pas) ==0:
+			QtGui.QMessageBox.warning(self.widget, WARNING, ICOMPLETE_INFORMATION,QtGui.QMessageBox.Ok)
+		elif self.calculator.login(user,pas):
+			self.calculatorGUI = ScientificCalculatorGUI(self.calculator)
+			self.widget.close()
+			#self.widget.close()
+		else:
+			QtGui.QMessageBox.warning(self.widget, WARNING, INCORRECT_LOGIN,QtGui.QMessageBox.Ok)
+
 
 		
-a = Login()
+
 

@@ -8,8 +8,7 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Code.Calculator import Calculator
 from Code.ScientificCalculator import ScientificCalculator
 from Constants.Constants import *
-
-TITLE_ADD_USER = "Nuevo usuario"
+from Code import *
 
 class AddUserGUI():
 
@@ -31,13 +30,15 @@ class AddUserGUI():
 		self.widget.setLayout(self.grid)
 
 		#Declaración elementos de la GUI
-		self.lb_user = QtGui.QLabel("Usuario",self.widget)
-		self.lb_pass = QtGui.QLabel("Password",self.widget)
+		self.lb_user = QtGui.QLabel(TITLE_USER,self.widget)
+		self.lb_pass = QtGui.QLabel(TITLE_PASS,self.widget)
 
 		self.txt_user = QtGui.QLineEdit(self.widget)
 		self.txt_pass = QtGui.QLineEdit(self.widget)
 
-		self.btn_add = QtGui.QPushButton('Agregar usuario',self.widget)
+		self.btn_add = QtGui.QPushButton(TITLE_ADD_USER,self.widget)
+
+		#self.btn_back = QtGui.QPushButton(TITLE_BACK,self.widget)
 
 		#Configuración elementos de la GUI 
 		self.grid.addWidget(self.lb_user,0,0)
@@ -45,24 +46,31 @@ class AddUserGUI():
 		self.grid.addWidget(self.lb_pass,1,0)
 		self.grid.addWidget(self.txt_pass,1,1)
 		self.grid.addWidget(self.btn_add,2,1)
+		#self.grid.addWidget(self.btn_back,2,0)
 
 		self.txt_pass.setEchoMode(QtGui.QLineEdit.Password)
 
 		#Configuración eventos
-		self.btn_add.clicked.connect(self.addUser)
+		self.btn_add.clicked.connect(self.newUser)
+		#self.btn_back.clicked.connect(self.goBack)
+		self.calculatorGUI = None
 
 		self.widget.show()
+
+	def goBack(self):
+		self.calculatorGUI = ScientificCalculatorGUI()
+		#c.widget.show()
+		self.widget.close()
 		
-	def addUser(self):
+	def newUser(self):
 		user = self.txt_user.text()
 		pas = self.txt_pass.text()
-		if self.calculator.addUser(user,pas):
-			QtGui.QMessageBox.information(self, "Informacion", "Usuario registrado con éxito",QtGui.QMessageBox.Ok)
 
-
-
-
-
-		
-
-
+		if len(user) ==0 or len(pas) ==0:
+			QtGui.QMessageBox.warning(self.widget, WARNING, ICOMPLETE_INFORMATION,QtGui.QMessageBox.Ok)
+		elif self.calculator.addUser(user,pas):
+			QtGui.QMessageBox.information(self.widget, INFORMATION,SUCCESFUL_REGISTRATION ,QtGui.QMessageBox.Ok)
+			self.txt_user.clear()
+			self.txt_pass.clear()
+		else:
+			QtGui.QMessageBox.warning(self.widget, WARNING, "El usuario con nombre "+user+" ya esta registrado",QtGui.QMessageBox.Ok)

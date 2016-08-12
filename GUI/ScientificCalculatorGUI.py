@@ -8,15 +8,14 @@ from AddUserGUI import AddUserGUI
 
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-from Code.Calculator import Calculator
 from Code.ScientificCalculator import ScientificCalculator
 from Constants.Constants import *
 
 
 class ScientificCalculatorGUI:
 
-	def __init__(self):
-		self.calculator = ScientificCalculator()
+	def __init__(self,cal = ScientificCalculator()):
+		self.calculator = cal
 		self.wrote = False
 		self.initGUI()
 		
@@ -121,7 +120,7 @@ class ScientificCalculatorGUI:
 		self.newAddUser = None 
 
 		self.widget.show()
-		sys.exit(self.app.exec_())
+		#sys.exit(self.app.exec_())
 
 	def onTextChanged(self):
 		text = self.txt_input.text()
@@ -143,11 +142,6 @@ class ScientificCalculatorGUI:
 	def newUser(self):
 		self.newAddUser = AddUserGUI(self.calculator)
 		self.widget.close()
-		print("entre")
-		#if self.newAddUser is None:
-			
-        #self.newAddUser.show()
-		#self.widget.exit(0)
 
 	def displayText(self):
 
@@ -210,4 +204,4 @@ class ScientificCalculatorGUI:
 				self.txt_input.setText(INVALID_OPERATION)
 
 		self.wrote = True
-a = ScientificCalculatorGUI()
+#a = ScientificCalculatorGUI()
