@@ -17,6 +17,7 @@ COLS = 3
 INVALID_OPERATION = "Operacion invalida"
 MODULE_NAME = "%"
 POT_NAME = "^"
+CLEAR_NAME = "Borrar"
 
 ##Calculator
 FILE_NAME = 'Code//input.txt'
