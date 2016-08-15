@@ -17,9 +17,9 @@ class Login():
 		self.initGUI()
 
 
-	""""#################################################
+	""""
 	Inicia los elementos de la GUI
-	""""#################################################
+	"""
 	def initGUI(self):
 		self.app = QtGui.QApplication([])
 		
@@ -57,11 +57,11 @@ class Login():
 		self.widget.show()
 		sys.exit(self.app.exec_())
 
-	""""#################################################
+	""""
 	Llama a la funcion de iniciar sesion de la calculadora
 	con la informacion que se encuentra en las cajas de texto,
 	previamente verificando que estas no se encuentren vacias
-	""""#################################################
+	"""
 	def login(self):
 		user = self.txt_user.text()
 		pas = self.txt_pass.text()
