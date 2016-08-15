@@ -54,7 +54,8 @@ class ScientificCalculatorGUI:
 
 		self.btn_mod =  QtGui.QPushButton(MODULE_NAME,self.widget)
 		self.btn_pot =  QtGui.QPushButton(POT_NAME,self.widget)
-
+		self.btn_clear = QtGui.QPushButton(CLEAR_NAME,self.widget)
+		
 		#Configuración elementos de la GUI
 		
 		self.grid.addWidget(self.btn_addUser,0,0,1,1)
@@ -98,6 +99,9 @@ class ScientificCalculatorGUI:
 		self.grid.addWidget(self.btn_pot,7,1)
 		self.btn_pot.setMaximumWidth(WIDTH_BUTTON)
 
+		self.grid.addWidget(self.btn_clear,7,2)
+		self.btn_clear.setMaximumWidth(WIDTH_BUTTON)
+
 		#Configuración de los eventos
 		buttons = self.btn_numbers
 		buttons.append(self.btn_punto)
@@ -115,16 +119,19 @@ class ScientificCalculatorGUI:
 
 		self.txt_input.textChanged.connect(self.onTextChanged)
 		self.btn_addUser.clicked.connect(self.newUser)
-		
+		self.btn_clear.clicked.connect(self.clear)
 
 		self.newAddUser = None 
 
 		self.widget.show()
 		#sys.exit(self.app.exec_())
 
+	def clear(self):
+		self.txt_input.clear()
+
 	def onTextChanged(self):
 		text = self.txt_input.text()
-		if self.wrote:
+		if self.wrote and len(text)!=0:
 			val = text[len(text)-1]
 			self.txt_input.setText(val)
 			self.wrote = False
