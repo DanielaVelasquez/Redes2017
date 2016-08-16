@@ -45,22 +45,24 @@ class LoginGUI(object):
 			lb_my_title = MY_PORT_NUMBER_TITLE
 			lb_contac_title = OTHER_PORT_NUMBER_TITLE
 		else :
-			lb_my_title = MY_IP_NUMBER_TITLE
 			lb_contac_title = OTHER_IP_NUMBER_TITLE
 
 
 		#Declaración elementos de la GUI
-		self.lb_my_information = QtGui.QLabel(lb_my_title,self.widget)
+		if self.mode in LOCAL:
+			self.lb_my_information = QtGui.QLabel(lb_my_title,self.widget)
+			self.txt_my_information = QtGui.QLineEdit(self.widget)
+		
 		self.lb_contact_information = QtGui.QLabel(lb_contac_title,self.widget)
 
-		self.txt_my_information = QtGui.QLineEdit(self.widget)
 		self.txt_contact_information = QtGui.QLineEdit(self.widget)
 
 		self.btn_login = QtGui.QPushButton(LOGIN_TITLE,self.widget)
 
 		#Configuración elementos de la GUI 
-		self.grid.addWidget(self.lb_my_information,0,0,3,0)
-		self.grid.addWidget(self.txt_my_information,1,0,3,0)
+		if self.mode in LOCAL:
+			self.grid.addWidget(self.lb_my_information,0,0,3,0)
+			self.grid.addWidget(self.txt_my_information,1,0,3,0)
 		self.grid.addWidget(self.lb_contact_information,2,0,3,0)
 		self.grid.addWidget(self.txt_contact_information,3,0,3,0)
 		self.grid.addWidget(self.btn_login,5,2)
@@ -70,5 +72,5 @@ class LoginGUI(object):
 		self.widget.show()
 		sys.exit(self.app.exec_())
 
-a = LoginGUI(LOCAL)
+a = LoginGUI()
 
