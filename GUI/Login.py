@@ -16,16 +16,10 @@ class Login():
 		self.calculator = ScientificCalculator()
 		self.initGUI()
 
-
-<<<<<<< HEAD
-	""""#################################################
-	Inicia los elementos de la GUI
-	""""#################################################
-=======
 	""""
 	Inicia los elementos de la GUI
 	"""
->>>>>>> Practica1
+
 	def initGUI(self):
 		self.app = QtGui.QApplication([])
 		
@@ -63,19 +57,12 @@ class Login():
 		self.widget.show()
 		sys.exit(self.app.exec_())
 
-<<<<<<< HEAD
-	""""#################################################
-	Llama a la funcion de iniciar sesion de la calculadora
-	con la informacion que se encuentra en las cajas de texto,
-	previamente verificando que estas no se encuentren vacias
-	""""#################################################
-=======
 	""""
 	Llama a la funcion de iniciar sesion de la calculadora
 	con la informacion que se encuentra en las cajas de texto,
 	previamente verificando que estas no se encuentren vacias
 	"""
->>>>>>> Practica1
+
 	def login(self):
 		user = self.txt_user.text()
 		pas = self.txt_pass.text()
