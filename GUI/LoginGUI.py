@@ -24,7 +24,7 @@ class LoginGUI(object):
 	""""
 	Inicia los elementos de la GUI, solicitando el 
 	número del puerto del usuario y el número del
-	puerto del contacto 
+	puerto del contacto o las direccion de ip de contacto
 	"""
 	def initGUI(self):
 		self.app = QtGui.QApplication([])
