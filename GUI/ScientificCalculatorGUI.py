@@ -19,7 +19,9 @@ class ScientificCalculatorGUI:
 		self.wrote = False
 		self.initGUI()
 		
-
+	""""
+	Inicia los elementos de la GUI
+	"""
 	def initGUI(self):
 		self.app = QtGui.QApplication([])
 		
@@ -126,9 +128,16 @@ class ScientificCalculatorGUI:
 		self.widget.show()
 		#sys.exit(self.app.exec_())
 
+	""""
+	Limpia el valor que tiene la calculadora en pantalla
+	"""
 	def clear(self):
 		self.txt_input.clear()
 
+	""""
+	Limpia la calculadora despues de haber realizado una operacion al ingresar un nuevo valor
+	en la pantalla
+	"""
 	def onTextChanged(self):
 		text = self.txt_input.text()
 		if self.wrote and len(text)!=0:
@@ -140,16 +149,24 @@ class ScientificCalculatorGUI:
 		if EQUAL_SYMBOL in text:
 			self.deleteLasDigit()
 			self.operate()
-
+	""""
+	Elimina el ultimo digito que aparece en la entrada de la calculadora
+	"""
 	def deleteLasDigit(self):
 		text = self.txt_input.text()
 		val = text[0:len(text)-1]
 		self.txt_input.setText(val)
-		
+	""""
+	Llama a la GUI que permite agregar un nuevo usuario
+	"""	
 	def newUser(self):
 		self.newAddUser = AddUserGUI(self.calculator)
 		self.widget.close()
 
+	""""
+	Despliega en la pantallla de la calculadora el texto de acuerdo al boton que
+	fue presionado
+	"""
 	def displayText(self):
 
 		if self.wrote:
@@ -161,7 +178,16 @@ class ScientificCalculatorGUI:
 
 		self.txt_input.setText(self.txt_input.text() + value)
 		
+	""""
+	Realiza la operacion de la expresion que se ingreso en la calculadora
+	cuando se digita el = o se presiona la tecla igual, primero revisa el 
+	tipo de operacin asociada a la expresion y en caso de no encontrarla revisa 
+	si es un numero y despliega dicho numero, en caso contrario a traves de un 
+	mensaje muestra que la operacion es invalida.
 
+	Si hay un operador valido este obtiene los valores de la operacion y
+	despues realiza el llamado de la operacion si es posible y despliega el resultado
+	"""
 	def operate(self):
 		text = self.txt_input.text()
 		operator = ""
@@ -179,36 +205,58 @@ class ScientificCalculatorGUI:
 		elif POT_NAME in text:
 			operator = POT_NAME
 		else:
-			self.txt_input.setText(INVALID_OPERATION)
+			if len(text) ==0:
+				number = float(0)
+				self.txt_input.setText(str(number))
+			else:
+				try:
+					number = float(text)
+					self.txt_input.setText(str(number))
+				except ValueError:
+					QtGui.QMessageBox.warning(self.widget, WARNING, INVALID_OPERATION,QtGui.QMessageBox.Ok)
+					self.txt_input.clear()
 			operate = False
 
 		if operate:
 			nums = text.split(operator,2)
-			try:
-				first = float(nums[0])
-				second = float(nums[1])
+			if len(nums) == 2:
+				try:
+					first = float(nums[0])
+					second = float(nums[1])
 
-				self.calculator.first_operand = first
-				self.calculator.second_operand = second
-				
-				resultado = None
+					self.calculator.first_operand = first
+					self.calculator.second_operand = second
+					
+					resultado = None
 
-				if DIV_SYMBOL in operator:
-					resultado = self.calculator.divide()
-				elif MUL_SYMBOL in operator:
-					resultado = self.calculator.multiply()
-				elif SUBSTRACT_SYMBOL in operator:
-					resultado = self.calculator.substract()
-				elif ADD_SYMBOL in operator:
-					resultado = self.calculator.add()
-				elif MODULE_NAME in operator:
-					resultado = self.calculator.module()
-				else:
-					resultado = self.calculator.pot()
-				self.txt_input.setText(str(resultado))
+					if DIV_SYMBOL in operator:
+						resultado = self.calculator.divide()
+					elif MUL_SYMBOL in operator:
+						resultado = self.calculator.multiply()
+					elif SUBSTRACT_SYMBOL in operator:
+						resultado = self.calculator.substract()
+					elif MODULE_NAME in operator:
+						resultado = self.calculator.module()
+					elif POT_NAME in operator:
+						resultado = self.calculator.pot()
+					else:
+						resultado = self.calculator.add()
 
-			except ValueError:
-				self.txt_input.setText(INVALID_OPERATION)
+					try:
+						number = float(str(resultado))
+						self.txt_input.setText(str(number))
+					except ValueError:
+						QtGui.QMessageBox.warning(self.widget, WARNING, resultado,QtGui.QMessageBox.Ok)
+						self.txt_input.clear()
+					
+					
+
+				except ValueError:
+					QtGui.QMessageBox.warning(self.widget, WARNING, INVALID_OPERATION,QtGui.QMessageBox.Ok)
+					self.txt_input.clear()
+			else:
+				QtGui.QMessageBox.warning(self.widget, WARNING, INVALID_OPERATION,QtGui.QMessageBox.Ok)
+				self.txt_input.clear()
 
 		self.wrote = True
 #a = ScientificCalculatorGUI()

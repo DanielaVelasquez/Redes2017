@@ -12,10 +12,13 @@ from Code import *
 
 class AddUserGUI():
 
+
 	def __init__(self,cal):
 		self.calculator = cal
 		self.initGUI()
-
+	""""
+	Inicia los elementos de la GUI 
+	"""
 	def initGUI(self):
 		self.app = QtGui.QApplication([])
 		
@@ -57,11 +60,11 @@ class AddUserGUI():
 
 		self.widget.show()
 
-	def goBack(self):
-		self.calculatorGUI = ScientificCalculatorGUI()
-		#c.widget.show()
-		self.widget.close()
-		
+	""""
+	Realiza el llamado a la calculadora para registrar un nuevo 
+	usuario, previamente verificando que ninguno de los campos 
+	este vacio
+	"""	
 	def newUser(self):
 		user = self.txt_user.text()
 		pas = self.txt_pass.text()
