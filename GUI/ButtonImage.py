@@ -1,6 +1,8 @@
 import sys
 from PyQt4.QtGui import *
-
+""""
+Clase que implementa un boton que contiene una imagen
+"""
 class ButtonImage(QPushButton):
     def __init__(self,picture):
         super(ButtonImage, self).__init__()
