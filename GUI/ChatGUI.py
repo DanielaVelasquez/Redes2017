@@ -48,6 +48,29 @@ class ChatGUI(object):
 		self.grid.addWidget(self.txt_message,11,0,5,1)
 		self.grid.addWidget(self.btn_send,12,5,3,1)
 
+		self.btn_send.clicked.connect(self.sendMesssage)
+
 		self.widget.show()
 		sys.exit(self.app.exec_())
+
+	"""""
+	Despliega los mensaje que se enviaron en la pantalla del chat
+	"""
+	def showSendingMesssage(self,message):
+		self.txt_message.clear()
+		self.txt_conversation.append(message)
+
+	"""""
+	Envia los mensajes al contacto
+	"""
+	def sendMesssage(self):
+		message = self.txt_message.toPlainText()
+		if len(message) == 0:
+			QtGui.QMessageBox.warning(self.widget, WARNING, MISSING_MESSAGE,QtGui.QMessageBox.Ok)
+		else:
+			#TODO - enviar los mensajes
+			self.showSendingMesssage(message)
+
+
+
 a = ChatGUI()

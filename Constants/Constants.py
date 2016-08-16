@@ -19,3 +19,7 @@ CHAT_WINDOW = "Chat"
 #Modos de acceso  al chat, local o remoto
 LOCAL = "Local"
 REMOTE = "Remote"
+
+#Mensajes de error
+WARNING = "¡Alerta!"
+MISSING_MESSAGE = "No hay ningun mensaje para enviar"
