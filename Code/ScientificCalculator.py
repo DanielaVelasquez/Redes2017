@@ -3,6 +3,10 @@
 import sys
 from Calculator import Calculator
 
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from Constants.Constants import *
+
 class ScientificCalculator(Calculator):
 
 	def __init__(self,first_op = float(0),second_op = float(0)):
