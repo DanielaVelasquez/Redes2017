@@ -32,5 +32,6 @@ class MyApiClient:
     @param <str> message: mensaje que se desea enviar
     """
     def sendMessage(self,message):
+    	print("Estoy en el cliente voy a enviar "+message)
     	self.proxy.sendMessage_wrapper(message)
 

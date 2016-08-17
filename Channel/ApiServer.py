@@ -10,16 +10,22 @@ from Constants.Constants import *
 
 class MyApiServer:
     def __init__(self,wrapper, my_port = DEFAULT_PORT):
+        print("Iniciando server")
         self.port = my_port
         self.server = SimpleXMLRPCServer((LOCALHOST,self.port),allow_none=True)
         self.wrapper = wrapper
         self.server.register_instance(self.wrapper)
+        self.connected = True
         self.server.serve_forever()
+
+        
         """
         Constructor de la clase
         @param <FunctionWrapper> wrapper: objeto que recibe los mensajes del cliente
         @param <int> my_port: especifica el puerto donde se debe hacer la conexion
         """
+    def isConnected(self):
+        return self.connected
 
         
 class FunctionWrapper:
