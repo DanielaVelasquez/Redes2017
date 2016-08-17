@@ -12,11 +12,14 @@ class MyApiServer:
     def __init__(self,wrapper, my_port = DEFAULT_PORT):
         self.port = my_port
         self.server = SimpleXMLRPCServer((LOCALHOST,self.port),allow_none=True)
-        print ("Conectando con "+LOCALHOST+" "+str(self.port))
         self.wrapper = wrapper
         self.server.register_instance(self.wrapper)
-        print("Running")
         self.server.serve_forever()
+        """
+        Constructor de la clase
+        @param <FunctionWrapper> wrapper: objeto que recibe los mensajes del cliente
+        @param <int> my_port: especifica el puerto donde se debe hacer la conexion
+        """
 
         
 class FunctionWrapper:
@@ -30,8 +33,10 @@ class FunctionWrapper:
     """
     def sendMessage_wrapper(self, message):
         self.message = message
-        #print ("Mensaje "+self.message)
         self.showMessage()
+    """"
+    Procedimiento que despliega el mensaje que fue enviado
+    """
     def showMessage(self):
         print ("Mensaje "+self.message)
         #raise  NotImplementedError( "Should have implemented this" )
