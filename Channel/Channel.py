@@ -100,24 +100,5 @@ class Channel:
     def init_client(self):
         mutex_client.acquire()
         self.client = MyApiClient(self.contact_port,self.contact_ip)
-        
-
-wrapper1 = FunctionWrapper()
-wrapper2 = FunctionWrapper()
-a = Channel(None,DEFAULT_PORT,8000)
-a.setWrapper(wrapper1)
-a.init_chat()
-
-b = Channel(None,8000,DEFAULT_PORT)
-b.setWrapper(wrapper2)
-b.init_chat()
-
-
-if a.send_text("Hola, soy a"):
-    print "envie el mensaje de a"
-else:
-    print "NO envie el mensaje de a"
-#b.send_text("Hola soy b")
-
 
 

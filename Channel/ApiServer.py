@@ -11,7 +11,6 @@ from Constants.AuxiliarFunctions import *
 
 class MyApiServer:
     def __init__(self,wrapper, my_port = DEFAULT_PORT):
-        print("Iniciando server")
         self.port = my_port
         self.server = SimpleXMLRPCServer((LOCALHOST,self.port),allow_none=True)
         self.wrapper = wrapper
@@ -36,7 +35,6 @@ class FunctionWrapper:
     hacer lo necesario para mostrar el texto en nuestra pantalla.
     """
     def sendMessage_wrapper(self, message):
-        print "soy el wrapper, tengo el mensaje "+message
         self.message = message
         self.showMessage()
     
