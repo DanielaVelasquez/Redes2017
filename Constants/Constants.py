@@ -27,3 +27,6 @@ MISSING_MESSAGE = "No hay ningun mensaje para enviar"
 LOCALHOST = "localhost"
 DEFAULT_PORT = 5000
 LOCALHOST_CLIENT = "http://localhost:"
+
+#Excepciones
+MISSING_WRAPPER = "Falta definir un wrapper que reciba los mensajes del chat"

@@ -10,7 +10,11 @@ from Constants.Constants import *
 
 class MyApiClient:
 	
-    def __init__(self, contact_port = DEFAULT_PORT,contact_ip=LOCALHOST_CLIENT):
+    def __init__(self, contact_port,contact_ip):
+    	if contact_port is None:
+    		contact_port = DEFAULT_PORT
+    	if contact_ip is None:
+    		contact_ip = LOCALHOST_CLIENT
     	self.contact_port = contact_port
     	self.contact_ip = contact_ip
     	self.proxy = xmlrpclib.ServerProxy(contact_ip+str(self.contact_port)+"/", allow_none=True)

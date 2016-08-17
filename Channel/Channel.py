@@ -31,9 +31,10 @@ class Channel:
     @param <int> contact_port: De trabajar de manera local
                 representa el puerto de la instancia del contacto
     """
-    def __init__(self, contact_ip = None, contact_port = None):
+    def __init__(self, contact_ip = None, my_port = None,contact_port = None):
         self.contact_ip = contact_ip
         self.contact_port = contact_port
+        self.my_port  = my_port
         self.server = None
         self.client = None
         self.wrapper = None
@@ -55,10 +56,20 @@ class Channel:
             return True
         return False
 
+    """"
+    Inicia el servidor considerando que se tengan
+    los valores necesarios para iniciarlo
+    """
     def init_server(self):
         if self.wrapper is None:
-            raise 
-        self.server = MyApiServer()
+            raise Exception(MISSING_WRAPPER)
+        elif self.mensaje is None:
+            self.server = MyApiServer(self.wrapper)
+        else:
+            self.server = MyApiServer(self.wrapper,self.my_port)
+
+    def init_client(self):
+        self.client = MyApiClient(self.contact_port,self.contact_ip)
 
 
 
