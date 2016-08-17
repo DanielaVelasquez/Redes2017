@@ -22,3 +22,8 @@ REMOTE = "Remote"
 #Mensajes de error
 WARNING = "¡Alerta!"
 MISSING_MESSAGE = "No hay ningun mensaje para enviar"
+
+#Localhost
+LOCALHOST = "localhost"
+DEFAULT_PORT = 5000
+LOCALHOST_CLIENT = "http://localhost:"
