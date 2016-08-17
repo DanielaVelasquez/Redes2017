@@ -7,6 +7,7 @@ from SimpleXMLRPCServer import SimpleXMLRPCServer
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
+from Constants.AuxiliarFunctions import *
 
 class MyApiClient:
 	
@@ -18,6 +19,7 @@ class MyApiClient:
     	self.contact_port = contact_port
     	self.contact_ip = contact_ip
     	self.proxy = xmlrpclib.ServerProxy(contact_ip+str(self.contact_port)+"/", allow_none=True)
+    	mutex_client.release()
     	"""
 	    Constructor de la clase
 	    @param <int> contact_port: especifica el puerto de contacto del contacto, 

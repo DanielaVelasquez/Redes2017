@@ -44,3 +44,12 @@ class MyThread(threading.Thread):
 
     def is_stop(self):
         return self._stop.isSet()
+
+"""**************************************************
+Semaforos que permiten la exclusion mutua entre las
+conexiones y el intercambio de mensajes
+**************************************************"""
+import threading
+
+mutex_server = threading.Lock()
+mutex_client = threading.Lock()

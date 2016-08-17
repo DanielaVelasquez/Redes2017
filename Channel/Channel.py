@@ -8,12 +8,14 @@ import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
+from Constants.AuxiliarFunctions import *
 
 from ApiClient import MyApiClient
 from ApiServer import MyApiServer
 from ApiServer import FunctionWrapper
 
 import threading
+import time
 """
 Las instancias de esta clase contendran los metodos
 necesarios para hacer uso de los metodos
@@ -47,11 +49,9 @@ class Channel:
     y despues inicia los hilos del cliente
     """
     def init_chat(self):
-        self.server_thread = threading.Thread(target=self.init_server)
-        self.client_thread = threading.Thread(target=self.init_client)
-        self.help_thread = threading.Thread(target=self.isServerConnected)
+        self.server_thread = MyThread(target=self.init_server)
+        self.client_thread = MyThread(target=self.init_client)
         #Inicio de los hilos
-        self.help_thread.start()
         self.server_thread.start()
         self.client_thread.start()
 
@@ -68,10 +68,16 @@ class Channel:
     si el mensaje se envio efectivamente
     """
     def send_text(self, text):
+        mutex_client.acquire()
+        mutex_server.acquire()
         print "estoy en el canal voy a enviar: "+text+" y client= "+str(self.client)
         if self.client is not None:
             self.client.sendMessage(text)
+            mutex_client.release()
+            mutex_server.release()
             return True
+        mutex_client.release()
+        mutex_server.release()
         return False
 
     """"
@@ -82,31 +88,19 @@ class Channel:
         if self.wrapper is None:
             raise Exception(MISSING_WRAPPER)
         elif self.my_port is None:
+            mutex_server.acquire()
             self.server = MyApiServer(self.wrapper)
         else:
+            mutex_server.acquire()
             self.server = MyApiServer(self.wrapper,self.my_port)
-        
-    def isServerConnected(self):
-        print "Preguntandooo**************************"
-        while self.server is None:
-            print("NO hay server aun")
-
-        while not self.server.isConnected():
-            print("Server aun no conectado")
-        print "YAAAAAA"
 
     """""
     Inicia el cliente
     """
     def init_client(self):
-        print "Conecntando client"
+        mutex_client.acquire()
         self.client = MyApiClient(self.contact_port,self.contact_ip)
-        self.client_connection_done = True
-        print("CONECTE client: "+str(self.client_connection_done))
-        print " el cliente es: "+str(self.client)
-
-    def isConnected(self):
-        return self.client_connection_done and self.server_connection_done
+        
 
 wrapper1 = FunctionWrapper()
 wrapper2 = FunctionWrapper()
@@ -118,18 +112,12 @@ b = Channel(None,8000,DEFAULT_PORT)
 b.setWrapper(wrapper2)
 b.init_chat()
 
-"""""
-print "A esta: "+str(a.isConnected())
-
-
-while not b.isConnected() and not a.isConnected():
-    print ("Esperrandp")
 
 if a.send_text("Hola, soy a"):
     print "envie el mensaje de a"
 else:
     print "NO envie el mensaje de a"
 #b.send_text("Hola soy b")
-"""""
+
 
 

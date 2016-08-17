@@ -7,6 +7,7 @@ from SimpleXMLRPCServer import SimpleXMLRPCServer
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
+from Constants.AuxiliarFunctions import *
 
 class MyApiServer:
     def __init__(self,wrapper, my_port = DEFAULT_PORT):
@@ -15,17 +16,14 @@ class MyApiServer:
         self.server = SimpleXMLRPCServer((LOCALHOST,self.port),allow_none=True)
         self.wrapper = wrapper
         self.server.register_instance(self.wrapper)
-        self.connected = True
+        mutex_server.release()
         self.server.serve_forever()
-
-        
         """
         Constructor de la clase
         @param <FunctionWrapper> wrapper: objeto que recibe los mensajes del cliente
         @param <int> my_port: especifica el puerto donde se debe hacer la conexion
         """
-    def isConnected(self):
-        return self.connected
+
 
         
 class FunctionWrapper:
@@ -38,8 +36,10 @@ class FunctionWrapper:
     hacer lo necesario para mostrar el texto en nuestra pantalla.
     """
     def sendMessage_wrapper(self, message):
+        print "soy el wrapper, tengo el mensaje "+message
         self.message = message
         self.showMessage()
+    
     """"
     Procedimiento que despliega el mensaje que fue enviado
     """
