@@ -34,6 +34,3 @@ class MyApiClient:
     def sendMessage(self,message):
     	self.proxy.sendMessage_wrapper(message)
 
-a = MyApiClient()
-a.sendMessage("Hola")
-#a.sendMessage("Funciono maldita sea")

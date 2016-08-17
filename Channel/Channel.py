@@ -13,6 +13,7 @@ from ApiClient import MyApiClient
 from ApiServer import MyApiServer
 from ApiServer import FunctionWrapper
 
+import threading
 """
 Las instancias de esta clase contendran los metodos
 necesarios para hacer uso de los metodos
@@ -38,6 +39,17 @@ class Channel:
         self.server = None
         self.client = None
         self.wrapper = None
+    """""
+    Inicia los hilos del chat, primero inicia el servidor
+    y despues inicia los hilos del cliente
+    """
+    def init_chat(self):
+        self.server_thread = threading.Thread(target=self.init_server)
+        self.client_thread = threading.Thread(target=self.init_client)
+        #Inicio de los hilos
+        self.server_thread.start()
+        self.client_thread.start()
+
 
     """"
     Asigna un nuevo wrapper al wrapper de la clase
@@ -67,7 +79,9 @@ class Channel:
             self.server = MyApiServer(self.wrapper)
         else:
             self.server = MyApiServer(self.wrapper,self.my_port)
-
+    """""
+    Inicia el cliente
+    """
     def init_client(self):
         self.client = MyApiClient(self.contact_port,self.contact_ip)
 

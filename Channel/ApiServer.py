@@ -41,6 +41,3 @@ class FunctionWrapper:
         print ("Mensaje "+self.message)
         #raise  NotImplementedError( "Should have implemented this" )
 
-
-a = FunctionWrapper()
-b = MyApiServer(a)
