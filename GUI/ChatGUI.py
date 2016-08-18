@@ -92,8 +92,7 @@ class ChatGUI(FunctionWrapper):
 			if not self.channel.send_text(message):
 				QtGui.QMessageBox.warning(self.widget, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
 			else:
-				self.showSendingMesssage(message)
-				self.channel.sendMessage_wrapper(message)
+				self.showSendingssMesssage(message)
 	def sendMessage_wrapper(self, message):
 		self.txt_conversation.append("Contacto dice: "+message)
 		
