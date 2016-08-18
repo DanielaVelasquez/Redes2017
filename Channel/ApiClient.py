@@ -18,8 +18,7 @@ class MyApiClient:
     		contact_ip = LOCALHOST_CLIENT
     	self.contact_port = contact_port
     	self.contact_ip = contact_ip
-    	self.proxy = xmlrpclib.ServerProxy(contact_ip+str(self.contact_port)+"/", allow_none=True)
-    	mutex_client.release()
+       
     	"""
 	    Constructor de la clase
 	    @param <int> contact_port: especifica el puerto de contacto del contacto, 
@@ -34,5 +33,15 @@ class MyApiClient:
     @param <str> message: mensaje que se desea enviar
     """
     def sendMessage(self,message):
-    	self.proxy.sendMessage_wrapper(message)
+        print "Api client "+message
+        try:
+            print "Soy el cliente, voy a conectarme: "+self.contact_ip+str(self.contact_port)+"/"
+            self.proxy = xmlrpclib.ServerProxy(self.contact_ip+str(self.contact_port)+"/", allow_none=True)
+            self.proxy.sendMessage_wrapper(str(message))
+            return True
+        except Exception, ex:
+            print str(ex)
+            return False
+
+    	
 

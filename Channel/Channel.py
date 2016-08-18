@@ -49,8 +49,8 @@ class Channel:
     y despues inicia los hilos del cliente
     """
     def init_chat(self):
-        self.server_thread = MyThread(target=self.init_server)
-        self.client_thread = MyThread(target=self.init_client)
+        self.server_thread = threading.Thread(target=self.init_server)
+        self.client_thread = threading.Thread(target=self.init_client)
         #Inicio de los hilos
         self.server_thread.start()
         self.client_thread.start()
@@ -68,16 +68,17 @@ class Channel:
     si el mensaje se envio efectivamente
     """
     def send_text(self, text):
-        mutex_client.acquire()
-        mutex_server.acquire()
-        print "estoy en el canal voy a enviar: "+text+" y client= "+str(self.client)
+        #mutex_server.acquire()
+        #mutex_client.acquire()
+        
+        print "channel: "+text
         if self.client is not None:
-            self.client.sendMessage(text)
-            mutex_client.release()
-            mutex_server.release()
-            return True
-        mutex_client.release()
-        mutex_server.release()
+            answer = self.client.sendMessage(text)
+            #mutex_client.release()
+            #mutex_server.release()
+            return answer
+        #mutex_client.release()
+        #mutex_server.release()
         return False
 
     """"
@@ -88,17 +89,18 @@ class Channel:
         if self.wrapper is None:
             raise Exception(MISSING_WRAPPER)
         elif self.my_port is None:
-            mutex_server.acquire()
+            #mutex_server.acquire()
             self.server = MyApiServer(self.wrapper)
         else:
-            mutex_server.acquire()
+            #mutex_server.acquire()
             self.server = MyApiServer(self.wrapper,self.my_port)
 
     """""
     Inicia el cliente
     """
     def init_client(self):
-        mutex_client.acquire()
+        #mutex_client.acquire()
         self.client = MyApiClient(self.contact_port,self.contact_ip)
+        #mutex_server.release()
 
 

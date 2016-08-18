@@ -9,19 +9,40 @@ from PyQt4 import QtGui
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
+from Channel.ApiServer import FunctionWrapper
+from Channel.Channel import Channel
 
-class ChatGUI(object):
+class ChatGUI(FunctionWrapper):
 	
-	def __init__(self):
+	def __init__(self,my_information,my_contact_information,mode):
 		super(ChatGUI, self).__init__()
+		self.my_information = my_information
+		self.my_contact_information = my_contact_information
+		self.mode = mode
+		self.channel = None
+		self.makeConnection()
 		self.initGUI()
+
+	"""""
+	Crea el canal de coneccion y establece la coneccion 
+	con el contacto de acuerdo a los datos entregados por
+	el usuario
+	"""
+	def makeConnection(self):
+		if self.mode in LOCAL:
+			self.channel = Channel(my_port=self.my_information,contact_port=self.my_contact_information)
+		else:
+			self.channel = Channel(contact_ip = self.my_information)
+		self.channel.setWrapper(self)
+		self.channel.init_chat()
+
 	""""
 	Inicia los elementos de la GUI, mostrando la ventana
 	donde se reciben los mensaje y una que permite enviar
 	los mensajes
 	"""
 	def initGUI(self):
-		self.app = QtGui.QApplication([])
+		#self.app = QtGui.QApplication([])
 		
 		#Creación y configuración del widget
 		self.widget = QtGui.QWidget()
@@ -51,7 +72,7 @@ class ChatGUI(object):
 		self.btn_send.clicked.connect(self.sendMesssage)
 
 		self.widget.show()
-		sys.exit(self.app.exec_())
+		#sys.exit(self.app.exec_())
 
 	"""""
 	Despliega los mensaje que se enviaron en la pantalla del chat
@@ -68,9 +89,13 @@ class ChatGUI(object):
 		if len(message) == 0:
 			QtGui.QMessageBox.warning(self.widget, WARNING, MISSING_MESSAGE,QtGui.QMessageBox.Ok)
 		else:
-			#TODO - enviar los mensajes
-			self.showSendingMesssage(message)
+			if not self.channel.send_text(message):
+				QtGui.QMessageBox.warning(self.widget, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
+			else:
+				self.showSendingMesssage(message)
+	def showMessage(self):
+		self.showSendingMesssage(self.message)
 
-
-
-a = ChatGUI()
+	def sendMessage_wrapper(self, message):
+		print ("LEGUEEE "+message)
+		self.showSendingMesssage(self.message)
