@@ -13,10 +13,8 @@ class MyApiServer:
     def __init__(self,wrapper, my_port = DEFAULT_PORT):
         self.port = my_port
         self.server = SimpleXMLRPCServer((LOCALHOST,int(self.port)),allow_none=True)
-        print "soy el servidor, me conect a "+LOCALHOST+" puerto: "+self.port
         self.wrapper = wrapper
         self.server.register_instance(self.wrapper)
-        #mutex_server.release()
         self.server.serve_forever()
         """
         Constructor de la clase
@@ -36,13 +34,6 @@ class FunctionWrapper(object):
     hacer lo necesario para mostrar el texto en nuestra pantalla.
     """
     def sendMessage_wrapper(self, message):
-        print("********************************Soy el wrapper, recibi "+message)
         self.message = message
-        #self.showMessage()
+        
     
-    """"
-    Procedimiento que despliega el mensaje que fue enviado
-    """
-    def showMessage(self):
-        raise  NotImplementedError( "Should have implemented this" )
-

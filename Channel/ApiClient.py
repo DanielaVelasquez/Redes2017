@@ -35,12 +35,10 @@ class MyApiClient:
     def sendMessage(self,message):
         print "Api client "+message
         try:
-            print "Soy el cliente, voy a conectarme: "+self.contact_ip+str(self.contact_port)+"/"
             self.proxy = xmlrpclib.ServerProxy(self.contact_ip+str(self.contact_port)+"/", allow_none=True)
             self.proxy.sendMessage_wrapper(str(message))
             return True
         except Exception, ex:
-            print str(ex)
             return False
 
     	

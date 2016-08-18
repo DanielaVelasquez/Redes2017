@@ -8,7 +8,6 @@ import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
-from Constants.AuxiliarFunctions import *
 
 from ApiClient import MyApiClient
 from ApiServer import MyApiServer
@@ -68,17 +67,10 @@ class Channel:
     si el mensaje se envio efectivamente
     """
     def send_text(self, text):
-        #mutex_server.acquire()
-        #mutex_client.acquire()
-        
         print "channel: "+text
         if self.client is not None:
             answer = self.client.sendMessage(text)
-            #mutex_client.release()
-            #mutex_server.release()
             return answer
-        #mutex_client.release()
-        #mutex_server.release()
         return False
 
     """"
@@ -89,18 +81,14 @@ class Channel:
         if self.wrapper is None:
             raise Exception(MISSING_WRAPPER)
         elif self.my_port is None:
-            #mutex_server.acquire()
             self.server = MyApiServer(self.wrapper)
         else:
-            #mutex_server.acquire()
             self.server = MyApiServer(self.wrapper,self.my_port)
 
     """""
     Inicia el cliente
     """
     def init_client(self):
-        #mutex_client.acquire()
         self.client = MyApiClient(self.contact_port,self.contact_ip)
-        #mutex_server.release()
 
 
