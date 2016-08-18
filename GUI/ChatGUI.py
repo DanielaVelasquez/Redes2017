@@ -79,7 +79,7 @@ class ChatGUI(FunctionWrapper):
 	"""
 	def showSendingMesssage(self,message):
 		self.txt_message.clear()
-		self.txt_conversation.append("Yo: "+message)
+		self.txt_conversation.append("Yo: message")
 
 	"""""
 	Envia los mensajes al contacto
@@ -93,6 +93,7 @@ class ChatGUI(FunctionWrapper):
 				QtGui.QMessageBox.warning(self.widget, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
 			else:
 				self.showSendingMesssage(message)
+				self.channel.sendMessage_wrapper(message)
 	def sendMessage_wrapper(self, message):
 		self.txt_conversation.append("Contacto dice: "+message)
 		
