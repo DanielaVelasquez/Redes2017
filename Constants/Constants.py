@@ -2,19 +2,27 @@
 # -*- coding: utf-8 -*-
 
 #Nombres para etiquetas login local y remoto
-MY_PORT_NUMBER_TITLE = "Cual es mi puerto?"
-OTHER_PORT_NUMBER_TITLE = "Cual es el puerto de contacto?"
-OTHER_IP_NUMBER_TITLE = "Cual es la direccion ip de contacto?"
+MY_PORT_NUMBER_TITLE = "Cual es mi puerto?:"
+OTHER_PORT_NUMBER_TITLE = "Cual es el puerto de contacto?:"
+OTHER_IP_NUMBER_TITLE = "Cual es la direccion IP del contacto?:"
 LOGIN_TITLE = "Acceder"
-MY_IP = "Mi IP : "
+MY_IP = "Mi IP: "
 
 #Nombres para las etiquetas del chat
 CONVERSATION_TITLE = "Conversacion"
 SEND_TITLE = "Responder"
 
-#Titulo de las ventans GUI
+#Titulo de las ventanas GUI
 LOGIN_WINDOW = "Login"
 CHAT_WINDOW = "Chat"
+
+#Pixeles de las ventanas GUI
+DEFAULT_POSITION_X = 100
+DEFAULT_POSITION_Y = 100
+LOGIN_WIDTH = 300
+LOGIN_HEIGHT = 200
+CHAT_WIDTH = 500
+CHAT_HEIGHT = 600
 
 #Modos de acceso  al chat, local o remoto
 LOCAL = "Local"
@@ -32,6 +40,6 @@ LOCALHOST_CLIENT = "http://localhost:"
 #Excepciones
 MISSING_WRAPPER = "Falta definir un wrapper que reciba los mensajes del chat"
 WRONG_OPTION = "Opcion no valida para iniciar"
-
-INCOMPLETE_INFORMATION= "Todos los campos son obligatorios por favor asegurese de llenarlos todos"
+PORT_IN_USE = "Ese puerto ya esta en uso, no es posible establecer la conexion"
+INCOMPLETE_INFORMATION= "Todos los campos de texto son obligatorios por favor asegurese de llenarlos todos"
 CONECTION_FAIL = "No se ha podido establecer la conexion con su contacto"
