@@ -32,8 +32,6 @@ def main(argv):
     else:
         local = False
 
-   
-
     app = QtGui.QApplication(sys.argv)
     if local:
         login = LoginGUI(LOCAL)
@@ -41,7 +39,6 @@ def main(argv):
         login = LoginGUI()
 
     sys.exit(app.exec_())
-
 
 if __name__ == '__main__':
     main(sys.argv[1:])
