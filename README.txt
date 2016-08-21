@@ -1,4 +1,5 @@
-Integrantes:
-	Angie Daniela Vel·squez GarzÛn
+Integrantes:  
+	Angie Daniela Vel√°squez Garz√≥n
+	Bernal Cedillo Enrique Antonio  
 
 Version python: 2.7.12
