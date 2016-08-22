@@ -11,10 +11,12 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 Clase de interfaz grafica que permite visualizar la conversacion con el contacto del chat
 Y enviar nuevos mensajes por medio de un campo de texto
 """
-class ChatGUI(QtGui.QWidget):
-	
+class ChatGUI(QtGui.QWidget):	
 	"""
 	Constructor
+	@param <str> my_information: informacion propia para la conexion
+    @param <str> my_contact_information: informacion del contacto para la conexion
+    @param <str> mode: modo en el que operara el programa (constantes LOCAL o REMOTE)
 	"""
 	def __init__(self,my_information,my_contact_information,mode):
 		super(ChatGUI, self).__init__()
@@ -88,7 +90,7 @@ class ChatGUI(QtGui.QWidget):
 			else:
 				self.showSendingMessage(message)
 	"""
-	Wrapper
+	Muestra el mensaje del contacto (manteniendo la conversacion)
 	"""
 	def sendMessage_wrapper(self, message):
 		self.txt_conversation.append("Contacto dice: "+message)
