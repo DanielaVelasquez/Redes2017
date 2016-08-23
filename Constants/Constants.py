@@ -43,3 +43,11 @@ WRONG_OPTION = "Opcion no valida para iniciar"
 PORT_IN_USE = "Ese puerto ya esta en uso, no es posible establecer la conexion"
 INCOMPLETE_INFORMATION= "Todos los campos de texto son obligatorios por favor asegurese de llenarlos todos"
 CONECTION_FAIL = "No se ha podido establecer la conexion con su contacto"
+
+#Configuración grabación audio
+CHUNK = 1024
+CHANNELS = 1
+RATE = 44100
+RECORD_SECONDS = 2
+
+WIDTH_PYAUDIO_FORMAT = 2
