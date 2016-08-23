@@ -6,6 +6,7 @@ from PyQt4 import QtGui, QtCore
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
+from Constants.AuxiliarFunctions import *
 from ChatGUI import ChatGUI
 """
 Clase de interfaz grafica que nos permite desplegar la pantalla de logueo
@@ -64,9 +65,6 @@ class LoginGUI(QtGui.QWidget):
 		self.grid.addWidget(self.btn_login,5,2)
 
 		self.btn_login.clicked.connect(self.login)
-
-		self.txt_contact_information.setText("5000")
-		self.txt_my_information.setText("8000")
 
 		self.show()
 	
