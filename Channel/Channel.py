@@ -50,10 +50,11 @@ class Channel:
     def init_chat(self):
         self.server_thread = threading.Thread(target=self.init_server)
         self.client_thread = threading.Thread(target=self.init_client)
+        self.server_thread.daemon = True
+        self.client_thread.daemon = True
         #Inicio de los hilos
         self.server_thread.start()
         self.client_thread.start()
-
 
     """"
     Asigna un nuevo wrapper al wrapper de la clase
@@ -67,7 +68,7 @@ class Channel:
     si el mensaje se envio efectivamente
     """
     def send_text(self, text):
-        print "channel: "+text
+        print "-) Channel: "+text
         if self.client is not None:
             answer = self.client.sendMessage(text)
             return answer
@@ -90,5 +91,3 @@ class Channel:
     """
     def init_client(self):
         self.client = MyApiClient(self.contact_port,self.contact_ip)
-
-
