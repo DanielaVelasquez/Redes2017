@@ -4,3 +4,4 @@
 
 Version python: 2.7.12
 Version pyaudio 0.2.9
+Verion numpy 1.6.1
