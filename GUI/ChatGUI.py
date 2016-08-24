@@ -2,16 +2,18 @@
 # -*- coding: utf-8 -*-
 import sys
 from PyQt4 import QtGui, QtCore
-from Constants.Constants import *
-from Channel.Channel import Channel
 #Direcciones relativas
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+
+from Channel.Channel import Channel
+from Constants.Constants import *
+from Channel.ApiServer import FunctionWrapper
 """
 Clase de interfaz grafica que permite visualizar la conversacion con el contacto del chat
 Y enviar nuevos mensajes por medio de un campo de texto
 """
-class ChatGUI(QtGui.QWidget):	
+class ChatGUI(QtGui.QWidget,FunctionWrapper):	
 	"""
 	Constructor
 	@param <str> my_information: informacion propia para la conexion
@@ -89,6 +91,22 @@ class ChatGUI(QtGui.QWidget):
 				QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
 			else:
 				self.showSendingMessage(message)
+		
+	""""
+	Inicia la llamada
+	"""
+	def call(self):
+		try:
+			self.channel.call()
+		except Exception:
+			QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
+	""""
+	Termina la llamada
+	"""
+	def end_call(self):
+		self.channel.end_call()
+
+
 	"""
 	Muestra el mensaje del contacto (manteniendo la conversacion)
 	"""

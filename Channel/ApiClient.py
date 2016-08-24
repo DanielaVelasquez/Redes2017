@@ -7,6 +7,10 @@ from SimpleXMLRPCServer import SimpleXMLRPCServer
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
+from RecordAudio import AudioClient
+import multiprocessing as mp
+import threading
+import numpy
 """
 Clase MyApiClient que servira como el cliente de cada instancia del programa
 """
@@ -31,10 +35,34 @@ class MyApiClient:
     @param <str> message: mensaje que se desea enviar
     """
     def sendMessage(self,message):
-        print "-) Api client: "+message
+        #print "-) Api client: "+message
         try:
             self.proxy = xmlrpclib.ServerProxy(self.contact_ip+str(self.contact_port)+"/", allow_none=True)
             self.proxy.sendMessage_wrapper(str(message))
             return True
         except Exception, ex:
             return False
+    """"
+    Inicia la llamada entre los contactos
+    """
+    def call(self):
+        self.calling = True
+        self.queue = mp.Queue()
+        self.audioRecorder = AudioClient()
+        p = threading.Thread(target=self.audioRecorder.feed_queque, args=(self.queue,))
+        p.daemon = True
+        p.start()
+        print "hilo iniciado"
+        
+        self.proxy = xmlrpclib.ServerProxy(self.contact_ip+str(self.contact_port)+"/", allow_none=True)
+        while self.calling:
+            d = self.queue.get()
+            data = xmlrpclib.Binary(d)
+            self.proxy.playAudio(data)
+        
+
+    """""
+    Termina la llamada
+    """
+    def end_call(self):
+        self.calling = False

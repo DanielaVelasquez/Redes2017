@@ -15,6 +15,7 @@ from ApiServer import FunctionWrapper
 
 import threading
 import time
+from RecordAudio import AudioClient
 """
 Las instancias de esta clase contendran los metodos
 necesarios para hacer uso de los metodos
@@ -73,6 +74,22 @@ class Channel:
             answer = self.client.sendMessage(text)
             return answer
         return False
+
+    """""
+    Inicia el hilo que se encarga de iniciar la llamada
+    """
+    def call(self):
+        self.call_thread = threading.Thread(target=self.client.call)
+        self.call_thread.daemon = True
+        self.call_thread.start()
+
+    """"
+    Termina la llamada
+    """
+    def end_call(self):
+        self.client.end_call()
+
+
 
     """"
     Inicia el servidor considerando que se tengan

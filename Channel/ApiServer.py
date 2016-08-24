@@ -7,7 +7,8 @@ from SimpleXMLRPCServer import SimpleXMLRPCServer
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
-
+from RecordAudio import AudioServer
+import threading
 """
 Clase MyApiClient que servira como el servidor de cada instancia del programa
 """
@@ -24,6 +25,8 @@ class MyApiServer:
         except Exception:
             raise Exception(PORT_IN_USE)
         self.wrapper = wrapper
+        self.audioServer = AudioServer()
+        self.server.register_function(self.audioServer.playAudio, 'playAudio') 
         self.server.register_instance(self.wrapper)
         self.server.serve_forever()
 
@@ -36,6 +39,7 @@ class FunctionWrapper(object):
     """
     def __init__(self):
         self.message = None
+
     """
     Procedimiento que ofrece nuestro servidor, este metodo sera llamado
     por el cliente con el que estamos hablando, debe de
@@ -43,4 +47,7 @@ class FunctionWrapper(object):
     """
     def sendMessage_wrapper(self, message):
         self.message = message
+
+    
+
 
