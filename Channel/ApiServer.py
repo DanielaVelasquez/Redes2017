@@ -9,10 +9,12 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
 from RecordAudio import AudioServer
 import threading
+
 """
-Clase MyApiClient que servira como el servidor de cada instancia del programa
+Clase MyApiServer que servira como el servidor de cada instancia del programa
 """
 class MyApiServer:
+
     """
     Constructor de la clase
     @param <FunctionWrapper> wrapper: objeto que recibe los mensajes del cliente
@@ -47,7 +49,3 @@ class FunctionWrapper(object):
     """
     def sendMessage_wrapper(self, message):
         self.message = message
-
-    
-
-

@@ -32,7 +32,6 @@ class LoginGUI(QtGui.QWidget):
 		#Creación y configuración del widget
 		self.setWindowTitle(LOGIN_WINDOW)
 		self.setGeometry(DEFAULT_POSITION_X, DEFAULT_POSITION_Y, LOGIN_WIDTH, LOGIN_HEIGHT)
-		#self.resize(300,200)
 		#Configuración layout
 		self.grid = QtGui.QGridLayout()
 		self.setLayout(self.grid)
@@ -45,23 +44,23 @@ class LoginGUI(QtGui.QWidget):
 		else:
 			lb_my_title = MY_IP + get_ip_address()
 			lb_contac_title = OTHER_IP_NUMBER_TITLE
+
 		#Declaración elementos de la GUI
+		self.lb_my_information = QtGui.QLabel(lb_my_title,self)
 		if self.mode in LOCAL:
 			self.txt_my_information = QtGui.QLineEdit(self)		
-		self.lb_my_information = QtGui.QLabel(lb_my_title,self)
 			
 		self.lb_contact_information = QtGui.QLabel(lb_contac_title,self)
 		self.txt_contact_information = QtGui.QLineEdit(self)
 
 		self.btn_login = QtGui.QPushButton(LOGIN_TITLE,self)
 
-		#Configuración elementos de la GUI 
-		
-		self.grid.addWidget(self.lb_my_information,0,0,3,0)
+		#Configuración elementos de la GUI		
+		self.grid.addWidget(self.lb_my_information,0,0,1,0)
 		if self.mode in LOCAL:
-			self.grid.addWidget(self.txt_my_information,1,0,3,0)
-		self.grid.addWidget(self.lb_contact_information,2,0,3,0)
-		self.grid.addWidget(self.txt_contact_information,3,0,3,0)
+			self.grid.addWidget(self.txt_my_information,1,0,1,0)
+		self.grid.addWidget(self.lb_contact_information,2,0,1,0)
+		self.grid.addWidget(self.txt_contact_information,3,0,1,0)
 		self.grid.addWidget(self.btn_login,5,2)
 
 		self.btn_login.clicked.connect(self.login)
@@ -96,5 +95,5 @@ class LoginGUI(QtGui.QWidget):
 	def keyPressEvent(self, event):
 		if event.key() == QtCore.Qt.Key_Escape:
 			self.close()
-		if event.key() == QtCore.Qt.Key_Return:
+		if event.key() == QtCore.Qt.Key_Return or event.key() == QtCore.Qt.Key_Enter:
 			self.login()

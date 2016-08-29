@@ -11,6 +11,7 @@ MY_IP = "Mi IP: "
 #Nombres para las etiquetas del chat
 CONVERSATION_TITLE = "Conversacion"
 SEND_TITLE = "Responder"
+CALL_TITLE = "Llamar"
 
 #Titulo de las ventanas GUI
 LOGIN_WINDOW = "Login"

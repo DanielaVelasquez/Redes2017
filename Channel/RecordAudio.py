@@ -40,23 +40,22 @@ class AudioClient(object):
             data_ar = numpy.fromstring(''.join(frame),  dtype=numpy.uint8)
             queque.put(data_ar)
 
+from cStringIO import StringIO
+from numpy.lib import format
+
 #####################################################
 # Clase encargada de la reproduccion del audio      #
 # que reciba de su contacto del chat                #
 # Idea tomada de repositorio github:                #
 #     https://github.com/mvilchis/redes-17_Ejemplos #
 #####################################################
-
-from cStringIO import StringIO
-from numpy.lib import format
-
 class AudioServer(object):
 
     def __init__(self):
         super(AudioServer, self).__init__()
 
     def playAudio(self,audio):
-        print ("playing audio")
+        print ("Playing contact audio")
         p = pyaudio.PyAudio()
         FORMAT = p.get_format_from_width(2)
         stream = p.open(format=FORMAT,
@@ -69,7 +68,3 @@ class AudioServer(object):
         stream.write(data)
         stream.close()
         p.terminate()
-        
-    
-
-    

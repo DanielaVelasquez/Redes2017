@@ -12,6 +12,7 @@ from Constants.Constants import *
 from ApiClient import MyApiClient
 from ApiServer import MyApiServer
 from ApiServer import FunctionWrapper
+import multiprocessing as mp
 
 import threading
 import time
@@ -80,6 +81,7 @@ class Channel:
     """
     def call(self):
         self.call_thread = threading.Thread(target=self.client.call)
+        #self.call_thread = mp.Process(target=self.client.call)
         self.call_thread.daemon = True
         self.call_thread.start()
 
@@ -88,8 +90,7 @@ class Channel:
     """
     def end_call(self):
         self.client.end_call()
-
-
+        #self.call_thread.terminate()
 
     """"
     Inicia el servidor considerando que se tengan

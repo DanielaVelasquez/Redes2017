@@ -13,7 +13,7 @@ from Channel.ApiServer import FunctionWrapper
 Clase de interfaz grafica que permite visualizar la conversacion con el contacto del chat
 Y enviar nuevos mensajes por medio de un campo de texto
 """
-class ChatGUI(QtGui.QWidget,FunctionWrapper):	
+class ChatGUI(QtGui.QWidget,FunctionWrapper):
 	"""
 	Constructor
 	@param <str> my_information: informacion propia para la conexion
@@ -59,15 +59,19 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 		self.lb_conversation = QtGui.QLabel(CONVERSATION_TITLE,self)
 		self.txt_conversation = QtGui.QTextEdit(self)
 		self.txt_conversation.setReadOnly(True)
-		self.txt_message = QtGui.QTextEdit(self)
-		self.btn_send = QtGui.QPushButton(SEND_TITLE,self)		
+		self.txt_message = QtGui.QLineEdit(self)
+		self.btn_send = QtGui.QPushButton(SEND_TITLE,self)
+		self.btn_call = QtGui.QPushButton(CALL_TITLE,self)
 		#Configuración elementos de la GUI 
 		self.grid.addWidget(self.lb_conversation,0,0)
 		self.grid.addWidget(self.txt_conversation,1,0,10,10)		
 		self.grid.addWidget(self.txt_message,11,0,5,1)
-		self.grid.addWidget(self.btn_send,12,5,3,1)
+		self.grid.addWidget(self.btn_send,12,4,3,2)
+		self.btn_call.setStyleSheet("background-color: DodgerBlue")
+		self.grid.addWidget(self.btn_call,15,4,3,2)
 
 		self.btn_send.clicked.connect(self.sendMessage)
+		self.btn_call.clicked.connect(self.call)
 
 		self.show()
 
@@ -83,35 +87,48 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 	Envia los mensajes al contacto
 	"""
 	def sendMessage(self):
-		message = self.txt_message.toPlainText()
+		message = str(self.txt_message.text())
 		if len(message) == 0:
 			QtGui.QMessageBox.warning(self, WARNING, MISSING_MESSAGE,QtGui.QMessageBox.Ok)
 		else:
 			if not self.channel.send_text(message):
 				QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
 			else:
-				self.showSendingMessage(message)
-		
+				self.showSendingMessage(message)		
+	
 	""""
 	Inicia la llamada
 	"""
 	def call(self):
-		try:
-			self.channel.call()
-		except Exception:
+		if not self.channel.send_text("LLAMANDO"):
 			QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
+		else:
+			self.showSendingMessage("LLAMANDO")
+			try:
+				self.channel.call()
+				self.txt_message.setReadOnly(True)
+				self.btn_call.hide()
+				self.btn_send.hide()
+				self.child = CallGUI(self)
+			except Exception:
+				QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
+
 	""""
 	Termina la llamada
 	"""
 	def end_call(self):
 		self.channel.end_call()
-
+		self.btn_call.show()
+		self.btn_send.show()
+		self.txt_message.setReadOnly(False)
+		self.txt_message.setText("LLAMADA TERMINADA")
+		self.sendMessage()
 
 	"""
 	Muestra el mensaje del contacto (manteniendo la conversacion)
 	"""
 	def sendMessage_wrapper(self, message):
-		self.txt_conversation.append("Contacto dice: "+message)
+		self.txt_conversation.append("Contacto: "+message)
 
 	"""
 	Define los eventos que ocurriran cuando se presionen teclas del teclado
@@ -119,5 +136,49 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 	def keyPressEvent(self, event):
 		if event.key() == QtCore.Qt.Key_Escape:
 			self.close()
-		if event.key() == QtCore.Qt.Key_Return:
+		if event.key() == QtCore.Qt.Key_Return or event.key() == QtCore.Qt.Key_Enter:
 			self.sendMessage()
+"""
+Clase que muestra la pantalla de llamada de voz
+"""
+class CallGUI(QtGui.QWidget):
+	"""
+	Constructor
+	@param <QWidget> parent: EL widget padre de esta ventana
+	"""
+	def __init__(self, parent):
+		super(CallGUI, self).__init__()
+		self.parent = parent
+		self.initGUI()
+		
+	""""
+	Inicia los elementos de la GUI, mostrando el texto de Llamada de voz
+	"""
+	def initGUI(self):		
+		#Creación y configuración del widget
+		self.setWindowTitle("Llamada")
+		self.setGeometry(DEFAULT_POSITION_X, DEFAULT_POSITION_Y, LOGIN_WIDTH, LOGIN_HEIGHT)
+		#self.resize(300,200)
+		#Configuración layout
+		self.grid = QtGui.QGridLayout()
+		self.setLayout(self.grid)
+		#Declaración elementos de la GUI
+		self.lb_my_information = QtGui.QLabel("Llamada de voz",self)
+		#Configuración elementos de la GUI		
+		self.grid.addWidget(self.lb_my_information,0,0,1,0)
+
+		self.show()
+
+	"""
+	Al cerrarse, indica a su padre que la llamada de audio debe terminar
+	"""
+	def closeEvent(self, event):
+		self.parent.end_call()
+		event.accept()
+
+	"""
+	Define los eventos que ocurriran cuando se presionen teclas
+	"""
+	def keyPressEvent(self, event):
+		if event.key() == QtCore.Qt.Key_Escape:
+			self.close()
