@@ -1,7 +1,5 @@
 ﻿Integrantes:  
-	Angie Daniela Velásquez Garzón
+	Velásquez Garzón Angie Daniela  
 	Bernal Cedillo Enrique Antonio  
-
-Version python: 2.7.12
-Version pyaudio 0.2.9
-Verion numpy 1.6.1
+  
+Version GCC: 5.2.1 20151010  

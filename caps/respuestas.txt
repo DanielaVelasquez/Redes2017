@@ -1,0 +1,24 @@
+-) cmp.pcap
+	Deberia mostrar:
+		POST en paquete con indice 4
+		RESPONSE en paquete con indice 8
+		POST en paquete con indice 10
+		RESPONSE en paquete con indice 14
+
+-) http.cap
+	Deberia mostrar:
+		GET en paquete con indice 4
+		RESPONSE en paquete con indice 6
+		GET en paquete con indice 18
+		RESPONSE en paquete con indice 26
+		RESPONSE en paquete con indice 36
+
+-) nb6.pcap
+	Deberia mostrar:
+		GET en paquete con indice 10
+		RESPONSE en paquete con indice 12
+
+-) httpg.cap
+	Deberia mostrar:
+		GET en paquete con indice 4
+		RESPONSE en paquete con indice 6
