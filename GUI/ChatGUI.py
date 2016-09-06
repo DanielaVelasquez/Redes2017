@@ -8,6 +8,7 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
 from Channel.Channel import Channel
 from Constants.Constants import *
+from Constants.AuxiliarFunctions import *
 from Channel.ApiServer import FunctionWrapper
 """
 Clase de interfaz grafica que permite visualizar la conversacion con el contacto del chat
@@ -36,7 +37,7 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 	"""
 	def makeConnection(self):
 		if self.mode in LOCAL:
-			self.channel = Channel(my_port=self.my_information,contact_port=self.my_contact_information)
+			self.channel = Channel(contact_ip =get_ip_address(),my_port=self.my_information,contact_port=self.my_contact_information)
 		else:
 			print "chanel make connetion contact_ip ="+str(self.my_contact_information)
 			self.channel = Channel(contact_ip = self.my_contact_information)
