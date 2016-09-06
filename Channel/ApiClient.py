@@ -61,7 +61,7 @@ class MyApiClient:
             self.p.start()
             print "hilo iniciado"
             
-            self.proxy = xmlrpclib.ServerProxy(self.contact_ip+str(self.contact_port)+"/", allow_none=True)
+            self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/")
             while self.calling:
                 d = self.queue.get()
                 data = xmlrpclib.Binary(d)
