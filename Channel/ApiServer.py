@@ -7,6 +7,7 @@ from SimpleXMLRPCServer import SimpleXMLRPCServer
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
+from Constants.AuxiliarFunctions import *
 
 """
 Clase MyApiClient que servira como el servidor de cada instancia del programa
@@ -20,8 +21,8 @@ class MyApiServer:
     def __init__(self,wrapper, my_port = DEFAULT_PORT):
         self.port = my_port
         #try:
-        print "server: "+str(LOCALHOST)+" puerto"+str(self.port)
-        self.server = SimpleXMLRPCServer((LOCALHOST,int(self.port)),allow_none=True)
+        print "server: "+str(get_ip_address())+" puerto"+str(self.port)
+        self.server = SimpleXMLRPCServer((get_ip_address(),int(self.port)),allow_none=True)
 
         #except Exception:
             #raise Exception(PORT_IN_USE)
