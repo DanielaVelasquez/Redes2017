@@ -33,7 +33,7 @@ class MyApiClient:
     def sendMessage(self,message):
         print "-) Api client: "+message
         try:
-            print "cliente: "+self.contact_ip+str(self.contact_port)+"/"
+            print "cliente: "+str(self.contact_ip)+str(self.contact_port)+"/"
             self.proxy = xmlrpclib.ServerProxy(self.contact_ip+str(self.contact_port)+"/", allow_none=True)
             self.proxy.sendMessage_wrapper(str(message))
             return True
