@@ -19,10 +19,12 @@ class MyApiServer:
     """
     def __init__(self,wrapper, my_port = DEFAULT_PORT):
         self.port = my_port
-        try:
-            self.server = SimpleXMLRPCServer((LOCALHOST,int(self.port)),allow_none=True)
-        except Exception:
-            raise Exception(PORT_IN_USE)
+        #try:
+        print "server: "+str(LOCALHOST)+" puerto"+str(self.port)
+        self.server = SimpleXMLRPCServer((LOCALHOST,int(self.port)),allow_none=True)
+
+        #except Exception:
+            #raise Exception(PORT_IN_USE)
         self.wrapper = wrapper
         self.server.register_instance(self.wrapper)
         self.server.serve_forever()
