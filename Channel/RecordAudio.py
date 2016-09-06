@@ -55,7 +55,6 @@ class AudioServer(object):
         super(AudioServer, self).__init__()
 
     def playAudio(self,audio):
-        print ("Playing contact audio")
         p = pyaudio.PyAudio()
         FORMAT = p.get_format_from_width(2)
         stream = p.open(format=FORMAT,

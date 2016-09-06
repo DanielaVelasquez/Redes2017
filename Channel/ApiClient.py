@@ -38,10 +38,7 @@ class MyApiClient:
     """
     def sendMessage(self,message):
         try:
-            print "sending"
-            print "cliente: "+HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
             self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/", allow_none=True)
-            print "connected"
             self.proxy.sendMessage_wrapper(str(message))
             return True
         except Exception, ex:
@@ -59,7 +56,6 @@ class MyApiClient:
             #self.p = mp.Process(target=self.audioRecorder.feed_queque, args=(self.queue,))
             self.p.daemon = True
             self.p.start()
-            print "hilo iniciado"
             
             self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/")
             while self.calling:
@@ -71,6 +67,4 @@ class MyApiClient:
     Termina la llamada
     """
     def end_call(self):
-        print "ApiClient: Terminando llamada"
         self.calling = False
-        print "ApiClient: Grabado de audio terminado"
