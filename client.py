@@ -1,7 +1,4 @@
 import xmlrpclib
 
-proxy = xmlrpclib.ServerProxy("http://localhost:8001/")
-print "3 is even: %s" % str(proxy.is_even(3))
-print "100 is even: %s" % str(proxy.is_even(100))
-with open("fetched_presidencia_logo.jpg", "wb") as handle:
-    handle.write(proxy.logo().data)
+proxy = xmlrpclib.ServerProxy("http://192.168.1.83:8001/",allow_none=True)
+proxy.is_even(3)
