@@ -32,12 +32,12 @@ class MyApiClient:
     @param <str> message: mensaje que se desea enviar
     """
     def sendMessage(self,message):
-        try:
-            print "sending"
-            #print "cliente: "+HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
-            self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/", allow_none=True)
-            print "connected"
-            self.proxy.sendMessage_wrapper(str(message))
-            return True
-        except Exception, ex:
-            return False
+        #try:
+        print "sending"
+        print "cliente: "+HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
+        self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/", allow_none=True)
+        print "connected"
+        self.proxy.sendMessage_wrapper(str(message))
+        return True
+        #except Exception, ex:
+            #return False
