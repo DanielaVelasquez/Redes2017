@@ -35,7 +35,7 @@ MISSING_MESSAGE = "No hay ningun mensaje para enviar"
 #Localhost
 LOCALHOST = "localhost"
 DEFAULT_PORT = 5000
-LOCALHOST_CLIENT = "http://localhost:"
+LOCALHOST_CLIENT = "localhost"
 HTTP = "http://"
 
 #Excepciones
