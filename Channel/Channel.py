@@ -69,7 +69,6 @@ class Channel:
     si el mensaje se envio efectivamente
     """
     def send_text(self, text):
-        print "-) Channel: "+text
         if self.client is not None:
             answer = self.client.sendMessage(text)
             return answer

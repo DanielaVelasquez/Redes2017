@@ -20,12 +20,7 @@ class MyApiServer:
     """
     def __init__(self,wrapper, my_port = DEFAULT_PORT):
         self.port = my_port
-        #try:
-        print "server: "+str(get_ip_address())+" puerto"+str(self.port)
         self.server = SimpleXMLRPCServer((get_ip_address(),int(self.port)),allow_none=True)
-
-        #except Exception:
-            #raise Exception(PORT_IN_USE)
         self.wrapper = wrapper
         self.server.register_instance(self.wrapper)
         self.server.serve_forever()
