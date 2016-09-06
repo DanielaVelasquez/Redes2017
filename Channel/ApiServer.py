@@ -8,6 +8,7 @@ from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
 from RecordAudio import AudioServer
+from Constants.AuxiliarFunctions import *
 import threading
 
 """
@@ -22,10 +23,7 @@ class MyApiServer:
     """
     def __init__(self,wrapper, my_port = DEFAULT_PORT):
         self.port = my_port
-        try:
-            self.server = SimpleXMLRPCServer((LOCALHOST,int(self.port)),allow_none=True)
-        except Exception:
-            raise Exception(PORT_IN_USE)
+        self.server = SimpleXMLRPCServer((get_ip_address(),int(self.port)),allow_none=True)
         self.wrapper = wrapper
         self.audioServer = AudioServer()
         self.server.register_function(self.audioServer.playAudio, 'playAudio') 
