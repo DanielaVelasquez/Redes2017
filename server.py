@@ -8,8 +8,8 @@ def python_logo():
      with open("logo.jpg", "rb") as handle:
          return xmlrpclib.Binary(handle.read())
 
-server = SimpleXMLRPCServer(("localhost", 8001),allow_none=True)
-print "Listening on port 8001..."
+server = SimpleXMLRPCServer(("localhost", 5000),allow_none=True)
+print "Listening on port 5000..."
 server.register_function(is_even, "is_even")
 server.register_function(python_logo, "logo")
 server.serve_forever()
