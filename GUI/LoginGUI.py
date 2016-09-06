@@ -82,16 +82,14 @@ class LoginGUI(QtGui.QWidget):
 			text_my_information = DEFAULT_PORT
 		
 		text_my_contact_information = self.txt_contact_information.text()
-
+		print "my contact information loguin"+str(text_my_contact_information)
 		if complete_information and len(text_my_contact_information) == 0:
 			QtGui.QMessageBox.warning(self, WARNING, INCOMPLETE_INFORMATION,QtGui.QMessageBox.Ok)
 		else:
 			mode = self.mode
-			try:
-				self.chat = ChatGUI(text_my_information,text_my_contact_information,mode)
-				self.close()
-			except Exception as e:
-				QtGui.QMessageBox.warning(str(e))
+			self.chat = ChatGUI(text_my_information,text_my_contact_information,mode)
+	        self.close()
+			
 
 	"""
 	Define los eventos que ocurriran cuando se presionen teclas del teclado

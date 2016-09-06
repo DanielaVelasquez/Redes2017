@@ -19,6 +19,7 @@ class MyApiClient:
     trabajar de forma local, si no se especfica toma por defecto localhost
     """
     def __init__(self, contact_port,contact_ip):
+        print "contact ip: "+str(contact_ip)
         if contact_port is None:
             contact_port = DEFAULT_PORT
         if contact_ip is None:
