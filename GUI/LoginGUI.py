@@ -8,6 +8,7 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
 from Constants.AuxiliarFunctions import *
 from ChatGUI import ChatGUI
+
 """
 Clase de interfaz grafica que nos permite desplegar la pantalla de logueo
 """
@@ -82,7 +83,6 @@ class LoginGUI(QtGui.QWidget):
 			text_my_information = DEFAULT_PORT
 		
 		text_my_contact_information = self.txt_contact_information.text()
-		print "my contact information loguin"+str(text_my_contact_information)
 		if complete_information and len(text_my_contact_information) == 0:
 			QtGui.QMessageBox.warning(self, WARNING, INCOMPLETE_INFORMATION,QtGui.QMessageBox.Ok)
 		else:

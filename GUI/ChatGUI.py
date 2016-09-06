@@ -7,6 +7,8 @@ from Channel.Channel import Channel
 #Direcciones relativas
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+
+from Constants.AuxiliarFunctions import *
 """
 Clase de interfaz grafica que permite visualizar la conversacion con el contacto del chat
 Y enviar nuevos mensajes por medio de un campo de texto

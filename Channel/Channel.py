@@ -34,7 +34,6 @@ class Channel:
                 representa el puerto de la instancia del contacto
     """
     def __init__(self, contact_ip = None, my_port = None,contact_port = None):
-        print "CHANEL contac ip"+str(contact_ip)+" my port"+str(my_port)+" contact port_ "+str(contact_port)
         self.contact_ip = contact_ip
         self.contact_port = contact_port
         self.my_port  = my_port
