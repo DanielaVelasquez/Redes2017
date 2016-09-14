@@ -9,6 +9,7 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
 from RecordAudio import AudioServer
 from Constants.AuxiliarFunctions import *
+from RecordVideo import VideoServer
 import threading
 
 """
@@ -25,9 +26,15 @@ class MyApiServer:
         self.port = my_port
         self.server = SimpleXMLRPCServer((get_ip_address(),int(self.port)),allow_none=True)
         self.wrapper = wrapper
+
         self.audioServer = AudioServer()
+        self.videoServer = VideoServer()
+
         self.server.register_function(self.audioServer.playAudio, 'playAudio') 
+        self.server.register_function(self.videoServer.reproduce_video, 'reproduce_video')
+        self.server.register_function(self.videoServer.stop_reproducing, 'stop_reproducing')  
         self.server.register_instance(self.wrapper)
+
         self.server.serve_forever()
 
 """

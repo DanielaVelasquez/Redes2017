@@ -8,6 +8,8 @@ from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
 from RecordAudio import AudioClient
+
+from RecordVideo import VideoClient
 import multiprocessing as mp
 import threading
 import numpy
@@ -68,3 +70,13 @@ class MyApiClient:
     """
     def end_call(self):
         self.calling = False
+
+    #Inicia la video llamada
+    def videocall(self):
+        self.video = VideoClient(self.proxy)
+        self.video_thread = threading.Thread(target=self.video.init_video)
+        sel.video_thread.daemon = True
+        self.video_thread.start()
+
+    def end_videocall(self):
+        self.video.end_call()
