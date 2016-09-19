@@ -41,7 +41,6 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 		else:
 			print "chanel make connetion contact_ip ="+str(self.my_contact_information)
 			self.channel = Channel(contact_ip = self.my_contact_information)
-
 		self.channel.setWrapper(self)
 		self.channel.init_chat()
 
@@ -65,16 +64,26 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 		self.txt_message = QtGui.QLineEdit(self)
 		self.btn_send = QtGui.QPushButton(SEND_TITLE,self)
 		self.btn_call = QtGui.QPushButton(CALL_TITLE,self)
+		self.btn_videocall = QtGui.QPushButton(VIDEOCALL_TITLE,self)
+		self.btn_endvideocall = QtGui.QPushButton(ENDVIDEOCALL_TITLE,self)
 		#Configuración elementos de la GUI 
 		self.grid.addWidget(self.lb_conversation,0,0)
 		self.grid.addWidget(self.txt_conversation,1,0,10,10)		
 		self.grid.addWidget(self.txt_message,11,0,5,1)
 		self.grid.addWidget(self.btn_send,12,4,3,2)
 		self.btn_call.setStyleSheet("background-color: DodgerBlue")
+		self.btn_videocall.setStyleSheet("background-color: Aqua")
+		self.btn_endvideocall.setStyleSheet("background-color: REd")
 		self.grid.addWidget(self.btn_call,15,4,3,2)
+		self.grid.addWidget(self.btn_videocall,18,4,3,2)
+		self.grid.addWidget(self.btn_endvideocall,18,4,3,2)
 
 		self.btn_send.clicked.connect(self.sendMessage)
 		self.btn_call.clicked.connect(self.call)
+		self.btn_videocall.clicked.connect(self.video_call)
+
+		self.btn_endvideocall.clicked.connect(self.end_video_call)
+		self.btn_endvideocall.hide()
 
 		self.show()
 
@@ -125,6 +134,36 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 		self.btn_send.show()
 		self.txt_message.setReadOnly(False)
 		self.txt_message.setText("LLAMADA TERMINADA")
+		self.sendMessage()
+
+	def video_call(self):
+		if not self.channel.send_text("VIDEOLLAMANDO"):
+			QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
+		else:
+			self.showSendingMessage("VIDEOLLAMANDO")
+			try:
+				self.channel.video_call()
+				self.txt_message.setReadOnly(True)
+				self.btn_call.hide()
+				self.btn_send.hide()
+				self.btn_videocall.hide()
+				self.btn_endvideocall.show()
+				#self.child = CallGUI(self)
+			except Exception as detail:
+				QtGui.QMessageBox.warning(self, WARNING, "Algo fallo en el canal de video",QtGui.QMessageBox.Ok)
+				print "Error en el canal de video: ", detail
+
+	""""
+	Termina la llamada
+	"""
+	def end_video_call(self):
+		self.channel.end_video_call()
+		self.btn_call.show()
+		self.btn_send.show()
+		self.btn_videocall.show()
+		self.btn_endvideocall.hide()
+		self.txt_message.setReadOnly(False)
+		self.txt_message.setText("VIDEOLLAMADA TERMINADA")
 		self.sendMessage()
 
 	"""

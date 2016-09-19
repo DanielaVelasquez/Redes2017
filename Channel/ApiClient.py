@@ -1,23 +1,22 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
-import xmlrpclib
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
-from RecordAudio import AudioClient
-
-from RecordVideo import VideoClient
-import multiprocessing as mp
 import threading
+import multiprocessing as mp
+
+import xmlrpclib
+from SimpleXMLRPCServer import SimpleXMLRPCServer
 import numpy
+from RecordAudio import AudioClient
+from RecordVideo import VideoClient
+
 """
 Clase MyApiClient que servira como el cliente de cada instancia del programa
 """
-class MyApiClient:
-    
+class MyApiClient:    
     """
     Constructor de la clase
     @param <int> contact_port: especifica el puerto de contacto del contacto, 
@@ -65,18 +64,28 @@ class MyApiClient:
                 data = xmlrpclib.Binary(d)
                 self.proxy.playAudio(data)        
 
-    """""
+    """"
     Termina la llamada
     """
     def end_call(self):
         self.calling = False
 
-    #Inicia la video llamada
+    """
+    Inicia la video llamada
+    """
     def videocall(self):
+        #print "Sin crear el proxy"
+        self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/")
+
         self.video = VideoClient(self.proxy)
+        print "Hice un VideoClient con self.proxy"
+
         self.video_thread = threading.Thread(target=self.video.init_video)
-        sel.video_thread.daemon = True
+        self.video_thread.daemon = True
         self.video_thread.start()
 
+    """
+    Finaliza el envio de audio
+    """
     def end_videocall(self):
         self.video.end_call()

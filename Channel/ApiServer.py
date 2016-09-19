@@ -1,16 +1,16 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
-import xmlrpclib
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
-from RecordAudio import AudioServer
-from Constants.AuxiliarFunctions import *
-from RecordVideo import VideoServer
 import threading
+
+import xmlrpclib
+from SimpleXMLRPCServer import SimpleXMLRPCServer
+from Constants.AuxiliarFunctions import *
+from RecordAudio import AudioServer
+from RecordVideo import VideoServer
 
 """
 Clase MyApiServer que servira como el servidor de cada instancia del programa

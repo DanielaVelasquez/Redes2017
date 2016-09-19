@@ -20,7 +20,6 @@ import socket
  Metodo auxiliar que hace uso de internet para
  conocer la ip con la que contamos como usuarios
 **************************************************"""
-
 def get_ip_address():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
@@ -31,7 +30,6 @@ def get_ip_address():
 stop, para que el hilo se detenga externamente
 **************************************************"""
 import threading
-
 
 class MyThread(threading.Thread):
 

@@ -12,6 +12,8 @@ MY_IP = "Mi IP: "
 CONVERSATION_TITLE = "Conversacion"
 SEND_TITLE = "Responder"
 CALL_TITLE = "Llamar"
+VIDEOCALL_TITLE = "Videollamar"
+ENDVIDEOCALL_TITLE = "Colgar"
 
 #Titulo de las ventanas GUI
 LOGIN_WINDOW = "Login"
@@ -23,7 +25,7 @@ DEFAULT_POSITION_Y = 100
 LOGIN_WIDTH = 300
 LOGIN_HEIGHT = 200
 CHAT_WIDTH = 500
-CHAT_HEIGHT = 600
+CHAT_HEIGHT = 800
 
 #Modos de acceso  al chat, local o remoto
 LOCAL = "Local"
@@ -46,15 +48,14 @@ PORT_IN_USE = "Ese puerto ya esta en uso, no es posible establecer la conexion"
 INCOMPLETE_INFORMATION= "Todos los campos de texto son obligatorios por favor asegurese de llenarlos todos"
 CONECTION_FAIL = "No se ha podido establecer la conexion con su contacto"
 
-#Configuración grabación audio
+# Configuración grabación audio
 CHUNK = 1024
 CHANNELS = 1
 RATE = 44100
 RECORD_SECONDS = 2
-
 WIDTH_PYAUDIO_FORMAT = 2
 
-
+# Configuracion grabacion video
 FRAME_NAME = 'frame'
 EXIT_NUM = 1
 EXIT_KEY = 'q'

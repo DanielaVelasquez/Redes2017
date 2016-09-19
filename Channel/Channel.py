@@ -1,22 +1,20 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
-import xmlrpclib
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-
 import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
+import threading
+import time
 
+import xmlrpclib
+from SimpleXMLRPCServer import SimpleXMLRPCServer
 from ApiClient import MyApiClient
 from ApiServer import MyApiServer
 from ApiServer import FunctionWrapper
 import multiprocessing as mp
+#from RecordAudio import AudioClient
 
-import threading
-import time
-from RecordAudio import AudioClient
 """
 Las instancias de esta clase contendran los metodos
 necesarios para hacer uso de los metodos
@@ -44,6 +42,24 @@ class Channel:
         self.server = None
         self.client = None
         self.wrapper = None
+
+    """"
+    Inicia el servidor considerando que se tengan
+    los valores necesarios para iniciarlo
+    """
+    def init_server(self):
+        if self.wrapper is None:
+            raise Exception(MISSING_WRAPPER)
+        elif self.my_port is None:
+            self.server = MyApiServer(self.wrapper)
+        else:
+            self.server = MyApiServer(self.wrapper,self.my_port)
+
+    """""
+    Inicia el cliente
+    """
+    def init_client(self):
+        self.client = MyApiClient(self.contact_port,self.contact_ip)
 
     """""
     Inicia los hilos del chat, primero inicia el servidor
@@ -91,20 +107,11 @@ class Channel:
         self.client.end_call()
         #self.call_thread.terminate()
 
-    """"
-    Inicia el servidor considerando que se tengan
-    los valores necesarios para iniciarlo
-    """
-    def init_server(self):
-        if self.wrapper is None:
-            raise Exception(MISSING_WRAPPER)
-        elif self.my_port is None:
-            self.server = MyApiServer(self.wrapper)
-        else:
-            self.server = MyApiServer(self.wrapper,self.my_port)
+    def video_call(self):
+        print "Creando hilo de video"
+        self.videocall_thread = threading.Thread(target=self.client.videocall)
+        self.videocall_thread.daemon = True
+        self.videocall_thread.start()
 
-    """""
-    Inicia el cliente
-    """
-    def init_client(self):
-        self.client = MyApiClient(self.contact_port,self.contact_ip)
+    def end_video_call(self):
+        self.client.end_videocall()
