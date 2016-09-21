@@ -22,22 +22,32 @@ conocer nuestra ip actual
 **************************************************"""
 
 def get_ip_address():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    return "%s"% (s.getsockname()[0])
+	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	s.connect(("8.8.8.8", 80))
+	return "%s"% (s.getsockname()[0])
 
 
 
 
 """ Funcion que construira el header del mensaje a mandar """
 def get_message_header(username, ip):
-    return username+':'+ip+':'
+	return username+':'+ip+':'
 
 
 from Constants import *
 def split_message_header(message):
-    #El mensaje estara sera: username:ip:texto....
-    message_split = message.split(':')
-    return (message_split[MESSAGE_IP], message_split[MESSAGE_PORT], message_split[2:])
+	#El mensaje estara sera: username:ip:texto....
+	message_split = message.split(':')
+	return (message_split[MESSAGE_IP], message_split[MESSAGE_PORT], message_split[2:])
+
+"""
+Crea un diccionario con la información de un usuario
+"""
+def dictionaryUser(username,ip,port):
+	user = {}
+	user[NAME_CONTACT] = username
+	user[IP_CONTACT] = ip_string
+	user[PORT_CONTACT] = port_string
+	return user
 
 

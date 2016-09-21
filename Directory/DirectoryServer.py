@@ -70,18 +70,17 @@ class FunctionWrapperDirectory:
     Adiciona un nuevo contacto
     *********************************************"""
     def connect_wrapper(self, ip_string, port_string, username):
+        print "Registrando usuario: "+username
         #Revisa si existe un usuario con dicho nombre
         if self.client_dictionary.has_key(username):
             #No permite la conexión
             raise Exception(USERNAME_USED)
         else:
-            user = {}
-            user[NAME_CONTACT] = username
-            user[IP_CONTACT] = ip_string
-            user[PORT_CONTACT] = port_string
+            user = dictionaryUser(username,ip_string,port_string)
             self.client_dictionary[username] = user
 
     def disconnect_wrapper(self, username):
+        print "Desconectando usuario: "+username
         del self.client_dictionary[username]
         #self, ip_string, port_string
 

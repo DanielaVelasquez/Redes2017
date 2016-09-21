@@ -107,3 +107,5 @@ EXIT_KEY = 'q'
 DEFAULT_PORT_DIRECTORY_SERVER = 6666
 USERNAME_USED = "El nombre de usuario ya se encuentra en uso, por favor cambie el nombre de usuario e intente nuevamente"
 
+ERROR_REQUEST_CHANNEL = 'The values of fields are not consistent RequestChannel.__init__'
+
