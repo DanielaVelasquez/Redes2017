@@ -11,14 +11,14 @@ from ChatGUI import ChatGUI
 """
 Clase de interfaz grafica que nos permite desplegar la pantalla de logueo
 """
-class LoginWindow(QtGui.QWidget):
+class LoginGUI(QtGui.QWidget):
 	
 	""""
 	mode: Modo de logueo que se va a realizar, sea local
 	o remoto
 	"""
 	def __init__(self,mode=REMOTE):
-		super(LoginWindow, self).__init__()
+		super(LoginGUI, self).__init__()
 		self.mode = mode
 		self.chat = None
 		self.initGUI()

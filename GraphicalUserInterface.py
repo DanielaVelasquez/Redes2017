@@ -16,7 +16,7 @@
 # Distributed under terms of the MIT license.        #
 #################################################### #
 import sys
-from GUI.LoginWindow import LoginWindow
+from GUI.LoginGUI import LoginGUI
 from Constants.Constants import *
 from PyQt4 import QtGui
 # **************************************************
@@ -35,12 +35,12 @@ def main(argv):
         local = True if '-l' in opts[0] else False
     else:
         local = False
-        
+
     app = QtGui.QApplication(sys.argv)
     if local:
-        login = LoginWindow(LOCAL)
+        login = LoginGUI(LOCAL)
     else:
-        login = LoginWindow()
+        login = LoginGUI()
 
     sys.exit(app.exec_())
 
