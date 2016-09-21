@@ -42,8 +42,9 @@ class DirectoryChannel(BidirectionalChannel):
     #**************************************************
     def connect(self):
         self.get_api_client().getProxy().connect_wrapper(str(self.my_ip), str(self.my_port), str(self.username))
-    """**************************************************
-    Metodo que se encarga de  conectar al contacto
-    **************************************************"""
+    
+    #**************************************************#
+    #Metodo que se encarga de  conectar al contacto    #
+    #**************************************************#
     def disconnect(self):
         elf.get_api_client().getProxy().disconnect_wrapper(self.username)
