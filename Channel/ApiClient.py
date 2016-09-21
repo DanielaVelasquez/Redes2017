@@ -21,15 +21,26 @@ sys.path.insert(0, '../Constants')
 from Constants import CHAT_PORT
 from AuxiliarFunctions import *
 
+
 """**************************************************
 Clase que genera un proxy para poder hacer uso de
 los procedimientos remotos que ofrece la api del contacto
 **************************************************"""
 class MyApiClient:
     def __init__(self, contact_ip = None, contact_port = None):
-        if contact_port:
-            #TODO
-        elif contact_ip:
-            #TODO
-        else:
-            raise ValueError('The values of fields are not consistent MyApiClient.__init__')
+        if contact_port is None:
+            contact_port = DEFAULT_PORT
+        elif contact_ip is None:
+            contact_ip = LOCALHOST_CLIENT
+        self.contact_port = contact_port
+        self.contact_ip = contact_ip
+        try:
+        	self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/", allow_none=True)
+        except Exception, e:
+        	raise Exception(CONECTION_FAIL)
+        
+    """**************************************************
+    Metodos Get
+    **************************************************"""
+    def getProxy(self):
+    	return self.proxy

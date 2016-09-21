@@ -46,25 +46,33 @@ class RequestChannel():
                 representa el puerto de la instancia del contacto
     **************************************************"""
     def __init__(self, contact_ip = None, contact_port = None):
-       #TODO 
+        #Crea el cliente
+        if contact_port:
+            self.api_client = MyApiClient(contact_port= contact_port) 
+        elif contact_ip:
+            self.api_client = MyApiClient(contact_ip= contact_ip)
+        else:
+            raise Exception(ERROR_REQUEST_CHANNEL)
 
     """**************************************************
     Metodo que se encarga de mandar texto al contacto con
     el cual se estableció la conexion
     **************************************************"""
     def send_text(self, text):
-        #TODO
+        self.api_client.getProxy().sendMessage_wrapper(text)
+    
     """**************************************************
     Metodo que se encarga de mandar iniciar una conversacion
     con un nuevo contacto 
     **************************************************"""
-    def new_connection(self, my_ip, my_port):
-        #TODO    
+    def new_connection(self, my_ip, my_port,my_username):
+        self.api_client.getProxy().new_chat_wrapper(my_ip,my_port,my_username)    
+    
     """**************************************************
     Metodo que se encarga de mandar audio y video al contacto 
     con el cual se estableció la conexion
     **************************************************"""
-    def begin_call(self):
+    #def begin_call(self):
         #TODO
 
     """**************************************************
@@ -73,19 +81,28 @@ class RequestChannel():
     def get_api_client(self):
         return self.api_client
 
-
+#***************************************************************************************************************
+import threading
 class BidirectionalChannel(RequestChannel):
     def __init__(self, Qparent, contact_ip = None,  contact_port = None,my_port = None):
+        super(BidirectionalChannel,self).__init__(contact_ip = contact_ip, contact_port = contact_port)
+        
+        #Conexión local
         if my_port and contact_port:
             #El objeto api server necesita correr en un hilo aparte
-            #TODO 
+            #Crea el servidor
+            self.apiServer = MyApiServer(my_port)
         elif contact_ip:
-            #TODO
+            self.apiServer = MyApiServer()
         else:
             raise ValueError('The values of fields are not consistent BidirectionalChannel.__init__')
-        #TODO
+        
+        #Lanza el servidor
+        self.server_thread = threading.Thread(target = self.apiServer.startServer) 
+        self.server_thread.start()
     """**************************************************
     Metodos Get
     **************************************************"""
-    def get_api_server(self):
+    """"def get_api_server(self):
         return self.api_server_thread
+    """
