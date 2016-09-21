@@ -1,82 +1,35 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-import sys
+
+
+#####################################################
+# PURPOSE: Clase que permite hacer uso de la api del#
+#           contacto                                #
+#                                                   #
+# Vilchis Dominguez Miguel Alonso                   #
+#       <mvilchis@ciencias.unam.mx>                 #
+#                                                   #
+# Notes:                                            #
+#                                                   #
+# Copyright   17-08-2015                            #
+#                                                   #
+# Distributed under terms of the MIT license.       #
+#####################################################
 import xmlrpclib
-from SimpleXMLRPCServer import SimpleXMLRPCServer
+import sys
+sys.path.insert(0, '../Constants')
+from Constants import CHAT_PORT
+from AuxiliarFunctions import *
 
-from os import path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-from Constants.Constants import *
-from RecordAudio import AudioClient
-
-from RecordVideo import VideoClient
-import multiprocessing as mp
-import threading
-import numpy
-"""
-Clase MyApiClient que servira como el cliente de cada instancia del programa
-"""
+"""**************************************************
+Clase que genera un proxy para poder hacer uso de
+los procedimientos remotos que ofrece la api del contacto
+**************************************************"""
 class MyApiClient:
-    
-    """
-    Constructor de la clase
-    @param <int> contact_port: especifica el puerto de contacto del contacto, 
-    en caso de no especificarse se toma el puerto por defecto
-    @param <str> contact_ip: especifica la ip del contacto en caso de no 
-    trabajar de forma local, si no se especfica toma por defecto localhost
-    """
-    def __init__(self, contact_port,contact_ip):
-        if contact_port is None:
-            contact_port = DEFAULT_PORT
-        if contact_ip is None:
-            contact_ip = LOCALHOST_CLIENT
-        self.contact_port = contact_port
-        self.contact_ip = contact_ip
-        self.calling = False
-           
-    """"
-    Envia la peticion de envio del mensaje hacia el servidor que se encuentra conectado
-    @param <str> message: mensaje que se desea enviar
-    """
-    def sendMessage(self,message):
-        try:
-            self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/", allow_none=True)
-            self.proxy.sendMessage_wrapper(str(message))
-            return True
-        except Exception, ex:
-            return False
-
-    """"
-    Inicia la llamada entre los contactos
-    """
-    def call(self):
-        if not self.calling:
-            self.calling = True
-            self.queue = mp.Queue()
-            self.audioRecorder = AudioClient()
-            self.p = threading.Thread(target=self.audioRecorder.feed_queque, args=(self.queue,))
-            #self.p = mp.Process(target=self.audioRecorder.feed_queque, args=(self.queue,))
-            self.p.daemon = True
-            self.p.start()
-            
-            self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/")
-            while self.calling:
-                d = self.queue.get()
-                data = xmlrpclib.Binary(d)
-                self.proxy.playAudio(data)        
-
-    """""
-    Termina la llamada
-    """
-    def end_call(self):
-        self.calling = False
-
-    #Inicia la video llamada
-    def videocall(self):
-        self.video = VideoClient(self.proxy)
-        self.video_thread = threading.Thread(target=self.video.init_video)
-        sel.video_thread.daemon = True
-        self.video_thread.start()
-
-    def end_videocall(self):
-        self.video.end_call()
+    def __init__(self, contact_ip = None, contact_port = None):
+        if contact_port:
+            #TODO
+        elif contact_ip:
+            #TODO
+        else:
+            raise ValueError('The values of fields are not consistent MyApiClient.__init__')
