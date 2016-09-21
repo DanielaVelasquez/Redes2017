@@ -17,7 +17,7 @@
 #####################################################
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
-#           Mis bibliotecas
+#  Mis bibliotecas
 import sys
 from AuxiliarFunctions import *
 from Constants import *
@@ -36,7 +36,7 @@ class MyApiServer:
         self.wrapper = FunctionWrapper()
         self.server.register_instance(self.wrapper)
         self.server.serve_forever()
-        
+
 
 class FunctionWrapper:
     """ **************************************************

@@ -35,10 +35,16 @@ class GeneralDirectory:
         @param port <int> Si trabaja de manera local, representa el
                         número del puerto por el cual recibirá las peticiones
     """
-    def __init__(self, port = None):
+    def __init__(self, port = DEFAULT_PORT_DIRECTORY_SERVER):
         #TODO
         self.client_dictionary = {}
-        funtionWrapper = FunctionWrapperDirectory(self.client_dictionary)
+        #Inicia el servidor
+        self.port = port
+        self.server = SimpleXMLRPCServer((get_ip_address(),int(self.port)),allow_none=True)
+
+        self.funtionWrapper = FunctionWrapperDirectory(self.client_dictionary)
+        #Registra la instancia del servidor
+        self.server.register_instance(self.funtionWrapper)
         print "Directorio de ubicacion activo, mi direccion es:"
         print "(%s, %s)" %(get_ip_address(), port)
 

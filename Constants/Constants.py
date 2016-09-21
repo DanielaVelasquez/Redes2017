@@ -101,3 +101,6 @@ FRAME_NAME = 'frame'
 EXIT_NUM = 1
 EXIT_KEY = 'q'
 
+#DirectoryServer
+DEFAULT_PORT_DIRECTORY_SERVER = 6666
+
