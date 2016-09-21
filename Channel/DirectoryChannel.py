@@ -20,7 +20,7 @@
 
 from ApiServer import *
 from Channels import *
-from Constants import CHAT_PORT
+from Constants import *
 from AuxiliarFunctions import *
 
 class DirectoryChannel(BidirectionalChannel):
