@@ -24,20 +24,26 @@ from Constants import CHAT_PORT
 from AuxiliarFunctions import *
 
 class DirectoryChannel(BidirectionalChannel):
-    def __init__ (self,Qpartent,directory_ip = None, my_port = None, directory_port = None, username = None):
-        #TODO
-    """**************************************************
-    Metodo que se encarga de obtener lista de contactos
-    **************************************************"""
+    def __init__ (self,receiver,directory_ip = None, my_port = None, directory_port = None, username = None):
+        super(DirectoryChannel,self).__init__(receiver, directory_ip,  directory_port ,my_port)
+        self.username = username
+        self.my_port = my_port
+        self.my_ip = get_ip_address()
+
+    #**************************************************
+    #Metodo que se encarga de obtener lista de contactos
+    #**************************************************
     def get_contacts(self):
-        #TODO
-    """**************************************************
-    Metodo que se encarga de  conectar al contacto
-    **************************************************"""
+        self.get_api_client().getProxy().get_contacts_wrapper(username)
+
+
+    #**************************************************
+    #Metodo que se encarga de  conectar al contacto
+    #**************************************************
     def connect(self):
-        #TODO
+        self.get_api_client().getProxy().connect_wrapper(str(self.my_ip), str(self.my_port), str(self.username))
     """**************************************************
     Metodo que se encarga de  conectar al contacto
     **************************************************"""
     def disconnect(self):
-        #TODO
+        elf.get_api_client().getProxy().disconnect_wrapper(self.username)

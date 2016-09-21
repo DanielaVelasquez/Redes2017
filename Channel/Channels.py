@@ -19,7 +19,7 @@
 
 from ApiServer import *
 from ApiClient import *
-from RecordAudio import record_audio_queue
+#from RecordAudio import record_audio_queue
 """**************************************************
 Las instancias de esta clase contendran los metodos
 necesarios para hacer uso de los metodos
@@ -84,16 +84,16 @@ class RequestChannel():
 #***************************************************************************************************************
 import threading
 class BidirectionalChannel(RequestChannel):
-    def __init__(self, Qparent, contact_ip = None,  contact_port = None,my_port = None):
+    def __init__(self, receiver, contact_ip = None,  contact_port = None,my_port = None):
         super(BidirectionalChannel,self).__init__(contact_ip = contact_ip, contact_port = contact_port)
         
         #Conexión local
         if my_port and contact_port:
             #El objeto api server necesita correr en un hilo aparte
             #Crea el servidor
-            self.apiServer = MyApiServer(my_port)
+            self.apiServer = MyApiServer(receiver,my_port)
         elif contact_ip:
-            self.apiServer = MyApiServer()
+            self.apiServer = MyApiServer(receiver)
         else:
             raise ValueError('The values of fields are not consistent BidirectionalChannel.__init__')
         

@@ -18,7 +18,7 @@
 import xmlrpclib
 import sys
 sys.path.insert(0, '../Constants')
-from Constants import CHAT_PORT
+from Constants import *
 from AuxiliarFunctions import *
 
 
