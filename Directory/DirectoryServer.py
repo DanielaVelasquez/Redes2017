@@ -20,10 +20,10 @@ from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
 
 #           Mis bibliotecas
 import sys,getopt
-sys.path.insert(0, '../')
-sys.path.insert(0, 'Constants')
-from AuxiliarFunctions import *
-from Constants import *
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from Constants.AuxiliarFunctions import *
+from Constants.Constants import *
 # Restrict to a particular path.
 class RequestHandler(SimpleXMLRPCRequestHandler):
     rpc_paths = ('/RPC2',)
@@ -60,19 +60,30 @@ class FunctionWrapperDirectory:
 
 
     def get_contacts_wrapper(self,  username):
+        #Se clona el diccionario de usuarios
+        copy = self.client_dictionary.copy()
+        #Se elimina el usuario solicitó información
+        del copy[username]
+        return copy
         #TODO
-
+    """"********************************************
+    Adiciona un nuevo contacto
+    *********************************************"""
     def connect_wrapper(self, ip_string, port_string, username):
-        #Las llaves del diccionario de un cliente debe usar las 
-        #llaves que se encuentran en las constantes:
-            #NAME_CONTACT
-            #IP_CONTACT
-            # PORT_CONTACT
-           
-        #TODO
+        #Revisa si existe un usuario con dicho nombre
+        if self.client_dictionary.has_key(username):
+            #No permite la conexión
+            raise Exception(USERNAME_USED)
+        else:
+            user = {}
+            user[NAME_CONTACT] = username
+            user[IP_CONTACT] = ip_string
+            user[PORT_CONTACT] = port_string
+            self.client_dictionary[username] = user
 
-    def disconnect_wrapper(self, ip_string, port_string):
-        #TODO
+    def disconnect_wrapper(self, username):
+        del self.client_dictionary[username]
+        #self, ip_string, port_string
 
 # **************************************************
 #  Definicion de la funcion principal

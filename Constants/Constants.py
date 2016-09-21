@@ -35,9 +35,11 @@ MESSAGE_IP = 0
 MESSAGE_PORT = 1
 MESSAGE_TEXT = 2
 WIDGET = 'widget'
+
 NAME_CONTACT = 'username'
 IP_CONTACT = 'ip_contact'
 PORT_CONTACT = 'port_contact'
+
 TABLE_ITEMS = 2
 FIRST_ITEM = 0
 SECOND_ITEM = 1
@@ -88,7 +90,7 @@ PORT_IN_USE = "Ese puerto ya esta en uso, no es posible establecer la conexion"
 INCOMPLETE_INFORMATION= "Todos los campos de texto son obligatorios por favor asegurese de llenarlos todos"
 CONECTION_FAIL = "No se ha podido establecer la conexion con su contacto"
 
-#Configuración grabación audio
+#Configuracion grabacion audio
 CHUNK = 1024
 CHANNELS = 1
 RATE = 44100
@@ -103,4 +105,5 @@ EXIT_KEY = 'q'
 
 #DirectoryServer
 DEFAULT_PORT_DIRECTORY_SERVER = 6666
+USERNAME_USED = "El nombre de usuario ya se encuentra en uso, por favor cambie el nombre de usuario e intente nuevamente"
 
