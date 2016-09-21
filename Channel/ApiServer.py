@@ -30,8 +30,14 @@ Clase que genera un servidor de la biblioteca xmlrpc
 con el cual el cliente expondra los metodos que ofrece
 **************************************************"""
 class MyApiServer:
-    def __init__(self,Qparent, my_port = None):
-       #TODO 
+    def __init__(self,Qparent, my_port = DEFAULT_PORT):
+        self.port = my_port
+        self.server = SimpleXMLRPCServer((get_ip_address(),int(self.port)),allow_none=True)
+        self.wrapper = FunctionWrapper()
+        self.server.register_instance(self.wrapper)
+        self.server.serve_forever()
+        
+
 class FunctionWrapper:
     """ **************************************************
     Constructor de la clase
