@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
 
 #####################################################
@@ -89,7 +90,7 @@ MISSING_WRAPPER = "Falta definir un wrapper que reciba los mensajes del chat"
 WRONG_OPTION = "Opcion no valida para iniciar"
 PORT_IN_USE = "Ese puerto ya esta en uso, no es posible establecer la conexion"
 INCOMPLETE_INFORMATION= "Todos los campos de texto son obligatorios por favor asegurese de llenarlos todos"
-CONECTION_FAIL = "No se ha podido establecer la conexion con su contacto"
+CONECTION_FAIL = "No se ha podido establecer la conexion con el contacto"
 
 #Configuracion grabacion audio
 CHUNK = 1024
@@ -113,3 +114,5 @@ ERROR_REQUEST_CHANNEL = 'The values of fields are not consistent RequestChannel.
 CONTACT_WINDOW_TITLE = "Contactos conectados"
 REFRESH_TITLE = "Actualizar contactos"
 LB_USERNAME = "Nombre de usuario: "
+
+CHAT_OPEN = "Ya existe una conversación abierta con el usuario"

@@ -10,6 +10,7 @@ from Channel.DirectoryChannel import DirectoryChannel
 from Constants.Constants import *
 from Constants.AuxiliarFunctions import *
 from Channel.ApiServer import Receiver
+from ChatGUI import ChatGUI
 """
 Clase de interfaz grafica que permite visualizar los contactos disponibles en el chat
 """
@@ -22,6 +23,9 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 	"""
 	def __init__(self,my_information,my_contact_information,mode,username):
 		super(ContactsWindow, self).__init__()
+		#Chats con lo cuales se ha establecido una conexión
+		#Se manejara un diccionario de {'nombre_usuario':ventana_chat}
+		self.chats = {}
 
 		if mode in LOCAL:
 			self.user = dictionaryUser(username,get_ip_address(),my_information)
@@ -56,50 +60,78 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 		self.grid.addWidget(self.txt_contacts,2,0,10,10)
 		self.grid.addWidget(self.btn_refresh,12,8,3,2)
 		
-		self.btn_refresh.clicked.connect(self.updateContacts)
+		self.btn_refresh.clicked.connect(self.update_contacts)
 
-		self.txt_contacts.itemDoubleClicked.connect(self.showContact)
+		self.txt_contacts.itemDoubleClicked.connect(self.show_contact)
 
 		try:
-			self.connectGeneralDirectory()
+			self.connect_general_directory()
 			self.show()
 		except Exception, e:
 			QtGui.QMessageBox.warning(self, WARNING, str(e) ,QtGui.QMessageBox.Ok)
 		
+	#******************************************#
+	#Establece la conexión con el contacto     #
+	#******************************************#
+	def show_contact(self):
+		selected_user = str(self.txt_contacts.currentItem().text())
+		print "Selected user: "+selected_user
+		#Revisa que no se tenga una ventana con dicho chat
+		if self.chats.has_key(selected_user):
+			QtGui.QMessageBox.warning(self, WARNING, CHAT_OPEN ,QtGui.QMessageBox.Ok)
+		else:
+			print "Cretating window chat with "+selected_user
+			#Crea conexión
+			self.new_window_chat(selected_user)
 
-	def showContact(self):
-		print "llegue"
-		a = self.txt_contacts..selectedIndexes()
-		print "selected: "+str(a)
+			#Solicita crea la otra ventana
+			chat = self.chats[selected_user]
+			chat.connect()
+	
+	def new_window_chat(self,selected_user):
+		contacts = self.directory_channel.get_contacts()
+
+		#Si el contacto aún está conectado, dado que la lista
+		#no está sincronizada con el servidor, puede que el 
+		#contacto ya no esté activo
+		if contacts.has_key(selected_user):
+			print "Contact "+selected_user+" found"
+			#Crea una ventana de chat para el contacto con el que 
+			#se quiere comunicar
+			chat = ChatGUI(self.user,contacts[selected_user],self.mode)
+			self.chats[selected_user] = chat
+			print "Added to chats: "+str(self.chats)
+		else:
+			self.update_contacts()
+			QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
+
 
 	#******************************************#
 	#Realiza la conexión con el directorio     #
 	#general de contactos                      #
 	#******************************************#
-	def connectGeneralDirectory(self):
+	def connect_general_directory(self):
 		if self.mode in LOCAL:
 			self.directory_channel = DirectoryChannel(self, my_port = self.user[PORT_CONTACT], directory_port = self.my_contact_information, username = self.user[NAME_CONTACT])
 		else:
 			self.directory_channel = DirectoryChannel(self,directory_ip = self.my_contact_information,  username = self.user[NAME_CONTACT])
 
 		self.directory_channel.connect()
-		self.updateContacts()
+		self.update_contacts()
 
-	def updateContacts(self):
-		
+	#*******************************************#
+	#Actualiza la lista de contactos disponibles#
+	#de acuerdo a la información del servidor   # 
+	#de usuarios                                #
+	#******************************************#
+	def update_contacts(self):
 		contacts = self.directory_channel.get_contacts()
 		self.txt_contacts.clear()
 		for c in contacts:
 			item = QtGui.QListWidgetItem(str(c))
 			self.txt_contacts.addItem(item)
-		
 
-		
-
-
+	#---------------Métodos heredados---------------------------------
 	
-"""
-app = QtGui.QApplication(sys.argv)
-a = ContactsWindow(None,None,None)
-sys.exit(app.exec_())
-"""
+	def showNewChat(self, contact_ip, contact_port, username):
+		self.new_window_chat(username)

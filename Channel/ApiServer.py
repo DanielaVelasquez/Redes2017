@@ -53,10 +53,10 @@ class FunctionWrapper():
 	def __init__(self,receiver):
 		#Diccionario que contiene las conversaciones activas 
 		#hasta ese momento
-		self.receiver = receiver
 		self.chats_dictionary = {}
+		self.receiver = receiver
 	  
-	def searchUser(self,ip,port):
+	def search_user(self,ip,port):
 		for c,user in self.chats_dictionary:
 			if user[IP_CONTACT] == ip and user[PORT_CONTACT] == port:
 				return user
@@ -88,7 +88,7 @@ class FunctionWrapper():
 		contact_ip =  message_split[MESSAGE_IP]
 		contact_port = message_split[MESSAGE_PORT]
 		text = message_split[MESSAGE_TEXT]
-		user = searchUser(contact_ip,contact_port)
+		user = search_user(contact_ip,contact_port)
 		self.receiver.showMessage(user,text)
 		
 	""" **************************************************
@@ -123,15 +123,14 @@ las notificaciones del servidor podrá ser implementado como
 sea mejor, sólo deberá heredar de receiver y puede ser una GUI
 o otro medio de interacción con el usuario
 """
-class Receiver(object):
+class Receiver(object,QtCore.QThread):
 	 """User: usuario al cual está asociado el recibidor, define para qué usuario trabaja"""
 	 def __init__(self,user):
+	 	 QtCore.QThread.__init__(self)
 		 super(Receiver, self).__init__()
 		 self.user = user
-	
-
-
-	 def showNewChat(self, contact_ip, contact_port, username):
+		 
+	def showNewChat(self, contact_ip, contact_port, username):
 		 raise NotImplementedError()
 
 	 def showMessage(self, user,message):

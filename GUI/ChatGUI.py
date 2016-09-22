@@ -6,10 +6,9 @@ from PyQt4 import QtGui, QtCore
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
-from Channel.DirectoryChannel import DirectoryChannel
+from Channel.Channels import RequestChannel
 from Constants.Constants import *
 from Constants.AuxiliarFunctions import *
-from Channel.ApiServer import Receiver
 """
 Clase de interfaz grafica que permite visualizar la conversacion con el contacto del chat
 Y enviar nuevos mensajes por medio de un campo de texto
@@ -17,39 +16,48 @@ Y enviar nuevos mensajes por medio de un campo de texto
 class ChatGUI(QtGui.QWidget):
 	"""
 	Constructor
-	@param <str> my_information: informacion propia para la conexion
-    @param <str> my_contact_information: informacion del contacto para la conexion
+	@param <str> my_user: información del usuario
+    @param <str> my_contact: informacion del contacto para la conexion
     @param <str> mode: modo en el que operara el programa (constantes LOCAL o REMOTE)
 	"""
-	def __init__(self,my_information,my_contact_information,mode):
+	def __init__(self, my_user, my_contact, mode):
 		super(ChatGUI, self).__init__()
-		self.my_information = my_information
-		self.my_contact_information = my_contact_information
+
+		self.my_user = my_user
+		self.my_contact = my_contact
 		self.mode = mode
-		self.channel = None
-		#self.makeConnection()
-		self.initGUI()
 
-	"""""
-	Crea el canal de conexion y establece la conexion
-	con el contacto de acuerdo a los datos entregados por
-	el usuario
-	"""
-	def makeConnection(self):
+		try:
+			#Canal de comunicación con el contacto
+			self.request_channel = None
+			self.create_request_channel()
+			print "Request channel created"
+			self.initGUI()
+			print "Chat window created"
+		except Exception:
+			raise Exception(CONECTION_FAIL)
+		
+	#*******************************************#
+	#Realiza la conexión con el contacto        #
+	#*******************************************#
+	def create_request_channel(self):
 		if self.mode in LOCAL:
-			self.channel = Channel(contact_ip =get_ip_address(),my_port=self.my_information,contact_port=self.my_contact_information)
+			self.request_channel = RequestChannel(contact_port = self.my_contact[PORT_CONTACT])
 		else:
-			print "chanel make connetion contact_ip ="+str(self.my_contact_information)
-			self.channel = Channel(contact_ip = self.my_contact_information)
+			self.request_channel = RequestChannel(contact_ip = self.my_contact[IP_CONTACT])
 
-		self.channel.setWrapper(self)
-		self.channel.init_chat()
-
-	""""
-	Inicia los elementos de la GUI, mostrando la ventana
-	donde se reciben los mensaje y una que permite enviar
-	los mensajes
-	"""
+		
+	#********************************************#
+	#Manda a iniciar una nueva conversación      #
+	#********************************************#
+	def connect(self):
+		self.request_channel.new_connection(self.my_user[IP_CONTACT], self.my_user[PORT_CONTACT],self.my_user[NAME_CONTACT])
+	
+	#******************************************************#
+	#Inicia los elementos de la GUI, mostrando la ventana  #
+	#donde se reciben los mensaje y una que permite enviar #
+	#los mensajes                                          #
+	#******************************************************#
 	def initGUI(self):		
 		#Creación y configuración del widget
 		self.setWindowTitle(CHAT_WINDOW)
@@ -59,7 +67,7 @@ class ChatGUI(QtGui.QWidget):
 		self.grid = QtGui.QGridLayout()
 		self.setLayout(self.grid)
 		#Declaración elementos de la GUI
-		self.lb_conversation = QtGui.QLabel(CONVERSATION_TITLE,self)
+		self.lb_conversation = QtGui.QLabel(CONVERSATION_TITLE+" de "+self.my_user[NAME_CONTACT]+" ->"+self.my_contact[NAME_CONTACT],self)
 		self.txt_conversation = QtGui.QTextEdit(self)
 		self.txt_conversation.setReadOnly(True)
 		self.txt_message = QtGui.QLineEdit(self)
@@ -83,7 +91,7 @@ class ChatGUI(QtGui.QWidget):
 	"""
 	def showSendingMessage(self,message):
 		self.txt_message.clear()
-		last_message = "Yo: "+message
+		last_message = self.my_user[NAME_CONTACT]+": "+message
 		self.txt_conversation.append(last_message)
 
 	""""

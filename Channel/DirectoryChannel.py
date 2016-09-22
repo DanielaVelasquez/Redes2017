@@ -27,7 +27,7 @@ from Channels import *
 
 
 class DirectoryChannel(BidirectionalChannel):
-    def __init__ (self,receiver,directory_ip = None, my_port = None, directory_port = None, username = None):
+    def __init__ (self,receiver,directory_ip = None, my_port = DEFAULT_PORT, directory_port = None, username = None):
         super(DirectoryChannel,self).__init__(receiver, directory_ip,  directory_port ,my_port)
         self.username = username
         self.my_port = my_port

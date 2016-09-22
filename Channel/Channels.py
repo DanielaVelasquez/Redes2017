@@ -3,7 +3,7 @@
 
 
 #####################################################
-# PURPOSE: Clase que representa la abstracción de   #
+# PURPO: Clase que representa la abstracción de   #
 #         Un canal bidireccional, con uso de la     #
 #          biblioteca xmlRpc                        #
 #                                                   #
