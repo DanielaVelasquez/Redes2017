@@ -17,11 +17,19 @@ class LoginGUI(QtGui.QWidget):
 	mode: Modo de logueo que se va a realizar, sea local
 	o remoto
 	"""
-	def __init__(self,mode=REMOTE):
+	
+	def __init__(self,my_information=None,my_contact_information=None,mode=REMOTE):
 		super(LoginGUI, self).__init__()
 		self.mode = mode
 		self.chat = None
-		self.initGUI()
+
+		if my_information and my_contact_information:
+			self.chat = ChatGUI(my_information,my_contact_information,mode)
+		else:
+			self.initGUI()
+
+		
+
 		
 	""""
 	Inicia los elementos de la GUI, solicitando el 
