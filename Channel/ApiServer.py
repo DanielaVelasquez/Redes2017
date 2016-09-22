@@ -57,7 +57,7 @@ class FunctionWrapper():
 		self.chats_dictionary = {}
 	  
 	def searchUser(self,ip,port):
-		for user in self.chats_dictionary:
+		for c,user in self.chats_dictionary:
 			if user[IP_CONTACT] == ip and user[PORT_CONTACT] == port:
 				return user
 		return None

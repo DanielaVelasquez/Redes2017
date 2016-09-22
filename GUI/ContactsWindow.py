@@ -43,25 +43,34 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 		self.grid = QtGui.QGridLayout()
 		self.setLayout(self.grid)
 		#Declaración elementos de la GUI
+		self.lb_username = QtGui.QLabel(LB_USERNAME+self.user[NAME_CONTACT],self)
 		self.lb_title_contacts_window = QtGui.QLabel(CONTACT_WINDOW_TITLE,self)
-		self.txt_contacts = QtGui.QTextEdit(self)
-		self.txt_contacts.setReadOnly(True)
+		self.txt_contacts = QtGui.QListWidget(self)
+		self.txt_contacts.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+		#self.txt_contacts.setReadOnly(True)
 		
 		self.btn_refresh = QtGui.QPushButton(REFRESH_TITLE,self)
 		#Configuración elementos de la GUI 
-		self.grid.addWidget(self.lb_title_contacts_window,0,0)
-		self.grid.addWidget(self.txt_contacts,1,0,10,10)
+		self.grid.addWidget(self.lb_username,0,0)
+		self.grid.addWidget(self.lb_title_contacts_window,1,0)
+		self.grid.addWidget(self.txt_contacts,2,0,10,10)
 		self.grid.addWidget(self.btn_refresh,12,8,3,2)
 		
 		self.btn_refresh.clicked.connect(self.updateContacts)
 
-		#try:
-		self.connectGeneralDirectory()
-		#except Exception, e:
-			#QtGui.QMessageBox.warning(self, WARNING, str(e) ,QtGui.QMessageBox.Ok)
+		self.txt_contacts.itemDoubleClicked.connect(self.showContact)
+
+		try:
+			self.connectGeneralDirectory()
+			self.show()
+		except Exception, e:
+			QtGui.QMessageBox.warning(self, WARNING, str(e) ,QtGui.QMessageBox.Ok)
 		
 
-		self.show()
+	def showContact(self):
+		print "llegue"
+		a = self.txt_contacts..selectedIndexes()
+		print "selected: "+str(a)
 
 	#******************************************#
 	#Realiza la conexión con el directorio     #
@@ -74,71 +83,21 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 			self.directory_channel = DirectoryChannel(self,directory_ip = self.my_contact_information,  username = self.user[NAME_CONTACT])
 
 		self.directory_channel.connect()
+		self.updateContacts()
 
-
-	""""
-	Despliega los mensajes que se enviaron en la pantalla del chat
-	"""
-	def showSendingMessage(self,message):
-		self.txt_message.clear()
-		last_message = "Yo: "+message
-		self.txt_contacts.append(last_message)
-
-	""""
-	Actualiza los contactos conectados
-	"""
 	def updateContacts(self):
-		message = str(self.txt_message.text())
-		if len(message) == 0:
-			QtGui.QMessageBox.warning(self, WARNING, MISSING_MESSAGE,QtGui.QMessageBox.Ok)
-		else:
-			if not self.channel.send_text(message):
-				QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
-			else:
-				self.showSendingMessage(message)		
+		
+		contacts = self.directory_channel.get_contacts()
+		self.txt_contacts.clear()
+		for c in contacts:
+			item = QtGui.QListWidgetItem(str(c))
+			self.txt_contacts.addItem(item)
+		
+
+		
+
+
 	
-	""""
-	Inicia la llamada
-	"""
-	def call(self):
-		if not self.channel.send_text("LLAMANDO"):
-			QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
-		else:
-			self.showSendingMessage("LLAMANDO")
-			try:
-				self.channel.call()
-				self.txt_message.setReadOnly(True)
-				self.btn_call.hide()
-				self.btn_send.hide()
-				self.child = CallGUI(self)
-			except Exception:
-				QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
-
-	""""
-	Termina la llamada
-	"""
-	def end_call(self):
-		self.channel.end_call()
-		self.btn_call.show()
-		self.btn_send.show()
-		self.txt_message.setReadOnly(False)
-		self.txt_message.setText("LLAMADA TERMINADA")
-		self.sendMessage()
-
-	"""
-	Muestra el mensaje del contacto (manteniendo la conversacion)
-	"""
-	def sendMessage_wrapper(self, message):
-		self.txt_contacts.append("Contacto: "+message)
-
-	"""
-	Define los eventos que ocurriran cuando se presionen teclas del teclado
-	"""
-	def keyPressEvent(self, event):
-		if event.key() == QtCore.Qt.Key_Escape:
-			self.close()
-		if event.key() == QtCore.Qt.Key_Return or event.key() == QtCore.Qt.Key_Enter:
-			self.sendMessage()
 """
 app = QtGui.QApplication(sys.argv)
 a = ContactsWindow(None,None,None)

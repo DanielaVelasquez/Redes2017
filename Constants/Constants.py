@@ -112,3 +112,4 @@ ERROR_REQUEST_CHANNEL = 'The values of fields are not consistent RequestChannel.
 
 CONTACT_WINDOW_TITLE = "Contactos conectados"
 REFRESH_TITLE = "Actualizar contactos"
+LB_USERNAME = "Nombre de usuario: "

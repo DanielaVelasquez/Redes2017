@@ -63,7 +63,8 @@ class FunctionWrapperDirectory:
         #Se clona el diccionario de usuarios
         copy = self.client_dictionary.copy()
         #Se elimina el usuario solicitó información
-        del copy[username]
+        if self.client_dictionary.has_key(username):
+            del copy[username]
         return copy
         #TODO
     """"********************************************
@@ -78,6 +79,7 @@ class FunctionWrapperDirectory:
         else:
             user = dictionaryUser(username,ip_string,port_string)
             self.client_dictionary[username] = user
+
 
     def disconnect_wrapper(self, username):
         print "Desconectando usuario: "+username

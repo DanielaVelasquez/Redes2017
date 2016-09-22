@@ -37,7 +37,7 @@ class DirectoryChannel(BidirectionalChannel):
     #Metodo que se encarga de obtener lista de contactos
     #**************************************************
     def get_contacts(self):
-        self.get_api_client().getProxy().get_contacts_wrapper(username)
+        return self.get_api_client().getProxy().get_contacts_wrapper(self.username)
 
 
     #**************************************************

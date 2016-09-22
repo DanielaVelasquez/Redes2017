@@ -33,6 +33,7 @@ class MyApiClient:
             contact_port = DEFAULT_PORT
         elif contact_ip is None:
             contact_ip = get_ip_address()
+
         self.contact_port = contact_port
         self.contact_ip = contact_ip
         try:
@@ -46,4 +47,10 @@ class MyApiClient:
     Metodos Get
     **************************************************"""
     def getProxy(self):
+        try:
+            con = HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
+            print "Api client, connection: "+con
+            self.proxy = xmlrpclib.ServerProxy(con, allow_none=True)
+        except Exception, e:
+            raise Exception(CONECTION_FAIL)
     	return self.proxy

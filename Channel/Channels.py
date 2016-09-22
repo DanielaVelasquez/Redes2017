@@ -100,6 +100,7 @@ class BidirectionalChannel(RequestChannel):
         
         #Lanza el servidor
         self.server_thread = threading.Thread(target = self.apiServer.startServer) 
+        self.server_thread.daemon = True
         self.server_thread.start()
     """**************************************************
     Metodos Get
