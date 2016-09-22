@@ -6,15 +6,15 @@ from PyQt4 import QtGui, QtCore
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
-#from Channel.Channel import Channel
+from Channel.DirectoryChannel import DirectoryChannel
 from Constants.Constants import *
 from Constants.AuxiliarFunctions import *
-from Channel.ApiServer import FunctionWrapper
+from Channel.ApiServer import Receiver
 """
 Clase de interfaz grafica que permite visualizar la conversacion con el contacto del chat
 Y enviar nuevos mensajes por medio de un campo de texto
 """
-class ChatGUI(QtGui.QWidget,FunctionWrapper):
+class ChatGUI(QtGui.QWidget):
 	"""
 	Constructor
 	@param <str> my_information: informacion propia para la conexion

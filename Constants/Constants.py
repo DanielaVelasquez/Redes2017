@@ -47,8 +47,9 @@ SECOND_ITEM = 1
 
 #Nombres para etiquetas login local y remoto
 MY_PORT_NUMBER_TITLE = "Cual es mi puerto?:"
-OTHER_PORT_NUMBER_TITLE = "Cual es el puerto de contacto?:"
-OTHER_IP_NUMBER_TITLE = "Cual es la direccion IP del contacto?:"
+OTHER_PORT_NUMBER_TITLE = "Cual es el puerto del directorio general?:"
+OTHER_IP_NUMBER_TITLE = "Cual es la direccion IP del directorio general?:"
+MY_USER_NAME = "Nombre de usuario"
 LOGIN_TITLE = "Acceder"
 MY_IP = "Mi IP: "
 
@@ -109,3 +110,5 @@ USERNAME_USED = "El nombre de usuario ya se encuentra en uso, por favor cambie e
 
 ERROR_REQUEST_CHANNEL = 'The values of fields are not consistent RequestChannel.__init__'
 
+CONTACT_WINDOW_TITLE = "Contactos conectados"
+REFRESH_TITLE = "Actualizar contactos"

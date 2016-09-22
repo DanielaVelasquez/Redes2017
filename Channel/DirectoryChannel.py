@@ -17,11 +17,14 @@
 #                                                   #
 # Distributed under terms of the MIT license.       #
 #####################################################
-
+import sys
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from Constants.Constants import *
+from Constants.AuxiliarFunctions import *
 from ApiServer import *
 from Channels import *
-from Constants import *
-from AuxiliarFunctions import *
+
 
 class DirectoryChannel(BidirectionalChannel):
     def __init__ (self,receiver,directory_ip = None, my_port = None, directory_port = None, username = None):

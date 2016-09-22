@@ -38,12 +38,12 @@ def main(argv):
 
     if local:
         if len(argv) > 1:
-            login = LoginGUI(mode=LOCAL,my_information=argv[1],my_contact_information=argv[2])
+            login = LoginGUI(mode=LOCAL,my_information=argv[1],my_contact_information=argv[2],username = argv[3])
         else:
-            login = LoginGUI(LOCAL)
+            login = LoginGUI(mode=LOCAL)
     else:
         if len(argv) > 1:
-            login = LoginGUI(my_information=argv[0],my_contact_information=argv[1])
+            login = LoginGUI(my_information=argv[0],my_contact_information=argv[1],username = argv[2])
         else:
             login = LoginGUI()
     """

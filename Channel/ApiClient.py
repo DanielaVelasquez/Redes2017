@@ -17,9 +17,10 @@
 #####################################################
 import xmlrpclib
 import sys
-sys.path.insert(0, '../Constants')
-from Constants import *
-from AuxiliarFunctions import *
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from Constants.Constants import *
+from Constants.AuxiliarFunctions import *
 
 
 """**************************************************
@@ -31,11 +32,13 @@ class MyApiClient:
         if contact_port is None:
             contact_port = DEFAULT_PORT
         elif contact_ip is None:
-            contact_ip = LOCALHOST_CLIENT
+            contact_ip = get_ip_address()
         self.contact_port = contact_port
         self.contact_ip = contact_ip
         try:
-        	self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/", allow_none=True)
+            con = HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
+            print "Api client, connection: "+con
+            self.proxy = xmlrpclib.ServerProxy(con, allow_none=True)
         except Exception, e:
         	raise Exception(CONECTION_FAIL)
         

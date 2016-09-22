@@ -46,8 +46,8 @@ Crea un diccionario con la información de un usuario
 def dictionaryUser(username,ip,port):
 	user = {}
 	user[NAME_CONTACT] = username
-	user[IP_CONTACT] = ip_string
-	user[PORT_CONTACT] = port_string
+	user[IP_CONTACT] = ip
+	user[PORT_CONTACT] = port
 	return user
 
 

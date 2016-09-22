@@ -7,7 +7,7 @@ from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
 from Constants.AuxiliarFunctions import *
-from ChatGUI import ChatGUI
+from ContactsWindow import ContactsWindow
 """
 Clase de interfaz grafica que nos permite desplegar la pantalla de logueo
 """
@@ -18,13 +18,12 @@ class LoginGUI(QtGui.QWidget):
 	o remoto
 	"""
 	
-	def __init__(self,my_information=None,my_contact_information=None,mode=REMOTE):
+	def __init__(self,my_information=None,my_contact_information=None,mode=REMOTE,username = None):
 		super(LoginGUI, self).__init__()
 		self.mode = mode
-		self.chat = None
-
-		if my_information and my_contact_information:
-			self.chat = ChatGUI(my_information,my_contact_information,mode)
+		self.contacts_window = None
+		if my_information and my_contact_information and username:
+			self.contacts_window = ContactsWindow(my_information,my_contact_information,mode,username)
 		else:
 			self.initGUI()
 
@@ -61,6 +60,9 @@ class LoginGUI(QtGui.QWidget):
 		self.lb_contact_information = QtGui.QLabel(lb_contac_title,self)
 		self.txt_contact_information = QtGui.QLineEdit(self)
 
+		self.lb_username = QtGui.QLabel(MY_USER_NAME,self)
+		self.txt_username = QtGui.QLineEdit(self)
+
 		self.btn_login = QtGui.QPushButton(LOGIN_TITLE,self)
 
 		#Configuración elementos de la GUI		
@@ -69,7 +71,11 @@ class LoginGUI(QtGui.QWidget):
 			self.grid.addWidget(self.txt_my_information,1,0,1,0)
 		self.grid.addWidget(self.lb_contact_information,2,0,1,0)
 		self.grid.addWidget(self.txt_contact_information,3,0,1,0)
-		self.grid.addWidget(self.btn_login,5,2)
+
+		self.grid.addWidget(self.lb_username,4,0,1,0)
+		self.grid.addWidget(self.txt_username,5,0,1,0)
+
+		self.grid.addWidget(self.btn_login,6,2)
 
 		self.btn_login.clicked.connect(self.login)
 
@@ -83,18 +89,19 @@ class LoginGUI(QtGui.QWidget):
 		complete_information = False
 		if self.mode in LOCAL:
 			text_my_information = self.txt_my_information.text()
-			if len(text_my_information) != 0:
+			
+			if len(text_my_information) != 0 :
 				complete_information = True
 		else:
 			text_my_information = DEFAULT_PORT
 		
 		text_my_contact_information = self.txt_contact_information.text()
-
-		if complete_information and len(text_my_contact_information) == 0:
+		text_username = self.txt_username.text()
+		if not complete_information and len(text_my_contact_information) == 0 and len(text_username) == 0:
 			QtGui.QMessageBox.warning(self, WARNING, INCOMPLETE_INFORMATION,QtGui.QMessageBox.Ok)
 		else:
 			mode = self.mode
-			self.chat = ChatGUI(text_my_information,text_my_contact_information,mode)
+			self.contacts_window = ContactsWindow(text_my_information,text_my_contact_information,mode,text_username)
 			self.close()
 
 	"""

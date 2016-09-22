@@ -27,7 +27,7 @@ del api de un contacto. Internamente Trabajara
 con una proxy apuntando hacia los servicios del
 servidor xmlrpc del contacto
 **************************************************"""
-class RequestChannel():
+class RequestChannel(object):
     """**************************************************
     Convencion: Si trabajamos de manera local, entonces
     haremos uso de los campos de contact_port y my_port
@@ -46,6 +46,7 @@ class RequestChannel():
                 representa el puerto de la instancia del contacto
     **************************************************"""
     def __init__(self, contact_ip = None, contact_port = None):
+        super(RequestChannel,self).__init__()
         #Crea el cliente
         if contact_port:
             self.api_client = MyApiClient(contact_port= contact_port) 
