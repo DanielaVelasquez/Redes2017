@@ -116,3 +116,5 @@ REFRESH_TITLE = "Actualizar contactos"
 LB_USERNAME = "Nombre de usuario: "
 
 CHAT_OPEN = "Ya existe una conversación abierta con el usuario"
+
+SIGNAL_CREATE_WINDOW = "create_window"

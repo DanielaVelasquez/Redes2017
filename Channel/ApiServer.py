@@ -24,6 +24,11 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.AuxiliarFunctions import *
 from Constants.Constants import *
 
+
+from threading import Thread
+from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import SIGNAL, QObject
+
 # Restrict to a particular path.
 class RequestHandler(SimpleXMLRPCRequestHandler):
 	rpc_paths = ('/RPC2',)
@@ -45,12 +50,16 @@ class MyApiServer:
 	def startServer(self):
 		self.server.serve_forever()
 
+	def get_wrapper(self):
+		return self.wrapper
 
-class FunctionWrapper():
+
+class FunctionWrapper(QtCore.QThread):
 	""" **************************************************
 	Constructor de la clase
 	************************************************** """
 	def __init__(self,receiver):
+		QtCore.QThread.__init__(self)
 		#Diccionario que contiene las conversaciones activas 
 		#hasta ese momento
 		self.chats_dictionary = {}
@@ -71,6 +80,9 @@ class FunctionWrapper():
 		user = dictionaryUser(username,contact_ip,contact_port)
 		self.chats_dictionary[username] = user
 		self.receiver.showNewChat(contact_ip, contact_port, username)
+		#Emite la señal para que se cree la ventana
+		print "emiting signal"
+		self.emit(SIGNAL(SIGNAL_CREATE_WINDOW))
 		#Un cliente mando a llamar a esta instancia, crea una ventana de
 		#chat para automaticamente
 		#TODO
@@ -123,14 +135,13 @@ las notificaciones del servidor podrá ser implementado como
 sea mejor, sólo deberá heredar de receiver y puede ser una GUI
 o otro medio de interacción con el usuario
 """
-class Receiver(object,QtCore.QThread):
+class Receiver(object):
 	 """User: usuario al cual está asociado el recibidor, define para qué usuario trabaja"""
 	 def __init__(self,user):
-	 	 QtCore.QThread.__init__(self)
-		 super(Receiver, self).__init__()
+	 	 super(Receiver, self).__init__()
 		 self.user = user
 		 
-	def showNewChat(self, contact_ip, contact_port, username):
+	 def showNewChat(self, contact_ip, contact_port, username):
 		 raise NotImplementedError()
 
 	 def showMessage(self, user,message):
@@ -142,3 +153,7 @@ class Receiver(object,QtCore.QThread):
 	 
 	 def play_video_wrapper(self,frame):
 		 raise NotImplementedError()
+
+	 #Abre la ventana al recibir la señal
+	 def open_window(self):
+	 	raise NotImplementedError()

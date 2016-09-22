@@ -61,6 +61,8 @@ class RequestChannel(object):
     **************************************************"""
     def send_text(self, text):
         self.api_client.getProxy().sendMessage_wrapper(text)
+
+
     
     """**************************************************
     Metodo que se encarga de mandar iniciar una conversacion
@@ -102,6 +104,9 @@ class BidirectionalChannel(RequestChannel):
         self.server_thread = threading.Thread(target = self.apiServer.startServer) 
         self.server_thread.daemon = True
         self.server_thread.start()
+
+    def get_server(self):
+        return self.apiServer
     """**************************************************
     Metodos Get
     **************************************************"""
