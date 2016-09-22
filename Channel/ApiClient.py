@@ -27,7 +27,7 @@ class MyApiClient:
         if contact_port is None:
             contact_port = DEFAULT_PORT
         if contact_ip is None:
-            contact_ip = LOCALHOST_CLIENT
+            contact_ip = get_ip_address()
         self.contact_port = contact_port
         self.contact_ip = contact_ip
         self.calling = False
