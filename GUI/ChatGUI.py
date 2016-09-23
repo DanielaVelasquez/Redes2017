@@ -9,6 +9,8 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Channel.Channels import RequestChannel
 from Constants.Constants import *
 from Constants.AuxiliarFunctions import *
+from Channel.ApiServer import Receiver
+
 """
 Clase de interfaz grafica que permite visualizar la conversacion con el contacto del chat
 Y enviar nuevos mensajes por medio de un campo de texto
@@ -20,22 +22,24 @@ class ChatGUI(QtGui.QWidget):
     @param <str> my_contact: informacion del contacto para la conexion
     @param <str> mode: modo en el que operara el programa (constantes LOCAL o REMOTE)
 	"""
-	def __init__(self, my_user, my_contact, mode):
+	def __init__(self, my_user, my_contact, mode,my_parent_receiver):
 		super(ChatGUI, self).__init__()
-
+		self.my_parent_receiver = my_parent_receiver
 		self.my_user = my_user
 		self.my_contact = my_contact
 		self.mode = mode
+
 
 		try:
 			#Canal de comunicación con el contacto
 			self.request_channel = None
 			self.create_request_channel()
-			print "Request channel created"
 			self.initGUI()
-			print "Chat window created"
-		except Exception:
-			raise Exception(CONECTION_FAIL)
+			self.connection_open = True
+			print "siguee"
+			self.my_parent_receiver.add_contact_receiver(self.my_contact)
+		except Exception as e:
+			QtGui.QMessageBox.warning(self, WARNING, str(e),QtGui.QMessageBox.Ok)
 		
 	#*******************************************#
 	#Realiza la conexión con el contacto        #
@@ -81,7 +85,7 @@ class ChatGUI(QtGui.QWidget):
 		self.btn_call.setStyleSheet("background-color: DodgerBlue")
 		self.grid.addWidget(self.btn_call,15,4,3,2)
 
-		self.btn_send.clicked.connect(self.sendMessage)
+		self.btn_send.clicked.connect(self.send_message)
 		self.btn_call.clicked.connect(self.call)
 
 		self.show()
@@ -89,7 +93,7 @@ class ChatGUI(QtGui.QWidget):
 	""""
 	Despliega los mensajes que se enviaron en la pantalla del chat
 	"""
-	def showSendingMessage(self,message):
+	def show_sending_message(self,message):
 		self.txt_message.clear()
 		last_message = self.my_user[NAME_CONTACT]+": "+message
 		self.txt_conversation.append(last_message)
@@ -97,15 +101,18 @@ class ChatGUI(QtGui.QWidget):
 	""""
 	Envia los mensajes al contacto
 	"""
-	def sendMessage(self):
+	def send_message(self):
 		message = str(self.txt_message.text())
 		if len(message) == 0:
 			QtGui.QMessageBox.warning(self, WARNING, MISSING_MESSAGE,QtGui.QMessageBox.Ok)
 		else:
-			if not self.channel.send_text(message):
-				QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
-			else:
-				self.showSendingMessage(message)		
+			#try:
+			message2 = get_message_header(self.my_user[NAME_CONTACT])+message
+			print "I'm sending message: "+message2
+			self.request_channel.send_text(message2)
+			self.show_sending_message(message)
+			#except Exception as e:
+			#	QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)	
 	
 	""""
 	Inicia la llamada
@@ -114,7 +121,7 @@ class ChatGUI(QtGui.QWidget):
 		if not self.channel.send_text("LLAMANDO"):
 			QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
 		else:
-			self.showSendingMessage("LLAMANDO")
+			self.show_sending_message("LLAMANDO")
 			try:
 				self.channel.call()
 				self.txt_message.setReadOnly(True)
@@ -133,14 +140,9 @@ class ChatGUI(QtGui.QWidget):
 		self.btn_send.show()
 		self.txt_message.setReadOnly(False)
 		self.txt_message.setText("LLAMADA TERMINADA")
-		self.sendMessage()
+		self.send_message()
 
-	"""
-	Muestra el mensaje del contacto (manteniendo la conversacion)
-	"""
-	def sendMessage_wrapper(self, message):
-		self.txt_conversation.append("Contacto: "+message)
-
+	
 	"""
 	Define los eventos que ocurriran cuando se presionen teclas del teclado
 	"""
@@ -149,6 +151,36 @@ class ChatGUI(QtGui.QWidget):
 			self.close()
 		if event.key() == QtCore.Qt.Key_Return or event.key() == QtCore.Qt.Key_Enter:
 			self.sendMessage()
+
+	##############################################
+	#Muestra los mensajes que le han enviado     #
+	##############################################
+	def show_receiving_message(self, message):
+		self.txt_conversation.append(self.my_contact[NAME_CONTACT]+": "+message)
+
+
+	def closeEvent(self, evnt):
+		if self.connection_open:
+			self.my_parent_receiver.close_connection_with(self.my_contact[NAME_CONTACT])
+			self.request_channel.remove_connection_with(self.my_user[NAME_CONTACT])
+
+	##############################################
+	#Deshabilita los botones e indica al usuario #
+	#que el contacto a abandonado la conversación#
+	#y no será posible seguir contactandose con  #
+	#el a menos a que se establezca una nueva    #
+	#conexion                                    #
+	##############################################
+	def connection_was_closed(self):
+		self.connection_open = False
+		self.txt_conversation.append(CONNECTION_CLOSED)
+
+	def disable_window(self):
+		self.btn_send().setEnabled(False) 
+		self.btn_call.setEnabled(False) 
+		self.txt_conversation.setEnabled(False) 
+
+
 """
 Clase que muestra la pantalla de llamada de voz
 """

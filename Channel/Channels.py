@@ -60,6 +60,7 @@ class RequestChannel(object):
     el cual se estableció la conexion
     **************************************************"""
     def send_text(self, text):
+        print "I'm request channel, sending: "+text
         self.api_client.getProxy().sendMessage_wrapper(text)
 
 
@@ -71,6 +72,9 @@ class RequestChannel(object):
     def new_connection(self, my_ip, my_port,my_username):
         self.api_client.getProxy().new_chat_wrapper(my_ip,my_port,my_username)    
     
+    def remove_connection_with(self,username):
+        print "I'm the request channel, closing connection "+username
+        self.api_client.getProxy().remove_contact(username)
     """**************************************************
     Metodo que se encarga de mandar audio y video al contacto 
     con el cual se estableció la conexion
@@ -83,6 +87,9 @@ class RequestChannel(object):
     **************************************************"""
     def get_api_client(self):
         return self.api_client
+
+    
+
 
 #***************************************************************************************************************
 import threading

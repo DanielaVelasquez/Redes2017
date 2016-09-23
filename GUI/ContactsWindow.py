@@ -27,8 +27,13 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 		#Chats con lo cuales se ha establecido una conexión
 		#Se manejara un diccionario de {'nombre_usuario':ventana_chat}
 		self.chats = {}
+		#Almacena las concecciones cerradas por el contacto, mantiene la ventana del chat abierta
+		self.closed_by_contact = {}
 		#Nombre del último contacto que pidio hacer conexión
 		self.new_contact_window = None
+
+		#Nombre del ultimo contacto cerro la conexion
+		self.last_contact_closed = None
 		if mode in LOCAL:
 			self.user = dictionaryUser(username,get_ip_address(),my_information)
 		else:
@@ -88,6 +93,9 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 			#Solicita crea la otra ventana
 			chat = self.chats[selected_user]
 			chat.connect()
+
+	def add_contact_receiver(self,user):
+		self.directory_channel.get_server().get_wrapper().add_contact(user[IP_CONTACT],user[PORT_CONTACT],user[NAME_CONTACT])
 	
 	def new_window_chat(self,selected_user):
 		contacts = self.directory_channel.get_contacts()
@@ -98,7 +106,7 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 		if contacts.has_key(selected_user):
 			#Crea una ventana de chat para el contacto con el que 
 			#se quiere comunicar
-			chat = ChatGUI(self.user,contacts[selected_user],self.mode)
+			chat = ChatGUI(self.user,contacts[selected_user],self.mode,self)
 			self.chats[selected_user] = chat
 		else:
 			self.update_contacts()
@@ -140,8 +148,40 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 	def setting_signal(self):
 		api = self.directory_channel.get_server().get_wrapper()
 		QObject.connect(api, SIGNAL(SIGNAL_CREATE_WINDOW),self.open_window, QtCore.Qt.QueuedConnection)
-	
+
+		
+
+	"""	
+	def disable_chat(self):
+		if self.last_contact_closed:
+			if self.closed_by_contact.has_key(self.last_contact_closed):
+				chat = self.closed_by_contact[self.last_contact_closed]
+				chat.disable_window()
+	"""
+
+
 	#---------------Métodos heredados---------------------------------
 	
 	def showNewChat(self, contact_ip, contact_port, username):
 		self.new_contact_window = username
+
+	def showMessage(self, user,message):
+		print "I'm receiver, I got a messag from: "+str(user)+"\nmessage is: "+message
+		if self.chats.has_key(user):
+			chat = self.chats[user]
+			chat.show_receiving_message(message)
+
+	#Invocado por el chat del usuario que cerró la conexion
+	def close_connection_with(self,username):
+		print "I'm the receiver, closing connection with "+username
+		if self.chats.has_key(username):
+			del self.chats[username]
+
+	#Invocado por el contacto cuando cerró la conexion
+	def remove_contact(self,username):
+		print "I'm the receiver, I was told to close connection with "+username
+		if self.chats.has_key(username):
+			chat = self.chats[username]
+			chat.connection_was_closed()
+			self.closed_by_contact[username] = chat
+			self.close_connection_with(username)

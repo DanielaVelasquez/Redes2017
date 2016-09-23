@@ -34,7 +34,10 @@ CHAT_PORT = 5000
 SERVER_PORT =  7000
 MESSAGE_IP = 0
 MESSAGE_PORT = 1
-MESSAGE_TEXT = 2
+MESSAGE_TEXT = 1
+
+MESSAGE_USER = 0
+
 WIDGET = 'widget'
 
 NAME_CONTACT = 'username'
@@ -115,6 +118,9 @@ CONTACT_WINDOW_TITLE = "Contactos conectados"
 REFRESH_TITLE = "Actualizar contactos"
 LB_USERNAME = "Nombre de usuario: "
 
-CHAT_OPEN = "Ya existe una conversación abierta con el usuario"
+CHAT_OPEN = "Ya existe una conversacion abierta con el usuario"
 
 SIGNAL_CREATE_WINDOW = "create_window"
+SIGNAL_DISABLE_WINDOW = "disable_window"
+
+CONNECTION_CLOSED = "El contacto abandono la conversacion, no es posible continuar con la transferencia de informacion, inicie una nueva conversacion para esto"

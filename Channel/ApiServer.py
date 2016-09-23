@@ -66,7 +66,9 @@ class FunctionWrapper(QtCore.QThread):
 		self.receiver = receiver
 	  
 	def search_user(self,ip,port):
-		for c,user in self.chats_dictionary:
+		print "Searching user"
+		for c in self.chats_dictionary:
+			user = self.chats_dictionary[c]
 			if user[IP_CONTACT] == ip and user[PORT_CONTACT] == port:
 				return user
 		return None
@@ -81,11 +83,29 @@ class FunctionWrapper(QtCore.QThread):
 		self.chats_dictionary[username] = user
 		self.receiver.showNewChat(contact_ip, contact_port, username)
 		#Emite la señal para que se cree la ventana
-		print "emiting signal"
+		print "Adding \n-->"+str(self.chats_dictionary)
 		self.emit(SIGNAL(SIGNAL_CREATE_WINDOW))
 		#Un cliente mando a llamar a esta instancia, crea una ventana de
 		#chat para automaticamente
 		#TODO
+
+	def add_contact(self,contact_ip,contact_port,username):
+		user = dictionaryUser(username,contact_ip,contact_port)
+		self.chats_dictionary[username] = user
+
+	###################################################
+	#Método que es llamado por un contacto cuando     #
+	#quiere indicar que no se van a comunicar más     #
+	###################################################
+	def remove_contact(self, username):
+
+		print "Server removing conecction with '"+username+"'\n---->"+str(self.chats_dictionary)
+		if self.chats_dictionary.has_key(username):
+			del self.chats_dictionary[username]
+			self.receiver.remove_contact(username)
+			print "Removing \n-->"+str(self.chats_dictionary)
+		else:
+			print "not found"
 
 	""" **************************************************
 	Procedimiento que ofrece nuestro servidor, este metodo sera llamado
@@ -96,12 +116,16 @@ class FunctionWrapper(QtCore.QThread):
 		#Recuerden que el mensaje, al inicio debe llevar una cadena
 		#que contiene username:ip,  para saber a que conversacion 
 		#se refiere
+		print "I'm server, I'm receiving: "+message
+		
 		message_split = split_message_header(message)
-		contact_ip =  message_split[MESSAGE_IP]
-		contact_port = message_split[MESSAGE_PORT]
+		print "message_split ="+str(message_split)
+		
 		text = message_split[MESSAGE_TEXT]
-		user = search_user(contact_ip,contact_port)
+		user = message_split[MESSAGE_USER]
+		print "I'm server, I'm sending to receiver: "+text+" to: "+str(user)
 		self.receiver.showMessage(user,text)
+		
 		
 	""" **************************************************
 	Procedimiento que ofrece nuestro servidor, este metodo sera llamado
@@ -156,4 +180,14 @@ class Receiver(object):
 
 	 #Abre la ventana al recibir la señal
 	 def open_window(self):
+	 	raise NotImplementedError()
+
+	 def remove_contact(self,username):
+	 	raise NotImplementedError()
+
+	 ####################################################
+	 #Indica se cerró la conexión con el usuario con    #
+	 #nombre de usuario 'username'                      #
+	 ####################################################
+	 def close_connection_with(self, username):
 	 	raise NotImplementedError()

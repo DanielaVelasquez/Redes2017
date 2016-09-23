@@ -30,15 +30,22 @@ def get_ip_address():
 
 
 """ Funcion que construira el header del mensaje a mandar """
-def get_message_header(username, ip):
-	return username+':'+ip+':'
+def get_message_header(username):
+	return username+':'
 
 
 from Constants import *
 def split_message_header(message):
 	#El mensaje estara sera: username:ip:texto....
 	message_split = message.split(':')
-	return (message_split[MESSAGE_IP], message_split[MESSAGE_PORT], message_split[2:])
+	message = ""
+	aux = 1
+	for i  in message_split:
+		if aux != 1:
+			message = message + i
+		else:
+			aux = 0
+	return (message_split[MESSAGE_USER], message)
 
 """
 Crea un diccionario con la información de un usuario
