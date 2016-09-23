@@ -149,7 +149,8 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 		api = self.directory_channel.get_server().get_wrapper()
 		QObject.connect(api, SIGNAL(SIGNAL_CREATE_WINDOW),self.open_window, QtCore.Qt.QueuedConnection)
 
-		
+	def closeEvent(self, evnt):
+		self.directory_channel.disconnect()
 
 	"""	
 	def disable_chat(self):
