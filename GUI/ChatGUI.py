@@ -36,7 +36,6 @@ class ChatGUI(QtGui.QWidget):
 			self.create_request_channel()
 			self.initGUI()
 			self.connection_open = True
-			print "siguee"
 			self.my_parent_receiver.add_contact_receiver(self.my_contact)
 		except Exception as e:
 			QtGui.QMessageBox.warning(self, WARNING, str(e),QtGui.QMessageBox.Ok)
@@ -86,7 +85,7 @@ class ChatGUI(QtGui.QWidget):
 		self.grid.addWidget(self.btn_call,15,4,3,2)
 
 		self.btn_send.clicked.connect(self.send_message)
-		self.btn_call.clicked.connect(self.call)
+		self.btn_call.clicked.connect(self.send_audio)
 
 		self.show()
 
@@ -108,7 +107,7 @@ class ChatGUI(QtGui.QWidget):
 		else:
 			#try:
 			message2 = get_message_header(self.my_user[NAME_CONTACT])+message
-			print "I'm sending message: "+message2
+			
 			self.request_channel.send_text(message2)
 			self.show_sending_message(message)
 			#except Exception as e:
@@ -117,11 +116,21 @@ class ChatGUI(QtGui.QWidget):
 	""""
 	Inicia la llamada
 	"""
-	def call(self):
-		if not self.channel.send_text("LLAMANDO"):
+	def send_audio(self):
+
+		#try:
+		self.request_channel.send_audio()
+		self.txt_conversation.append(CALLING)
+		self.btn_call.hide()
+		self.child = CallGUI(self)
+		self.request_channel.audio_state(self.my_user[NAME_CONTACT],CALLING)
+	#except Exception as e:
+			#QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
+		""""
+		if not self.channel.send_text(CALLING):
 			QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
 		else:
-			self.show_sending_message("LLAMANDO")
+			self.show_sending_message(CALLING)
 			try:
 				self.channel.call()
 				self.txt_message.setReadOnly(True)
@@ -130,17 +139,19 @@ class ChatGUI(QtGui.QWidget):
 				self.child = CallGUI(self)
 			except Exception:
 				QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
-
+		"""
 	""""
 	Termina la llamada
 	"""
 	def end_call(self):
-		self.channel.end_call()
+		self.request_channel.stop_sending_audio()
 		self.btn_call.show()
 		self.btn_send.show()
 		self.txt_message.setReadOnly(False)
-		self.txt_message.setText("LLAMADA TERMINADA")
-		self.send_message()
+		self.txt_conversation.append(CALL_END)
+		self.request_channel.audio_state(self.my_user[NAME_CONTACT],CALL_END)
+		#self.txt_message.setText("LLAMADA TERMINADA")
+		#self.send_message()
 
 	
 	"""
@@ -179,6 +190,9 @@ class ChatGUI(QtGui.QWidget):
 		self.btn_send().setEnabled(False) 
 		self.btn_call.setEnabled(False) 
 		self.txt_conversation.setEnabled(False) 
+
+	def show_state_audio(self,state):
+		self.txt_conversation.append(self.my_contact[NAME_CONTACT]+" -> "+state)
 
 
 """

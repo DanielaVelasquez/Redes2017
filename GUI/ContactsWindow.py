@@ -71,12 +71,12 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 
 		self.txt_contacts.itemDoubleClicked.connect(self.show_contact)
 
-		try:
-			self.connect_general_directory()
-			self.setting_signal()
-			self.show()
-		except Exception, e:
-			QtGui.QMessageBox.warning(self, WARNING, str(e) ,QtGui.QMessageBox.Ok)
+		#try:
+		self.connect_general_directory()
+		self.setting_signal()
+		self.show()
+		#except Exception, e:
+			#QtGui.QMessageBox.warning(self, WARNING, str(e) ,QtGui.QMessageBox.Ok)
 		
 	#******************************************#
 	#Establece la conexión con el contacto     #
@@ -167,22 +167,24 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 		self.new_contact_window = username
 
 	def showMessage(self, user,message):
-		print "I'm receiver, I got a messag from: "+str(user)+"\nmessage is: "+message
 		if self.chats.has_key(user):
 			chat = self.chats[user]
 			chat.show_receiving_message(message)
 
 	#Invocado por el chat del usuario que cerró la conexion
 	def close_connection_with(self,username):
-		print "I'm the receiver, closing connection with "+username
 		if self.chats.has_key(username):
 			del self.chats[username]
 
 	#Invocado por el contacto cuando cerró la conexion
 	def remove_contact(self,username):
-		print "I'm the receiver, I was told to close connection with "+username
 		if self.chats.has_key(username):
 			chat = self.chats[username]
 			chat.connection_was_closed()
 			self.closed_by_contact[username] = chat
 			self.close_connection_with(username)
+
+	def state_audio(self,username,state):
+	 	if self.chats.has_key(username):
+	 		chat = self.chats[username]
+	 		chat.show_state_audio(state)

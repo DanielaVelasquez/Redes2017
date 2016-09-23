@@ -124,3 +124,6 @@ SIGNAL_CREATE_WINDOW = "create_window"
 SIGNAL_DISABLE_WINDOW = "disable_window"
 
 CONNECTION_CLOSED = "El contacto abandono la conversacion, no es posible continuar con la transferencia de informacion, inicie una nueva conversacion para esto"
+
+CALLING = "ENVIANDO AUDIO"
+CALL_END = "FIN ENVIO AUDIO"

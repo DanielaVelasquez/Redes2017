@@ -23,7 +23,7 @@ from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.AuxiliarFunctions import *
 from Constants.Constants import *
-
+from RecordAudio import AudioServer
 
 from threading import Thread
 from PyQt4 import QtCore, QtGui
@@ -40,6 +40,7 @@ class MyApiServer:
 	def __init__(self,app_receiver,my_port = DEFAULT_PORT,):
 		#self,Qparent, my_port = DEFAULT_PORT
 		self.port = my_port
+		print "Server connecting to: "+str(get_ip_address())+", "+str(self.port)
 		self.server = SimpleXMLRPCServer((get_ip_address(),int(self.port)),allow_none=True)
 		self.wrapper = FunctionWrapper(app_receiver)
 		self.server.register_instance(self.wrapper)
@@ -66,12 +67,16 @@ class FunctionWrapper(QtCore.QThread):
 		self.receiver = receiver
 	  
 	def search_user(self,ip,port):
-		print "Searching user"
 		for c in self.chats_dictionary:
 			user = self.chats_dictionary[c]
 			if user[IP_CONTACT] == ip and user[PORT_CONTACT] == port:
 				return user
 		return None
+
+	#Le indica a un usuario cuando se genera un evento de envio voz
+	def audio_state(self,username,state):
+		self.receiver.state_audio(username,state)
+
 
 
 	"""**************************************************
@@ -83,7 +88,7 @@ class FunctionWrapper(QtCore.QThread):
 		self.chats_dictionary[username] = user
 		self.receiver.showNewChat(contact_ip, contact_port, username)
 		#Emite la señal para que se cree la ventana
-		print "Adding \n-->"+str(self.chats_dictionary)
+		
 		self.emit(SIGNAL(SIGNAL_CREATE_WINDOW))
 		#Un cliente mando a llamar a esta instancia, crea una ventana de
 		#chat para automaticamente
@@ -99,13 +104,11 @@ class FunctionWrapper(QtCore.QThread):
 	###################################################
 	def remove_contact(self, username):
 
-		print "Server removing conecction with '"+username+"'\n---->"+str(self.chats_dictionary)
+		
 		if self.chats_dictionary.has_key(username):
 			del self.chats_dictionary[username]
 			self.receiver.remove_contact(username)
-			print "Removing \n-->"+str(self.chats_dictionary)
-		else:
-			print "not found"
+		
 
 	""" **************************************************
 	Procedimiento que ofrece nuestro servidor, este metodo sera llamado
@@ -116,14 +119,9 @@ class FunctionWrapper(QtCore.QThread):
 		#Recuerden que el mensaje, al inicio debe llevar una cadena
 		#que contiene username:ip,  para saber a que conversacion 
 		#se refiere
-		print "I'm server, I'm receiving: "+message
-		
 		message_split = split_message_header(message)
-		print "message_split ="+str(message_split)
-		
 		text = message_split[MESSAGE_TEXT]
 		user = message_split[MESSAGE_USER]
-		print "I'm server, I'm sending to receiver: "+text+" to: "+str(user)
 		self.receiver.showMessage(user,text)
 		
 		
@@ -137,8 +135,8 @@ class FunctionWrapper(QtCore.QThread):
 		#TODO
 	
 	def play_audio_wrapper(self,audio):
-		pass
-		#TODO
+		self.audio_server = AudioServer()
+		self.audio_server.playAudio(audio)
 	 
 	""" **************************************************
 	Procedimiento que ofrece nuestro servidor, este metodo sera llamado
@@ -190,4 +188,7 @@ class Receiver(object):
 	 #nombre de usuario 'username'                      #
 	 ####################################################
 	 def close_connection_with(self, username):
+	 	raise NotImplementedError()
+
+	 def state_audio(self,username,state):
 	 	raise NotImplementedError()

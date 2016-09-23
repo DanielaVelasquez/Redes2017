@@ -19,6 +19,11 @@
 
 from ApiServer import *
 from ApiClient import *
+from RecordAudio import AudioClient
+import xmlrpclib
+import multiprocessing as mp
+import threading
+import numpy
 #from RecordAudio import record_audio_queue
 """**************************************************
 Las instancias de esta clase contendran los metodos
@@ -55,6 +60,8 @@ class RequestChannel(object):
         else:
             raise Exception(ERROR_REQUEST_CHANNEL)
 
+        self.calling = False
+
     """**************************************************
     Metodo que se encarga de mandar texto al contacto con
     el cual se estableció la conexion
@@ -73,8 +80,34 @@ class RequestChannel(object):
         self.api_client.getProxy().new_chat_wrapper(my_ip,my_port,my_username)    
     
     def remove_connection_with(self,username):
-        print "I'm the request channel, closing connection "+username
         self.api_client.getProxy().remove_contact(username)
+
+    def send_audio(self):
+        self.call_thread = threading.Thread(target=self.sending_audio)
+        self.call_thread.daemon = True
+        self.call_thread.start()
+
+    def sending_audio(self):
+        if not self.calling:
+            self.calling = True
+            self.queue = mp.Queue()
+            self.audioRecorder = AudioClient()
+            self.p = threading.Thread(target=self.audioRecorder.feed_queque, args=(self.queue,))
+            #self.p = mp.Process(target=self.audioRecorder.feed_queque, args=(self.queue,))
+            self.p.daemon = True
+            self.p.start()
+            #self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/")
+            while self.calling:
+                d = self.queue.get()
+                data = xmlrpclib.Binary(d)
+                self.api_client.getProxy().play_audio_wrapper(data) 
+
+    def stop_sending_audio(self):
+        self.calling = False
+
+    def audio_state(self,username, state):
+        self.api_client.getProxy().audio_state(username,state)
+
     """**************************************************
     Metodo que se encarga de mandar audio y video al contacto 
     con el cual se estableció la conexion

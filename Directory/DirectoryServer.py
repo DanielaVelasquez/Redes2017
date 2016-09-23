@@ -61,7 +61,9 @@ class FunctionWrapperDirectory:
 
     def get_contacts_wrapper(self,  username):
         #Se clona el diccionario de usuarios
+        print "getting contacts "+str(username)
         copy = self.client_dictionary.copy()
+        print "->"+str(copy)
         #Se elimina el usuario solicitó información
         if self.client_dictionary.has_key(username):
             del copy[username]

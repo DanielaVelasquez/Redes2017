@@ -38,7 +38,6 @@ class MyApiClient:
         self.contact_ip = contact_ip
         try:
             con = HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
-            print "Api client, connection: "+con
             self.proxy = xmlrpclib.ServerProxy(con, allow_none=True)
         except Exception, e:
         	raise Exception(CONECTION_FAIL)
@@ -49,7 +48,6 @@ class MyApiClient:
     def getProxy(self):
         try:
             con = HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
-            print "Api client, connection: "+con
             self.proxy = xmlrpclib.ServerProxy(con, allow_none=True)
         except Exception, e:
             raise Exception(CONECTION_FAIL)
