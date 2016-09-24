@@ -42,7 +42,7 @@ def main(argv):
         else:
             login = LoginGUI(mode=LOCAL)
     else:
-        if len(argv) == 3:
+        if len(argv) == 2:
             login = LoginGUI(my_information=argv[0],my_contact_information=argv[1],username = argv[2])
         else:
             login = LoginGUI()
