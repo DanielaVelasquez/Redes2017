@@ -31,7 +31,8 @@ class MyApiServer:
         self.videoServer = VideoServer()
 
         self.server.register_function(self.audioServer.playAudio, 'playAudio') 
-        self.server.register_function(self.videoServer.reproduce_video, 'reproduce_video')
+        self.server.register_function(self.videoServer.my_play_video,'my_play_video')
+        self.server.register_function(self.videoServer.reproduce_video,'reproduce_video')
         self.server.register_function(self.videoServer.stop_reproducing, 'stop_reproducing')  
         self.server.register_instance(self.wrapper)
 

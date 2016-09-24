@@ -1,27 +1,29 @@
 import xmlrpclib
-import pickle
 import threading
 import multiprocessing as mp
 import cv2
-
-def feed_queue(q):
-	cap = cv2.VideoCapture(0)
-	while True:
-		ret, frame = cap.read()
-		#ret = cap.set(3, 600)
-		#ret = cap.set(4, 400)
-		if ret:
-			q.put(pickle.dumps(frame))
-	#cap.release()
+from cStringIO import StringIO
+from numpy.lib import format
 
 proxy = xmlrpclib.ServerProxy("http://localhost:5000/",allow_none = True)
 
+def toString(data):
+    f= StringIO()
+    format.write_array(f,data)
+    return f.getvalue()
+
+def feed_queue():
+    cap = cv2.VideoCapture(0)
+    while True:
+        ret, frame = cap.read()
+        if ret:
+            data = xmlrpclib.Binary(toString(frame))
+            proxy.my_play_video(data)
+    #cap.release()
+
 queue = mp.Queue()
 
-p = threading.Thread(target=feed_queue, args=(queue,))
+p = threading.Thread(target=feed_queue)
+#p.daemon = True
 
 p.start()
-
-while True:
-	d = queue.get()
-	proxy.reproduce_video(d)

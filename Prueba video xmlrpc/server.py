@@ -1,41 +1,50 @@
 #! /usr/bin/env python
 import xmlrpclib
-import pickle
 import cv2
 import threading
-
+from numpy.lib import format
+from cStringIO import StringIO
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 
-class Video(object):	
+def toArray(s):
+    f = StringIO(s)
+    arr = format.read_array(f)
+    return arr
 
-	def __init__(self):
-		super(Video, self).__init__()
-		self.r = False
-		self.frame = None
+class Video(object):    
 
-	def reproduce(self):
-		print "Iniciando hilo"
-		while self.r:
-			cv2.imshow('frame',self.frame)
-			if cv2.waitKey(1) & 0xFF == ord('q'):
-				break
-		cv2.destroyAllWindows()
+    def __init__(self):
+        super(Video, self).__init__()
+        self.r = False
+        self.frame = None
+        self.frames = []
 
-	def reproduce_video(self, video):
-		print "Reproducing..."
-		self.frame = pickle.loads(video)
-		if not self.r:
-			print "No estaba reproduciendo"
-			self.r = True
-			print "Lanzando hilo"
-			p = threading.Thread(target=self.reproduce)
-			p.start()
-			print "Lanzado"
+    """ Funcion que sacara de la cola los frames y los 
+    reproducira """    
+    def my_pop_queue(self):
+        while True:
+            if len(self.frames) > 0:
+                print "Mostrando frame actual"
+                cv2.imshow('frame',self.frames.pop(0))
+                print "MOSTRADO frame actual"
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
+        cv2.destroyAllWindows()
+
+    """ 
+    Funcion que sera llamada como procedimiento remoto 
+    y agregara el item a la cola 
+    """
+    def my_play_video(self, frame):
+        self.frames.append(toArray(frame.data))
 
 server = SimpleXMLRPCServer(("localhost", 5000), allow_none = True)
 
 a = Video()
-server.register_function(a.reproduce_video,'reproduce_video')
-print "running"
+a.r = True
+video_thread = threading.Thread(target = a.my_pop_queue)
+video_thread.start()
 
+server.register_function(a.my_play_video,'my_play_video')
+print "running"
 server.serve_forever()

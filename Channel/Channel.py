@@ -96,7 +96,6 @@ class Channel:
     """
     def call(self):
         self.call_thread = threading.Thread(target=self.client.call)
-        #self.call_thread = mp.Process(target=self.client.call)
         self.call_thread.daemon = True
         self.call_thread.start()
 

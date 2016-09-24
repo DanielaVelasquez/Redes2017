@@ -39,7 +39,7 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 		if self.mode in LOCAL:
 			self.channel = Channel(contact_ip =get_ip_address(),my_port=self.my_information,contact_port=self.my_contact_information)
 		else:
-			print "chanel make connetion contact_ip ="+str(self.my_contact_information)
+			print "Chanel make connection contact_ip ="+str(self.my_contact_information)
 			self.channel = Channel(contact_ip = self.my_contact_information)
 		self.channel.setWrapper(self)
 		self.channel.init_chat()

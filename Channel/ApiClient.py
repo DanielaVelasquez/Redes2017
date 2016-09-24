@@ -28,7 +28,7 @@ class MyApiClient:
         if contact_port is None:
             contact_port = DEFAULT_PORT
         if contact_ip is None:
-            contact_ip = LOCALHOST_CLIENT
+            contact_ip = get_ip_address()
         self.contact_port = contact_port
         self.contact_ip = contact_ip
         self.calling = False
@@ -54,11 +54,11 @@ class MyApiClient:
             self.queue = mp.Queue()
             self.audioRecorder = AudioClient()
             self.p = threading.Thread(target=self.audioRecorder.feed_queque, args=(self.queue,))
-            #self.p = mp.Process(target=self.audioRecorder.feed_queque, args=(self.queue,))
             self.p.daemon = True
             self.p.start()
             
-            self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/")
+            if self.proxy is None:
+                self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/")
             while self.calling:
                 d = self.queue.get()
                 data = xmlrpclib.Binary(d)
@@ -74,15 +74,20 @@ class MyApiClient:
     Inicia la video llamada
     """
     def videocall(self):
-        #print "Sin crear el proxy"
-        self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/")
+        if self.proxy is None:
+            self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/")
+        
+        print "Mandamos al servidor a esperar los frames"
+        self.proxy.reproduce_video()
 
         self.video = VideoClient(self.proxy)
-        print "Hice un VideoClient con self.proxy"
+        # Comenzamos a enviar los frames
+        self.video.init_video()
 
-        self.video_thread = threading.Thread(target=self.video.init_video)
-        self.video_thread.daemon = True
-        self.video_thread.start()
+        # Quizas solo haya que hacer el metodo, no un thread... pero no se
+        #self.video_thread = threading.Thread(target=self.video.init_video)
+        #self.video_thread.daemon = True
+        #self.video_thread.start()
 
     """
     Finaliza el envio de audio
