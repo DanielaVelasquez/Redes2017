@@ -102,11 +102,14 @@ def main(argv):
         sys.exit(2)
     if opts: #Si el usuario mandó alguna bandera
         local = True if '-l' in opts[0] else False
-        if local:
-            general_server = GeneralDirectory(port = args[0]).server
-        else:
-            general_server = GeneralDirectory().server
-        general_server.serve_forever()
+    else:
+        local = False
+        
+    if local:
+        general_server = GeneralDirectory(port = args[0]).server
+    else:
+        general_server = GeneralDirectory().server
+    general_server.serve_forever()
 
 
 if __name__ == '__main__':
