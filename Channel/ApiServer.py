@@ -43,6 +43,7 @@ class MyApiServer:
 		print "Server connecting to: "+str(get_ip_address())+", "+str(self.port)
 		self.server = SimpleXMLRPCServer((get_ip_address(),int(self.port)),allow_none=True)
 		self.wrapper = FunctionWrapper(app_receiver)
+		self.server.register_function(self.wrapper.new_chat_wrapper, 'new_chat_wrapper') 
 		self.server.register_instance(self.wrapper)
 	  
 	"""**************************************************
