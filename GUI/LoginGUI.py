@@ -88,15 +88,15 @@ class LoginGUI(QtGui.QWidget):
 	def login(self):
 		complete_information = False
 		if self.mode in LOCAL:
-			text_my_information = self.txt_my_information.text()
+			text_my_information = str(self.txt_my_information.text())
 			
 			if len(text_my_information) != 0 :
 				complete_information = True
 		else:
 			text_my_information = DEFAULT_PORT
 		
-		text_my_contact_information = self.txt_contact_information.text()
-		text_username = self.txt_username.text()
+		text_my_contact_information = str(self.txt_contact_information.text())
+		text_username = str(self.txt_username.text())
 		
 		if not complete_information and len(text_my_contact_information) == 0 and len(text_username) == 0:
 			QtGui.QMessageBox.warning(self, WARNING, INCOMPLETE_INFORMATION,QtGui.QMessageBox.Ok)

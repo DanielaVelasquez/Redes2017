@@ -94,7 +94,6 @@ class FunctionWrapperDirectory:
 def main(argv):
     try:
         opts, args = getopt.getopt(argv, "l", ["local="])
-        print "pudo"
     except getopt.GetoptError:
         print 'Uso con puertos locales:'
         print '$ python Directory/DirectoryServer.py -l <puerto>'
@@ -105,7 +104,6 @@ def main(argv):
         local = True if '-l' in opts[0] else False
     else:
         local = False
-    print "local " +str(local)
     if local:
         general_server = GeneralDirectory(port = args[0]).server
     else:
