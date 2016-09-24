@@ -102,7 +102,7 @@ class LoginGUI(QtGui.QWidget):
 			QtGui.QMessageBox.warning(self, WARNING, INCOMPLETE_INFORMATION,QtGui.QMessageBox.Ok)
 		else:
 			mode = self.mode
-			print "text_my_information "+text_my_information+"\ntext_my_contact_information "+text_my_contact_information+"\ntext_username "+text_username+"\n"+mode
+			#print "text_my_information "+text_my_information+"\ntext_my_contact_information "+text_my_contact_information+"\ntext_username "+text_username+"\n"+mode
 			self.contacts_window = ContactsWindow(str(text_my_information),str(text_my_contact_information),mode,str(text_username))
 			self.close()
 
