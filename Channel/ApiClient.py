@@ -93,4 +93,6 @@ class MyApiClient:
     Finaliza el envio de audio
     """
     def end_videocall(self):
+        if self.video is None:
+            self.video = VideoClient(self.proxy)
         self.video.end_call()
