@@ -40,6 +40,7 @@ class MyApiClient:
             con = HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
             print "Client coneccting to: "+con
             self.proxy = xmlrpclib.ServerProxy(con, allow_none=True)
+            print "I'm client, server has this methods: "+str(self.proxy.system.listMethods())
         except Exception, e:
         	raise Exception(CONECTION_FAIL)
         
