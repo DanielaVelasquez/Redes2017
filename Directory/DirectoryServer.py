@@ -100,20 +100,14 @@ def main(argv):
         print 'Uso entre computadoras dentro de la red'
         print '$ python Directory/DirectoryServer.py '
         sys.exit(2)
-
     if opts: #Si el usuario mandó alguna bandera
         local = True if '-l' in opts[0] else False
-    else:
-        local = False
-
-    if local:
-        general_server = GeneralDirectory(port = args[0]).server
-    else:
-        general_server = GeneralDirectory().server
+        if local:
+            general_server = GeneralDirectory(port = args[0]).server
+        else:
+            general_server = GeneralDirectory().server
         general_server.serve_forever()
 
-    general_server.serve_forever()
 
 if __name__ == '__main__':
-    print ("kfjs")
     main(sys.argv[1:])

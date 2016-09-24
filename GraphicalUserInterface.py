@@ -17,7 +17,7 @@
 import sys, getopt
 from GUI.LoginGUI import LoginGUI
 from Constants.Constants import *
-from Constants.AuxiliarFunctions import *
+
 from PyQt4 import QtGui
 # **************************************************
 #  Definicion de la funcion principal
@@ -42,8 +42,8 @@ def main(argv):
         else:
             login = LoginGUI(mode=LOCAL)
     else:
-        if len(argv) == 2:
-            login = LoginGUI(my_information=get_ip_address(),my_contact_information=argv[0],username = argv[1])
+        if len(argv) == 3:
+            login = LoginGUI(my_information=argv[0],my_contact_information=argv[1],username = argv[2])
         else:
             login = LoginGUI()
     """

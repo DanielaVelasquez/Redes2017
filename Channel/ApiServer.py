@@ -43,7 +43,6 @@ class MyApiServer:
 		print "Server connecting to: "+str(get_ip_address())+", "+str(self.port)
 		self.server = SimpleXMLRPCServer((get_ip_address(),int(self.port)),allow_none=True)
 		self.wrapper = FunctionWrapper(app_receiver)
-		self.server.register_function(self.wrapper.new_chat_wrapper, 'new_chat_wrapper') 
 		self.server.register_instance(self.wrapper)
 	  
 	"""**************************************************
@@ -85,8 +84,6 @@ class FunctionWrapper(QtCore.QThread):
 	conexion con este cliente
 	**************************************************"""
 	def new_chat_wrapper(self, contact_ip, contact_port, username):
-		print "llegué al servidor"
-		"""
 		user = dictionaryUser(username,contact_ip,contact_port)
 		self.chats_dictionary[username] = user
 		self.receiver.showNewChat(contact_ip, contact_port, username)
@@ -96,7 +93,6 @@ class FunctionWrapper(QtCore.QThread):
 		#Un cliente mando a llamar a esta instancia, crea una ventana de
 		#chat para automaticamente
 		#TODO
-		"""
 
 	def add_contact(self,contact_ip,contact_port,username):
 		user = dictionaryUser(username,contact_ip,contact_port)
