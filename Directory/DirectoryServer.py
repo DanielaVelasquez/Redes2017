@@ -35,7 +35,7 @@ class GeneralDirectory:
         @param port <int> Si trabaja de manera local, representa el
                         número del puerto por el cual recibirá las peticiones
     """
-    def __init__(self, port = DEFAULT_PORT_DIRECTORY_SERVER):
+    def __init__(self, port = DEFAULT_PORT):
         #TODO
         self.client_dictionary = {}
         #Inicia el servidor
