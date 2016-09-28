@@ -24,6 +24,12 @@ import xmlrpclib
 import multiprocessing as mp
 import threading
 import numpy
+
+import sys,getopt
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+
+from Constants.Constants import *
 #from RecordAudio import record_audio_queue
 """**************************************************
 Las instancias de esta clase contendran los metodos
@@ -50,15 +56,18 @@ class RequestChannel(object):
     @param <int> contact_port: De trabajar de manera local
                 representa el puerto de la instancia del contacto
     **************************************************"""
-    def __init__(self, contact_ip = None, contact_port = None):
+    def __init__(self, contact_ip = None, contact_port = None, sender = None):
         super(RequestChannel,self).__init__()
-        #Crea el cliente
-        if contact_port:
-            self.api_client = MyApiClient(contact_port= contact_port) 
-        elif contact_ip:
-            self.api_client = MyApiClient(contact_ip= contact_ip)
+        if sender:
+            self.api_client = MyApiClient(contact_port= contact_port,contact_ip= contact_ip) 
         else:
-            raise Exception(ERROR_REQUEST_CHANNEL)
+            #Crea el cliente
+            if contact_port:
+                self.api_client = MyApiClient(contact_port= contact_port) 
+            elif contact_ip:
+                self.api_client = MyApiClient(contact_ip= contact_ip)
+            else:
+                raise Exception(ERROR_REQUEST_CHANNEL)
 
         self.calling = False
 
@@ -107,6 +116,9 @@ class RequestChannel(object):
 
     def audio_state(self,username, state):
         self.api_client.getProxy().audio_state(username,state)
+
+    def send_contacts(self,contacts):
+        self.api_client.getProxy().update_contacts(contacts)
 
     """**************************************************
     Metodo que se encarga de mandar audio y video al contacto 

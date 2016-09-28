@@ -55,3 +55,9 @@ class DirectoryChannel(BidirectionalChannel):
     #**************************************************#
     def disconnect(self):
         self.get_api_client().getProxy().disconnect_wrapper(self.username)
+
+    def register_user(self,username,password):
+        self.get_api_client().getProxy().register(username,password)
+
+    def login(self,username,password):
+        self.get_api_client().getProxy().login(username,password,str(self.my_ip), str(self.my_port))

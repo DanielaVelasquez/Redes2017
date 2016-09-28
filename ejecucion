@@ -1,0 +1,25 @@
+python GraphicalUserInterface.py -l 5000 8000 Daniela
+
+python GraphicalUserInterface.py -l 7000 8000 Daniela2
+
+
+python GraphicalUserInterface.py 192.168.1.83 
+
+python GraphicalUserInterface.py 192.168.1.83 LocalWindows
+
+cd Directory
+python DirectoryServer.py -l 8000
+
+
+cd Directory
+python DirectoryServer.py 192.168.1.69
+
+python GraphicalUserInterface.py -l 4000 5000 Alejandra
+
+
+"""
+		#username = user[NAME_CONTACT]
+		if self.chats.has_key(user):
+			chat = self.chats[user]
+			chat.show_receiving_message(message)
+		"""

@@ -43,6 +43,7 @@ WIDGET = 'widget'
 NAME_CONTACT = 'username'
 IP_CONTACT = 'ip_contact'
 PORT_CONTACT = 'port_contact'
+CHANNEL_CONTACT = 'channel_contact'
 
 TABLE_ITEMS = 2
 FIRST_ITEM = 0
@@ -127,3 +128,29 @@ CONNECTION_CLOSED = "El contacto abandono la conversacion, no es posible continu
 
 CALLING = "ENVIANDO AUDIO"
 CALL_END = "FIN ENVIO AUDIO"
+
+#Registrar usuario
+TITLE_USER = "Usuario"
+TITLE_ADD_USER = "Nuevo usuario"
+TITLE_PASS = "Password"
+INFORMATION = "Informacion"
+SUCCESFUL_REGISTRATION = "Usuario registrado con exito"
+CONF_PASS = "Confirmar password"
+
+PASSWORD_PROBLEM = "Las contraseñas no coinciden"
+FILE_NAME = "input.txt"
+SEP = " : "
+
+USERNAME_REGISTERED ="El nombre de usuario ya existe"
+ERROR_REGISTERING = "El usuario no pudo ser registrado"
+
+
+SLEEP = 5
+
+REGISTER = "Registrar"
+
+SENDER_REGISTER ="registrar"
+SENDER_LOGIN = "iniciar_sesion"
+
+USER_DATA_WRONG = "Datos de usuario no encontrado"
+DEFAULT_PORT_2 = 7000

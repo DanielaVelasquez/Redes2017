@@ -58,3 +58,11 @@ def dictionaryUser(username,ip,port):
 	return user
 
 
+def codify_password(password):
+	newpass = ""
+	for letra in password:
+		val_ascii = ord(str(letra))
+		val_ascii = val_ascii + 5
+		newpass = newpass + chr(val_ascii)
+	return newpass
+

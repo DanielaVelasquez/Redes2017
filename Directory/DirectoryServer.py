@@ -24,6 +24,10 @@ from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.AuxiliarFunctions import *
 from Constants.Constants import *
+from Channel.Channels import RequestChannel
+import threading
+import time
+
 # Restrict to a particular path.
 class RequestHandler(SimpleXMLRPCRequestHandler):
     rpc_paths = ('/RPC2',)
@@ -57,13 +61,60 @@ class FunctionWrapperDirectory:
     ************************************************** """
     def __init__(self,client_dictionary):
         self.client_dictionary = client_dictionary
+        self.registered_users = {}
+        self.read_users()
+        self.start_thread()
 
+    def start_thread(self):
+        self.update_thread = threading.Thread(target = self.update) 
+        self.update_thread.daemon = True
+        self.update_thread.start()
+
+    def update(self):
+        while True:
+            try:
+                for user in self.client_dictionary:
+                    d = self.client_dictionary[user]
+                    channel = d[CHANNEL_CONTACT]
+                    c = self.get_contacts_wrapper(user)
+                    try:
+                        if c:
+                            channel.send_contacts(c)
+                    except Exception as e:
+                        print "Error: "+str(e)
+                        self.disconnect_wrapper(user)
+            except Exception as e:
+                pass
+            
+                
+            time.sleep(SLEEP)
+
+    def read_users(self):
+        archivo = open(FILE_NAME,'r')
+        for line in archivo:
+            l = line.split(SEP,2)
+            username = l[0]
+            password = l[1]
+            self.registered_users[username] = password
+
+    def is_registered(self, username):
+        return self.registered_users.has_key(username)
+
+    def register(self, username,password):
+        if self.is_registered(username):
+            raise Exception(USERNAME_REGISTERED)
+        else:
+            try:
+                archivo = open(FILE_NAME,'a')
+                archivo.write(username+SEP+password)
+                self.registered_users[username] = password
+            except Exception:
+                raise Exception(ERROR_REGISTERING)
 
     def get_contacts_wrapper(self,  username):
         #Se clona el diccionario de usuarios
         print "getting contacts "+str(username)
         copy = self.client_dictionary.copy()
-        print "->"+str(copy)
         #Se elimina el usuario solicitó información
         if self.client_dictionary.has_key(username):
             del copy[username]
@@ -79,7 +130,7 @@ class FunctionWrapperDirectory:
             #No permite la conexión
             raise Exception(USERNAME_USED)
         else:
-            user = dictionaryUser(username,ip_string,port_string)
+            user = self.user_to_dictionary(username,ip_string,port_string)
             self.client_dictionary[username] = user
 
 
@@ -87,6 +138,23 @@ class FunctionWrapperDirectory:
         print "Desconectando usuario: "+username
         del self.client_dictionary[username]
         #self, ip_string, port_string
+
+    def login(self,username,password,ip_string, port_string):
+        if self.registered_users.has_key(username) and self.registered_users[username] == password:
+            self.connect_wrapper(ip_string,port_string,username)
+        else:
+            raise Exception(USER_DATA_WRONG)
+
+    def user_to_dictionary(self, username,ip,port):
+        user = {}
+        user[NAME_CONTACT] = username
+        user[IP_CONTACT] = ip
+        user[PORT_CONTACT] = port
+        #Crea el canal de comunicación
+        user[CHANNEL_CONTACT] = RequestChannel(contact_ip = ip, contact_port = port, sender = True)
+        return user
+
+
 
 # **************************************************
 #  Definicion de la funcion principal

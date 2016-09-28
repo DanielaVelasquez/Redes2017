@@ -47,9 +47,11 @@ class MyApiClient:
     Metodos Get
     **************************************************"""
     def getProxy(self):
+        """"
         try:
             con = HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
             self.proxy = xmlrpclib.ServerProxy(con, allow_none=True)
         except Exception, e:
             raise Exception(CONECTION_FAIL)
+        """
     	return self.proxy

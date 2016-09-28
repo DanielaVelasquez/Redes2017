@@ -146,7 +146,9 @@ class FunctionWrapper(QtCore.QThread):
 	def play_video_wrapper(self,frame):
 		pass
 		#TODO
-	
+
+	def update_contacts(self,contact):
+		self.receiver.show_contacts(contact)
 
 
 #***************************************************************************************************************
@@ -191,4 +193,7 @@ class Receiver(object):
 	 	raise NotImplementedError()
 
 	 def state_audio(self,username,state):
+	 	raise NotImplementedError()
+
+	 def show_contacts(self,contacts):
 	 	raise NotImplementedError()

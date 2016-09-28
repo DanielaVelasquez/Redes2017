@@ -2,12 +2,15 @@
 # -*- coding: utf-8 -*-
 import sys
 from PyQt4 import QtGui, QtCore
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 #Direcciones relativas
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
 from Constants.AuxiliarFunctions import *
 from ContactsWindow import ContactsWindow
+#from Register import Register
 """
 Clase de interfaz grafica que nos permite desplegar la pantalla de logueo
 """
@@ -53,6 +56,11 @@ class LoginGUI(QtGui.QWidget):
 			lb_contac_title = OTHER_IP_NUMBER_TITLE
 
 		#Declaración elementos de la GUI
+		self.lb_user = QtGui.QLabel(TITLE_USER,self)
+		self.lb_pass = QtGui.QLabel(TITLE_PASS,self)
+		self.txt_user = QtGui.QLineEdit(self)
+		self.txt_pass = QtGui.QLineEdit(self)
+
 		self.lb_my_information = QtGui.QLabel(lb_my_title,self)
 		if self.mode in LOCAL:
 			self.txt_my_information = QtGui.QLineEdit(self)		
@@ -60,10 +68,9 @@ class LoginGUI(QtGui.QWidget):
 		self.lb_contact_information = QtGui.QLabel(lb_contac_title,self)
 		self.txt_contact_information = QtGui.QLineEdit(self)
 
-		self.lb_username = QtGui.QLabel(MY_USER_NAME,self)
-		self.txt_username = QtGui.QLineEdit(self)
-
 		self.btn_login = QtGui.QPushButton(LOGIN_TITLE,self)
+
+		self.btn_register = QtGui.QPushButton(REGISTER,self)
 
 		#Configuración elementos de la GUI		
 		self.grid.addWidget(self.lb_my_information,0,0,1,0)
@@ -72,14 +79,28 @@ class LoginGUI(QtGui.QWidget):
 		self.grid.addWidget(self.lb_contact_information,2,0,1,0)
 		self.grid.addWidget(self.txt_contact_information,3,0,1,0)
 
-		self.grid.addWidget(self.lb_username,4,0,1,0)
-		self.grid.addWidget(self.txt_username,5,0,1,0)
+		self.grid.addWidget(self.lb_user,5,0,1,0)
+		self.grid.addWidget(self.txt_user,6,0,1,0)
 
-		self.grid.addWidget(self.btn_login,6,2)
+		self.grid.addWidget(self.lb_pass,7,0,1,0)
+		self.grid.addWidget(self.txt_pass,8,0,1,0)
+
+		self.grid.addWidget(self.btn_login,9,1)
+		self.grid.addWidget(self.btn_register,10,1)
 
 		self.btn_login.clicked.connect(self.login)
+		self.btn_register.clicked.connect(self.register)
+
+		self.txt_pass.setEchoMode(QtGui.QLineEdit.Password)
 
 		self.show()
+
+
+	def register(self):
+		pass
+		#register = Register(self.mode)
+		#register.show()
+		#self.close()
 	
 	"""
 	Revisa que los campos de texto no esten vacios
@@ -95,15 +116,17 @@ class LoginGUI(QtGui.QWidget):
 		else:
 			text_my_information = DEFAULT_PORT
 		
-		text_my_contact_information = self.txt_contact_information.text()
-		text_username = self.txt_username.text()
+		text_my_contact_information = str(self.txt_contact_information.text())
+		text_username = str(self.txt_user.text())
+		text_password = str(self.txt_pass.text())
 		
-		if not complete_information and len(text_my_contact_information) == 0 and len(text_username) == 0:
+		if not complete_information and len(text_my_contact_information) == 0 and len(text_username) == 0 and len(text_password)==0:
 			QtGui.QMessageBox.warning(self, WARNING, INCOMPLETE_INFORMATION,QtGui.QMessageBox.Ok)
 		else:
 			mode = self.mode
+			password = codify_password(text_password)
 			#print "text_my_information "+text_my_information+"\ntext_my_contact_information "+text_my_contact_information+"\ntext_username "+text_username+"\n"+mode
-			self.contacts_window = ContactsWindow(str(text_my_information),str(text_my_contact_information),mode,str(text_username))
+			self.contacts_window = ContactsWindow(my_information = text_my_information,my_contact_information=text_my_contact_information,mode=mode,username=text_username,password=password, sender = SENDER_LOGIN)
 			self.close()
 
 	"""
