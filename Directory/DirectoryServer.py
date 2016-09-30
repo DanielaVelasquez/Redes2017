@@ -78,14 +78,14 @@ class FunctionWrapperDirectory:
                     channel = d[CHANNEL_CONTACT]
                     c = self.get_contacts_wrapper(user)
                     try:
-                        if c:
-                            channel.send_contacts(c)
+                        channel.send_contacts(c)
                     except Exception as e:
                         print "Error: "+str(e)
                         self.disconnect_wrapper(user)
             except Exception as e:
                 pass
-            
+            #print "usuarios registrados: "+str(self.registered_users)+"\n"
+            #print "usuarios conectados: "+str(self.client_dictionary)
                 
             time.sleep(SLEEP)
 
@@ -96,15 +96,18 @@ class FunctionWrapperDirectory:
             username = l[0]
             password = l[1]
             self.registered_users[username] = password
+        print "usuarios registrados: "+str(self.registered_users)
 
     def is_registered(self, username):
         return self.registered_users.has_key(username)
 
     def register(self, username,password):
+        print "Registrando "+username
         if self.is_registered(username):
             raise Exception(USERNAME_REGISTERED)
         else:
             try:
+                password = password +"\n"
                 archivo = open(FILE_NAME,'a')
                 archivo.write(username+SEP+password)
                 self.registered_users[username] = password
@@ -118,16 +121,23 @@ class FunctionWrapperDirectory:
         #Se elimina el usuario solicitó información
         if self.client_dictionary.has_key(username):
             del copy[username]
-        return copy
+            for u in copy:
+                inf = copy[u].copy()
+                del inf[CHANNEL_CONTACT]
+                copy[u] = inf
+            return copy
         #TODO
     """"********************************************
     Adiciona un nuevo contacto
     *********************************************"""
     def connect_wrapper(self, ip_string, port_string, username):
-        print "Registrando usuario: "+username
+        print "Iniciando usuario: "+username
+        print "usuarios conectados: "+str(self.client_dictionary)
+        print "->self.client_dictionary.has_key(username)"+str(self.client_dictionary.has_key(username))
         #Revisa si existe un usuario con dicho nombre
         if self.client_dictionary.has_key(username):
             #No permite la conexión
+            print "Usuario conectado"
             raise Exception(USERNAME_USED)
         else:
             user = self.user_to_dictionary(username,ip_string,port_string)
@@ -140,6 +150,9 @@ class FunctionWrapperDirectory:
         #self, ip_string, port_string
 
     def login(self,username,password,ip_string, port_string):
+        password = password +"\n"
+        print "login: "+username+" "+password
+        print "registrados "+str(self.registered_users)
         if self.registered_users.has_key(username) and self.registered_users[username] == password:
             self.connect_wrapper(ip_string,port_string,username)
         else:

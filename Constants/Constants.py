@@ -111,7 +111,7 @@ EXIT_KEY = 'q'
 
 #DirectoryServer
 DEFAULT_PORT_DIRECTORY_SERVER = 6666
-USERNAME_USED = "El nombre de usuario ya se encuentra en uso, por favor cambie el nombre de usuario e intente nuevamente"
+USERNAME_USED = "El usuario se encuentra conectado, por favor cierre otras sesiones"
 
 ERROR_REQUEST_CHANNEL = 'The values of fields are not consistent RequestChannel.__init__'
 
@@ -154,3 +154,5 @@ SENDER_LOGIN = "iniciar_sesion"
 
 USER_DATA_WRONG = "Datos de usuario no encontrado"
 DEFAULT_PORT_2 = 7000
+
+CONVERSATION_CLOSED = "La comunicación ha terminado, por favor una nuevamente"

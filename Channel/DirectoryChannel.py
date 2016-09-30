@@ -57,6 +57,7 @@ class DirectoryChannel(BidirectionalChannel):
         self.get_api_client().getProxy().disconnect_wrapper(self.username)
 
     def register_user(self,username,password):
+        print "channel registrando usuario"
         self.get_api_client().getProxy().register(username,password)
 
     def login(self,username,password):

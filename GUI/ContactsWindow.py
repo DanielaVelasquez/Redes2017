@@ -25,7 +25,8 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 	def __init__(self,my_information,my_contact_information,mode,username,password, sender = None):
 		super(ContactsWindow, self).__init__()
 
-		
+		self.username = username
+		self.password = password
 		#try:
 		if mode in LOCAL:
 			self.user = dictionaryUser(username,get_ip_address(),my_information)
@@ -37,10 +38,12 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 		self.directory_channel = None
 
 		self.connect()
+		print "sender: "+sender
 		if sender == SENDER_REGISTER:
+			print "contacts window registrando usuario"
 			self.directory_channel.register_user(username,password)
 		
-		self.directory_channel.login(username,password)
+		
 
 
 		#Chats con lo cuales se ha establecido una conexión
@@ -86,12 +89,14 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 		self.grid.addWidget(self.txt_contacts,2,0,10,10)
 		self.grid.addWidget(self.btn_refresh,12,8,3,2)
 		
-		self.btn_refresh.clicked.connect(self.update_contacts)
+		#self.btn_refresh.clicked.connect(self.update_contacts)
 
 		self.txt_contacts.itemDoubleClicked.connect(self.show_contact)
 
-		self.connect_general_directory()
+		#self.connect_general_directory()
+		self.directory_channel.login(self.username,self.password)
 		self.setting_signal()
+
 
 		self.show()
 		
@@ -127,7 +132,7 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 			chat = ChatGUI(self.user,contacts[selected_user],self.mode,self)
 			self.chats[selected_user] = chat
 		else:
-			self.update_contacts()
+			#self.update_contacts()
 			QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
 
 
@@ -157,8 +162,11 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 	#de usuarios                                #
 	#******************************************#
 	def update_contacts(self):
+		pass
+		"""
 		contacts = self.directory_channel.get_contacts()
 		self.show_contacts(contacts)
+		"""
 
 	#Abre una ventana de chat para el contacto que se indicó
 	def open_window(self):

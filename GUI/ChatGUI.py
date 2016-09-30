@@ -101,32 +101,37 @@ class ChatGUI(QtGui.QWidget):
 	Envia los mensajes al contacto
 	"""
 	def send_message(self):
-		message = str(self.txt_message.text())
-		if len(message) == 0:
-			QtGui.QMessageBox.warning(self, WARNING, MISSING_MESSAGE,QtGui.QMessageBox.Ok)
+		if self.connection_open:
+			message = str(self.txt_message.text())
+			if len(message) == 0:
+				QtGui.QMessageBox.warning(self, WARNING, MISSING_MESSAGE,QtGui.QMessageBox.Ok)
+			else:
+				try:
+					message2 = get_message_header(self.my_user[NAME_CONTACT])+message
+					
+					self.request_channel.send_text(message2)
+					self.show_sending_message(message)
+				except Exception as e:
+					QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)	
 		else:
-			#try:
-			message2 = get_message_header(self.my_user[NAME_CONTACT])+message
-			
-			self.request_channel.send_text(message2)
-			self.show_sending_message(message)
-			#except Exception as e:
-			#	QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)	
+			QtGui.QMessageBox.warning(self, WARNING, CONVERSATION_CLOSED,QtGui.QMessageBox.Ok)
 	
 	""""
 	Inicia la llamada
 	"""
 	def send_audio(self):
-
-		#try:
-		self.request_channel.send_audio()
-		self.txt_conversation.append(CALLING)
-		self.btn_call.hide()
-		self.child = CallGUI(self)
-		self.request_channel.audio_state(self.my_user[NAME_CONTACT],CALLING)
-	#except Exception as e:
-			#QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
-		""""
+		if self.connection_open:
+			try:
+				self.request_channel.send_audio()
+				self.txt_conversation.append(CALLING)
+				self.btn_call.hide()
+				self.child = CallGUI(self)
+				self.request_channel.audio_state(self.my_user[NAME_CONTACT],CALLING)
+			except Exception as e:
+				QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
+		else:
+			QtGui.QMessageBox.warning(self, WARNING, CONVERSATION_CLOSED,QtGui.QMessageBox.Ok)
+			""""
 		if not self.channel.send_text(CALLING):
 			QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
 		else:
