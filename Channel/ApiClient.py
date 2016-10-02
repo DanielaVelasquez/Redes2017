@@ -52,6 +52,7 @@ class MyApiClient:
             self.calling = True
             self.queue = mp.Queue()
             self.audioRecorder = AudioClient()
+            self.audioRecorder.calling = True
             self.p = threading.Thread(target=self.audioRecorder.feed_queque, args=(self.queue,))
             #self.p = mp.Process(target=self.audioRecorder.feed_queque, args=(self.queue,))
             self.p.daemon = True
@@ -61,7 +62,10 @@ class MyApiClient:
             while self.calling:
                 d = self.queue.get()
                 data = xmlrpclib.Binary(d)
-                self.proxy.playAudio(data)        
+                self.proxy.playAudio(data)
+            self.audioRecorder.calling = False
+            self.p.join()
+
 
     """""
     Termina la llamada

@@ -21,6 +21,7 @@ class AudioClient(object):
     """
     def __init__(self):
         super(AudioClient, self).__init__()
+        self.calling = False
         
     """"
     Método que se encarga de estar grabando de forma continua el audio y encolarlo.
@@ -33,12 +34,15 @@ class AudioClient(object):
 
         self.stream = self.pyaudio.open(format=self.pyaudio_format, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
 
-        while True:
+        while self.calling:
             frame = []
             for i in range(0,int(RATE/CHUNK *RECORD_SECONDS)):
                 frame.append(self.stream.read(CHUNK))
             data_ar = numpy.fromstring(''.join(frame),  dtype=numpy.uint8)
             queque.put(data_ar)
+        print "Dejamos de grabar"
+        self.stream.close()
+        self.pyaudio.terminate()
 
 from cStringIO import StringIO
 from numpy.lib import format

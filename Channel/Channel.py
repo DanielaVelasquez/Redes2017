@@ -45,6 +45,24 @@ class Channel:
         self.client = None
         self.wrapper = None
 
+    """"
+    Inicia el servidor considerando que se tengan
+    los valores necesarios para iniciarlo
+    """
+    def init_server(self):
+        if self.wrapper is None:
+            raise Exception(MISSING_WRAPPER)
+        elif self.my_port is None:
+            self.server = MyApiServer(self.wrapper)
+        else:
+            self.server = MyApiServer(self.wrapper,self.my_port)
+
+    """""
+    Inicia el cliente
+    """
+    def init_client(self):
+        self.client = MyApiClient(self.contact_port,self.contact_ip)
+
     """""
     Inicia los hilos del chat, primero inicia el servidor
     y despues inicia los hilos del cliente
@@ -90,21 +108,3 @@ class Channel:
     def end_call(self):
         self.client.end_call()
         #self.call_thread.terminate()
-
-    """"
-    Inicia el servidor considerando que se tengan
-    los valores necesarios para iniciarlo
-    """
-    def init_server(self):
-        if self.wrapper is None:
-            raise Exception(MISSING_WRAPPER)
-        elif self.my_port is None:
-            self.server = MyApiServer(self.wrapper)
-        else:
-            self.server = MyApiServer(self.wrapper,self.my_port)
-
-    """""
-    Inicia el cliente
-    """
-    def init_client(self):
-        self.client = MyApiClient(self.contact_port,self.contact_ip)
