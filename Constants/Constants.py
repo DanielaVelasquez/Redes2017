@@ -32,6 +32,7 @@ REMOTE = "Remote"
 #Mensajes de error
 WARNING = "Alertas"
 MISSING_MESSAGE = "No hay ningun mensaje para enviar"
+MISSING_MICROPHONE = "No es posible usar el microfono, asegurese de que funcione correctamente"
 
 #Localhost
 LOCALHOST = "localhost"
