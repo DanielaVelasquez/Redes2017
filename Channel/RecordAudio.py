@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import pyaudio
+from PyQt4 import QtGui, QtCore
 import numpy
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
