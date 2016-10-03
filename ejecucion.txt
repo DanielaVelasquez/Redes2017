@@ -5,7 +5,7 @@
 cd Directory
 python DirectoryServer.py -l 8000
 
-2.- Instancias de los usuarios
+2.- Instancias de los usuarios (Argumentos opcionales, se puede confirmar por GUI)
 
 python GraphicalUserInterface.py -l 5000 8000 Daniela
 
@@ -19,7 +19,7 @@ python GraphicalUserInterface.py -l 7000 8000 Daniela2
 cd Directory
 python DirectoryServer.py 192.168.1.69
 
-2.- Instancias de los usuarios
+2.- Instancias de los usuarios (Argumentos opcionales, se puede confirmar por GUI)
 
 python GraphicalUserInterface.py 192.168.1.83 
 
