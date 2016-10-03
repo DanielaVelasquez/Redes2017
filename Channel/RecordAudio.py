@@ -36,6 +36,7 @@ class AudioClient(object):
         try:
             self.stream = self.pyaudio.open(format=self.pyaudio_format, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
             print "Microfono abierto correctamente"
+            
             while self.calling:
                 frame = []
                 for i in range(0,int(RATE/CHUNK *RECORD_SECONDS)):
@@ -49,8 +50,6 @@ class AudioClient(object):
         except Exception:
             QtGui.QMessageBox.warning(self, WARNING, MISSING_MICROPHONE, QtGui.QMessageBox.Ok)
             print "Tu microfono no sirve >:v"
-
-
 
 from cStringIO import StringIO
 from numpy.lib import format

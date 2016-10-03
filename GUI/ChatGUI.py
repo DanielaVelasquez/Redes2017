@@ -90,14 +90,14 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 	Envia los mensajes al contacto
 	"""
 	def sendMessage(self):
-		message = str(self.txt_message.text())
+		message = str(self.txt_message.displayText().toUtf8())
 		if len(message) == 0:
 			QtGui.QMessageBox.warning(self, WARNING, MISSING_MESSAGE,QtGui.QMessageBox.Ok)
 		else:
 			if not self.channel.send_text(message):
 				QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
 			else:
-				self.showSendingMessage(message)		
+				self.showSendingMessage(self.txt_message.displayText())
 	
 	""""
 	Inicia la llamada
