@@ -40,7 +40,7 @@ class MyApiClient:
     def sendMessage(self,message):
         try:
             self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/", allow_none=True)
-            self.proxy.sendMessage_wrapper(str(message))
+            self.proxy.sendMessage_wrapper(message)
             return True
         except Exception, ex:
             return False
@@ -83,11 +83,6 @@ class MyApiClient:
         self.video = VideoClient(self.proxy)
         # Comenzamos a enviar los frames
         self.video.init_video()
-
-        # Quizas solo haya que hacer el metodo, no un thread... pero no se
-        #self.video_thread = threading.Thread(target=self.video.init_video)
-        #self.video_thread.daemon = True
-        #self.video_thread.start()
 
     """
     Finaliza el envio de audio

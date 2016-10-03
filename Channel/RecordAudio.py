@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import pyaudio
+from PyQt4 import QtGui, QtCore
 import numpy
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
@@ -31,14 +32,23 @@ class AudioClient(object):
         self.pyaudio = pyaudio.PyAudio()
         self.pyaudio_format = self.pyaudio.get_format_from_width(WIDTH_PYAUDIO_FORMAT)
 
-        self.stream = self.pyaudio.open(format=self.pyaudio_format, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
+        try:
+            self.stream = self.pyaudio.open(format=self.pyaudio_format, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
+            print "Microfono abierto correctamente"
+            
+            while True:
+                frame = []
+                for i in range(0,int(RATE/CHUNK *RECORD_SECONDS)):
+                    frame.append(self.stream.read(CHUNK))
+                data_ar = numpy.fromstring(''.join(frame),  dtype=numpy.uint8)
+                queque.put(data_ar)
+            print "Dejamos de grabar"
+            self.stream.close()
+            self.pyaudio.terminate()
 
-        while True:
-            frame = []
-            for i in range(0,int(RATE/CHUNK *RECORD_SECONDS)):
-                frame.append(self.stream.read(CHUNK))
-            data_ar = numpy.fromstring(''.join(frame),  dtype=numpy.uint8)
-            queque.put(data_ar)
+        except Exception:
+            QtGui.QMessageBox.warning(self, WARNING, MISSING_MICROPHONE, QtGui.QMessageBox.Ok)
+            print "Tu microfono no sirve >:v"
 
 from cStringIO import StringIO
 from numpy.lib import format

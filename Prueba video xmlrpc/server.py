@@ -19,8 +19,6 @@ class Video(object):
         self.frame = None
         self.frames = []
 
-    """ Funcion que sacara de la cola los frames y los 
-    reproducira """    
     def my_pop_queue(self):
         while True:
             if len(self.frames) > 0:
@@ -31,10 +29,6 @@ class Video(object):
                     break
         cv2.destroyAllWindows()
 
-    """ 
-    Funcion que sera llamada como procedimiento remoto 
-    y agregara el item a la cola 
-    """
     def my_play_video(self, frame):
         self.frames.append(toArray(frame.data))
 

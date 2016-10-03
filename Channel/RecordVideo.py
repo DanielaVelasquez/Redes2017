@@ -123,6 +123,7 @@ class VideoServer(object):
 		self.reproducing = False
 
 	"""
+	Crea el thread de reproduccion de video
 	"""
 	def reproduce_video(self):
 		self.reproducing = True
