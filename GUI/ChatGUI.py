@@ -74,7 +74,7 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 		self.grid.addWidget(self.btn_send,12,4,3,2)
 		self.btn_call.setStyleSheet("background-color: DodgerBlue")
 		self.btn_videocall.setStyleSheet("background-color: Aqua")
-		self.btn_endvideocall.setStyleSheet("background-color: REd")
+		self.btn_endvideocall.setStyleSheet("background-color: Red")
 		self.grid.addWidget(self.btn_call,15,4,3,2)
 		self.grid.addWidget(self.btn_videocall,18,4,3,2)
 		self.grid.addWidget(self.btn_endvideocall,18,4,3,2)
@@ -109,6 +109,12 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 			else:
 				self.showSendingMessage(self.txt_message.displayText())
 	
+	"""
+	Muestra el mensaje del contacto (manteniendo la conversacion)
+	"""
+	def sendMessage_wrapper(self, message):
+		self.txt_conversation.append("Contacto: "+message)
+		
 	""""
 	Inicia la llamada
 	"""
@@ -137,6 +143,9 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 		self.txt_message.setText("LLAMADA TERMINADA")
 		self.sendMessage()
 
+	"""
+	Inicia la videollamada
+	"""
 	def video_call(self):
 		if not self.channel.send_text("VIDEOLLAMANDO"):
 			QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
@@ -149,7 +158,6 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 				self.btn_send.hide()
 				self.btn_videocall.hide()
 				self.btn_endvideocall.show()
-				#self.child = CallGUI(self)
 			except Exception as detail:
 				QtGui.QMessageBox.warning(self, WARNING, "Algo fallo en el canal de video",QtGui.QMessageBox.Ok)
 				print "Error en el canal de video: ", detail
@@ -167,11 +175,6 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 		self.txt_message.setText("VIDEOLLAMADA TERMINADA")
 		self.sendMessage()
 
-	"""
-	Muestra el mensaje del contacto (manteniendo la conversacion)
-	"""
-	def sendMessage_wrapper(self, message):
-		self.txt_conversation.append("Contacto: "+message)
 
 	"""
 	Define los eventos que ocurriran cuando se presionen teclas del teclado
@@ -185,6 +188,7 @@ class ChatGUI(QtGui.QWidget,FunctionWrapper):
 Clase que muestra la pantalla de llamada de voz
 """
 class CallGUI(QtGui.QWidget):
+
 	"""
 	Constructor
 	@param <QWidget> parent: EL widget padre de esta ventana

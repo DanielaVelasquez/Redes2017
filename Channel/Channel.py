@@ -13,7 +13,6 @@ from ApiClient import MyApiClient
 from ApiServer import MyApiServer
 from ApiServer import FunctionWrapper
 import multiprocessing as mp
-#from RecordAudio import AudioClient
 
 """
 Las instancias de esta clase contendran los metodos
@@ -56,23 +55,15 @@ class Channel:
             self.server = MyApiServer(self.wrapper,self.my_port)
 
     """""
-    Inicia el cliente
-    """
-    def init_client(self):
-        self.client = MyApiClient(self.contact_port,self.contact_ip)
-
-    """""
     Inicia los hilos del chat, primero inicia el servidor
     y despues inicia los hilos del cliente
     """
     def init_chat(self):
+        self.client = MyApiClient(self.contact_port,self.contact_ip)
+
         self.server_thread = threading.Thread(target=self.init_server)
-        self.client_thread = threading.Thread(target=self.init_client)
         self.server_thread.daemon = True
-        self.client_thread.daemon = True
-        #Inicio de los hilos
         self.server_thread.start()
-        self.client_thread.start()
 
     """"
     Asigna un nuevo wrapper al wrapper de la clase
@@ -86,10 +77,10 @@ class Channel:
     si el mensaje se envio efectivamente
     """
     def send_text(self, text):
+        answer = False
         if self.client is not None:
             answer = self.client.sendMessage(text)
-            return answer
-        return False
+        return answer
 
     """""
     Inicia el hilo que se encarga de iniciar la llamada
