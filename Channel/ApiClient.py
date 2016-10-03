@@ -34,7 +34,7 @@ class MyApiClient:
     def sendMessage(self,message):
         try:
             self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/", allow_none=True)
-            self.proxy.sendMessage_wrapper(str(message))
+            self.proxy.sendMessage_wrapper(message)
             return True
         except Exception, ex:
             return False

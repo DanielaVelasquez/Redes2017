@@ -60,7 +60,7 @@ class ChatGUI(QtGui.QWidget):
 		self.lb_conversation = QtGui.QLabel(CONVERSATION_TITLE,self)
 		self.txt_conversation = QtGui.QTextEdit(self)
 		self.txt_conversation.setReadOnly(True)
-		self.txt_message = QtGui.QTextEdit(self)
+		self.txt_message = QtGui.QLineEdit(self)
 		self.btn_send = QtGui.QPushButton(SEND_TITLE,self)		
 		#Configuración elementos de la GUI 
 		self.grid.addWidget(self.lb_conversation,0,0)
@@ -77,21 +77,20 @@ class ChatGUI(QtGui.QWidget):
 	"""
 	def showSendingMessage(self,message):
 		self.txt_message.clear()
-		last_message = "Yo: "+message
-		self.txt_conversation.append(last_message)
+		self.txt_conversation.append("Yo: "+message)
 
 	""""
 	Envia los mensajes al contacto
 	"""
 	def sendMessage(self):
-		message = self.txt_message.toPlainText()
+		message = str(self.txt_message.displayText().toUtf8())
 		if len(message) == 0:
 			QtGui.QMessageBox.warning(self, WARNING, MISSING_MESSAGE,QtGui.QMessageBox.Ok)
 		else:
 			if not self.channel.send_text(message):
 				QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
 			else:
-				self.showSendingMessage(message)
+				self.showSendingMessage(self.txt_message.displayText())
 	"""
 	Muestra el mensaje del contacto (manteniendo la conversacion)
 	"""
@@ -104,5 +103,5 @@ class ChatGUI(QtGui.QWidget):
 	def keyPressEvent(self, event):
 		if event.key() == QtCore.Qt.Key_Escape:
 			self.close()
-		if event.key() == QtCore.Qt.Key_Return:
+		if event.key() == QtCore.Qt.Key_Return or event.key() == QtCore.Qt.Key_Enter:
 			self.sendMessage()
