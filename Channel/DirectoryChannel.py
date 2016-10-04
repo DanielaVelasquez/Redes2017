@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 #####################################################
 # PURPOSE: Clase que representa la abstracción de   #
 #         Un canal bidireccional (con el servido de #
@@ -25,7 +24,6 @@ from Constants.AuxiliarFunctions import *
 from ApiServer import *
 from Channels import *
 
-
 class DirectoryChannel(BidirectionalChannel):
     def __init__ (self,receiver,directory_ip = None, my_port = DEFAULT_PORT, directory_port = None, username = None):
         super(DirectoryChannel,self).__init__(receiver, directory_ip,  directory_port ,my_port)
@@ -41,7 +39,6 @@ class DirectoryChannel(BidirectionalChannel):
         username = self.username
         print "username channel "+username
         return self.get_api_client().getProxy().get_contacts_wrapper(username)
-
 
     #**************************************************
     #Metodo que se encarga de  conectar al contacto

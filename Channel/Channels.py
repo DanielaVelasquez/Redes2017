@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 #####################################################
 # PURPO: Clase que representa la abstracción de   #
 #         Un canal bidireccional, con uso de la     #
@@ -24,6 +23,7 @@ import xmlrpclib
 import multiprocessing as mp
 import threading
 import numpy
+
 #from RecordAudio import record_audio_queue
 """**************************************************
 Las instancias de esta clase contendran los metodos
@@ -69,8 +69,6 @@ class RequestChannel(object):
     def send_text(self, text):
         print "I'm request channel, sending: "+text
         self.api_client.getProxy().sendMessage_wrapper(text)
-
-
     
     """**************************************************
     Metodo que se encarga de mandar iniciar una conversacion
@@ -120,8 +118,6 @@ class RequestChannel(object):
     **************************************************"""
     def get_api_client(self):
         return self.api_client
-
-    
 
 
 #***************************************************************************************************************

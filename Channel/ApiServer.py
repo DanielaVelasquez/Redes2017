@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 #####################################################
 # PURPOSE: Clase que permite mandar un mensaje al   #
 #           contacto                                #
@@ -77,8 +76,6 @@ class FunctionWrapper(QtCore.QThread):
 	def audio_state(self,username,state):
 		self.receiver.state_audio(username,state)
 
-
-
 	"""**************************************************
 	Metodo que sera llamado cuando un contacto quiera establecer
 	conexion con este cliente
@@ -102,9 +99,7 @@ class FunctionWrapper(QtCore.QThread):
 	#Método que es llamado por un contacto cuando     #
 	#quiere indicar que no se van a comunicar más     #
 	###################################################
-	def remove_contact(self, username):
-
-		
+	def remove_contact(self, username):		
 		if self.chats_dictionary.has_key(username):
 			del self.chats_dictionary[username]
 			self.receiver.remove_contact(username)
@@ -123,7 +118,6 @@ class FunctionWrapper(QtCore.QThread):
 		text = message_split[MESSAGE_TEXT]
 		user = message_split[MESSAGE_USER]
 		self.receiver.showMessage(user,text)
-		
 		
 	""" **************************************************
 	Procedimiento que ofrece nuestro servidor, este metodo sera llamado
@@ -146,7 +140,6 @@ class FunctionWrapper(QtCore.QThread):
 	def play_video_wrapper(self,frame):
 		pass
 		#TODO
-	
 
 
 #***************************************************************************************************************

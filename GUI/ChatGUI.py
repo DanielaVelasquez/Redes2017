@@ -29,7 +29,6 @@ class ChatGUI(QtGui.QWidget):
 		self.my_contact = my_contact
 		self.mode = mode
 
-
 		try:
 			#Canal de comunicación con el contacto
 			self.request_channel = None
@@ -49,7 +48,6 @@ class ChatGUI(QtGui.QWidget):
 		else:
 			self.request_channel = RequestChannel(contact_ip = self.my_contact[IP_CONTACT])
 
-		
 	#********************************************#
 	#Manda a iniciar una nueva conversación      #
 	#********************************************#
@@ -140,6 +138,7 @@ class ChatGUI(QtGui.QWidget):
 			except Exception:
 				QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
 		"""
+		
 	""""
 	Termina la llamada
 	"""
@@ -152,7 +151,6 @@ class ChatGUI(QtGui.QWidget):
 		self.request_channel.audio_state(self.my_user[NAME_CONTACT],CALL_END)
 		#self.txt_message.setText("LLAMADA TERMINADA")
 		#self.send_message()
-
 	
 	"""
 	Define los eventos que ocurriran cuando se presionen teclas del teclado
@@ -161,14 +159,13 @@ class ChatGUI(QtGui.QWidget):
 		if event.key() == QtCore.Qt.Key_Escape:
 			self.close()
 		if event.key() == QtCore.Qt.Key_Return or event.key() == QtCore.Qt.Key_Enter:
-			self.sendMessage()
+			self.send_message()
 
 	##############################################
 	#Muestra los mensajes que le han enviado     #
 	##############################################
 	def show_receiving_message(self, message):
 		self.txt_conversation.append(self.my_contact[NAME_CONTACT]+": "+message)
-
 
 	def closeEvent(self, evnt):
 		if self.connection_open:

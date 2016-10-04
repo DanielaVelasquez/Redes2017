@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 #####################################################
 # PURPOSE: Clase que manejara los clientes que se   #
 #          conectan y desconectan al sistema        #

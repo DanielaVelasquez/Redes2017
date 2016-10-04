@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 #####################################################
 # PURPOSE: Archivo con constantes                   #
 #                                                   #
@@ -15,6 +14,7 @@
 # Distributed under terms of the MIT license.       #
 #####################################################
 import pyaudio
+
 CHAT_WIDTH = 500
 CHAT_HEIGHT = 500
 LOGIN_WIDTH = 250
@@ -26,18 +26,13 @@ DEFAULT_POSTION_Y =350
 INFO_HEIGTH = 40
 INFO_WIDTH = CHAT_WIDTH
 CHAT_PORT = 5000
-### Audio
-#TODO 
-### Video
-#TODO
+
 ### Directorio
 SERVER_PORT =  7000
 MESSAGE_IP = 0
 MESSAGE_PORT = 1
 MESSAGE_TEXT = 1
-
 MESSAGE_USER = 0
-
 WIDGET = 'widget'
 
 NAME_CONTACT = 'username'
@@ -47,7 +42,6 @@ PORT_CONTACT = 'port_contact'
 TABLE_ITEMS = 2
 FIRST_ITEM = 0
 SECOND_ITEM = 1
-
 
 #Nombres para etiquetas login local y remoto
 MY_PORT_NUMBER_TITLE = "Cual es mi puerto?:"
@@ -81,6 +75,7 @@ REMOTE = "Remote"
 #Mensajes de error
 WARNING = "Alertas"
 MISSING_MESSAGE = "No hay ningun mensaje para enviar"
+MISSING_MICROPHONE = "No es posible usar el microfono, asegurese de que funcione correctamente"
 
 #Localhost
 LOCALHOST = "localhost"
@@ -100,10 +95,9 @@ CHUNK = 1024
 CHANNELS = 1
 RATE = 44100
 RECORD_SECONDS = 2
-
 WIDTH_PYAUDIO_FORMAT = 2
 
-
+# VIdeo
 FRAME_NAME = 'frame'
 EXIT_NUM = 1
 EXIT_KEY = 'q'

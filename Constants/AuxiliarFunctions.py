@@ -15,7 +15,6 @@
 #####################################################
 import socket
 
-
 """**************************************************
 Metodo auxiliar que se conecta a internet para
 conocer nuestra ip actual
@@ -26,15 +25,13 @@ def get_ip_address():
 	s.connect(("8.8.8.8", 80))
 	return "%s"% (s.getsockname()[0])
 
-
-
-
 """ Funcion que construira el header del mensaje a mandar """
 def get_message_header(username):
 	return username+':'
 
 
 from Constants import *
+
 def split_message_header(message):
 	#El mensaje estara sera: username:ip:texto....
 	message_split = message.split(':')
@@ -56,5 +53,3 @@ def dictionaryUser(username,ip,port):
 	user[IP_CONTACT] = ip
 	user[PORT_CONTACT] = port
 	return user
-
-

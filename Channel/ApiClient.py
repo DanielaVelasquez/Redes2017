@@ -22,7 +22,6 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
 from Constants.AuxiliarFunctions import *
 
-
 """**************************************************
 Clase que genera un proxy para poder hacer uso de
 los procedimientos remotos que ofrece la api del contacto
@@ -38,7 +37,7 @@ class MyApiClient:
         self.contact_ip = contact_ip
         try:
             con = HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
-            print "Client coneccting to: "+con
+            print "Client connecting to: "+con
             self.proxy = xmlrpclib.ServerProxy(con, allow_none=True)
         except Exception, e:
         	raise Exception(CONECTION_FAIL)
@@ -48,8 +47,9 @@ class MyApiClient:
     **************************************************"""
     def getProxy(self):
         try:
-            con = HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
-            self.proxy = xmlrpclib.ServerProxy(con, allow_none=True)
+            if self.proxy is None:
+                con = HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
+                self.proxy = xmlrpclib.ServerProxy(con, allow_none=True)
         except Exception, e:
             raise Exception(CONECTION_FAIL)
     	return self.proxy

@@ -1,0 +1,23 @@
+1.- Servidor central
+
+cd Directory
+python DirectoryServer.py -l 8000
+
+2.- Instancias de los usuarios
+
+python GraphicalUserInterface.py -l 5000 8000 Daniela
+
+python GraphicalUserInterface.py -l 7000 8000 Daniela2
+
+************************************************************
+
+1.- Servidor central
+
+cd Directory
+python DirectoryServer.py 192.168.1.69
+
+2.- Instancias de los usuarios
+
+python GraphicalUserInterface.py 192.168.1.83 
+
+python GraphicalUserInterface.py 192.168.1.83

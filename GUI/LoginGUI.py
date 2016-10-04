@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 import sys
 from PyQt4 import QtGui, QtCore
 #Direcciones relativas
@@ -26,9 +27,6 @@ class LoginGUI(QtGui.QWidget):
 			self.contacts_window = ContactsWindow(my_information,my_contact_information,mode,username)
 		else:
 			self.initGUI()
-
-		
-
 		
 	""""
 	Inicia los elementos de la GUI, solicitando el 
