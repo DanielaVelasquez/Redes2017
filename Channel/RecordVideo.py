@@ -49,9 +49,12 @@ class VideoClient(object):
 			ret, frame = cap.read()
 			if ret:
 				data = xmlrpclib.Binary(toString(frame))
-				time.sleep(0.25) # Para limitar los frames enviados por segundo
-				self.proxy.my_play_video(data)
-				print "Frame actual ENVIADO"
+				time.sleep(0.20) # Para limitar los frames enviados por segundo
+				try:
+					self.proxy.my_play_video(data)
+					print "Frame actual ENVIADO"
+				except Exception:
+					print "Frame actual PERDIDO"
 		cap.release()
 		self.end_call()
 
@@ -61,9 +64,9 @@ class VideoClient(object):
 	"""
 	def init_video(self):
 		self.recording = True
-		p = threading.Thread(target=self.feed_queue)
-		#p.daemon = True
-		p.start()
+		self.p = threading.Thread(target=self.feed_queue)
+		self.p.daemon = True
+		self.p.start()
 
 	"""
 	Finaliza el grabado de video
@@ -94,7 +97,7 @@ class VideoServer(object):
 	def reproduce(self):
 		print "COMENZANDO Reproduccion de frames"
 		while True:
-			if len(self.frames) > 0:				
+			if len(self.frames) > 0 and self.reproducing:				
 				self.frame = self.frames.pop(0)
 				try:
 					cv2.imshow('frame', self.frame)
@@ -127,6 +130,6 @@ class VideoServer(object):
 	"""
 	def reproduce_video(self):
 		self.reproducing = True
-		p = threading.Thread(target=self.reproduce)
+		self.p = threading.Thread(target=self.reproduce)
 		#p.daemon = True
-		p.start()
+		self.p.start()

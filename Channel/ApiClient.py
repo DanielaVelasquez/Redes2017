@@ -33,6 +33,8 @@ class MyApiClient:
         self.contact_port = contact_port
         self.contact_ip = contact_ip
         self.calling = False
+        self.video = None
+        self.proxy = None
            
     """"
     Envia la peticion de envio del mensaje hacia el servidor que se encuentra conectado
@@ -40,7 +42,8 @@ class MyApiClient:
     """
     def sendMessage(self,message):
         try:
-            self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/", allow_none=True)
+            if self.proxy is None:
+                self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/", allow_none=True)
             self.proxy.sendMessage_wrapper(message)
             return True
         except Exception, ex:
@@ -63,7 +66,7 @@ class MyApiClient:
             while self.calling:
                 d = self.queue.get()
                 data = xmlrpclib.Binary(d)
-                self.proxy.playAudio(data)        
+                self.proxy.playAudio(data)
 
     """"
     Termina la llamada
@@ -76,8 +79,7 @@ class MyApiClient:
     """
     def videocall(self):
         if self.proxy is None:
-            self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/")
-        
+            self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/")        
         print "Mandamos al servidor a esperar los frames"
         self.proxy.reproduce_video()
 
