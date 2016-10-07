@@ -39,26 +39,29 @@ class DirectoryChannel(BidirectionalChannel):
     #**************************************************
     def get_contacts(self):
         username = self.username
-        print "username channel "+username
-        return self.get_api_client().getProxy().get_contacts_wrapper(username)
+        message = get_message('get_contacts_wrapper',[username])
+        self.get_api_client().getProxy().send(message)
+        data = self.get_api_client().getProxy().recv(BUFFER_SIZE_C)
 
 
     #**************************************************
     #Metodo que se encarga de  conectar al contacto
     #**************************************************
     def connect(self):
-        print "-> "+str(self.my_ip)+" "+ str(self.my_port)+" "+ str(self.username)
-        self.get_api_client().getProxy().connect_wrapper(str(self.my_ip), str(self.my_port), str(self.username))
+        message = get_message('connect_wrapper',[str(self.my_ip), str(self.my_port), str(self.username)])
+        self.get_api_client().getProxy().send(message)
     
     #**************************************************#
     #Metodo que se encarga de  conectar al contacto    #
     #**************************************************#
     def disconnect(self):
-        self.get_api_client().getProxy().disconnect_wrapper(self.username)
+        message = get_message('disconnect_wrapper',[self.username])
+        self.get_api_client().getProxy().send(message)
 
     def register_user(self,username,password):
-        print "channel registrando usuario"
-        self.get_api_client().getProxy().register(username,password)
+        message = get_message('register',[username,password])
+        self.get_api_client().getProxy().send(message)
 
     def login(self,username,password):
-        self.get_api_client().getProxy().login(username,password,str(self.my_ip), str(self.my_port))
+        message = get_message('login',[username,password,str(self.my_ip), str(self.my_port)])
+        self.get_api_client().getProxy().send(message)

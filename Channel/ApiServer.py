@@ -15,8 +15,7 @@
 #                                                   #
 # Distributed under terms of the MIT license.       #
 #####################################################
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
+import socket
 #  Mis bibliotecas
 import sys
 from os import path
@@ -41,15 +40,41 @@ class MyApiServer:
 		#self,Qparent, my_port = DEFAULT_PORT
 		self.port = my_port
 		print "Server connecting to: "+str(get_ip_address())+", "+str(self.port)
-		self.server = SimpleXMLRPCServer((get_ip_address(),int(self.port)),allow_none=True)
 		self.wrapper = FunctionWrapper(app_receiver)
-		self.server.register_instance(self.wrapper)
-	  
+		
+		self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+		self.s.bind(get_ip_address(),int(self.port))
+		
 	"""**************************************************
 	Inicia el servidor para que atienda peticiones
 	**************************************************"""  
 	def startServer(self):
-		self.server.serve_forever()
+		self.s.listen(1)
+		conn,addr = self.s.accept()
+
+		while(1):
+			data = conn = recv(BUFFER_SIZE)
+			if not data:
+				break
+			if data:
+				method, params = get_method(data)
+				if method == 'new_chat_wrapper':
+					self.wrapper.new_chat_wrapper(params[0],params[1],params[2])
+				elif method == 'add_contact':
+					self.wrapper.add_contact(params[0],params[1],params[2])
+				elif method == 'audio_state':
+					self.wrapper.audio_state(params[0],params[1])
+				elif method == 'remove_contact':
+					self.wrapper.remove_contact(params[0])
+				elif method == 'sendMessage_wrapper':
+					self.wrapper.sendMessage_wrapper(params[0])
+				elif method == 'play_audio_wrapper':
+					self.wrapper.play_audio_wrapper(params[0])
+				elif method == 'update_contacts':
+					self.wrapper.update_contacts(params[0])
+				else:
+					print data+"Not registered"
+
 
 	def get_wrapper(self):
 		return self.wrapper

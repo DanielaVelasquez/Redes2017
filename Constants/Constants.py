@@ -156,3 +156,8 @@ USER_DATA_WRONG = "Datos de usuario no encontrado"
 DEFAULT_PORT_2 = 7000
 
 CONVERSATION_CLOSED = "La comunicación ha terminado, por favor una nuevamente"
+
+#Sockets
+BUFFER_SIZE = 20
+METHOD_SEP = "$#"
+BUFFER_SIZE_C = 1024

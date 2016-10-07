@@ -15,7 +15,7 @@
 #                                                   #
 # Distributed under terms of the MIT license.       #
 #####################################################
-import xmlrpclib
+import socket
 import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
@@ -36,22 +36,13 @@ class MyApiClient:
 
         self.contact_port = contact_port
         self.contact_ip = contact_ip
-        try:
-            con = HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
-            print "Client coneccting to: "+con
-            self.proxy = xmlrpclib.ServerProxy(con, allow_none=True)
-        except Exception, e:
-        	raise Exception(CONECTION_FAIL)
+
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.connect((contact_ip,contact_port))
+        
         
     """**************************************************
     Metodos Get
     **************************************************"""
     def getProxy(self):
-        """"
-        try:
-            con = HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
-            self.proxy = xmlrpclib.ServerProxy(con, allow_none=True)
-        except Exception, e:
-            raise Exception(CONECTION_FAIL)
-        """
-    	return self.proxy
+        return self.s

@@ -15,9 +15,7 @@
 #                                                   #
 # Distributed under terms of the MIT license.       #
 #####################################################
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
-
+import socket
 #           Mis bibliotecas
 import sys,getopt
 from os import path
@@ -44,13 +42,40 @@ class GeneralDirectory:
         self.client_dictionary = {}
         #Inicia el servidor
         self.port = port
-        self.server = SimpleXMLRPCServer((get_ip_address(),int(self.port)),allow_none=True)
+
+        self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.s.bind(get_ip_address(),port)
 
         self.funtionWrapper = FunctionWrapperDirectory(self.client_dictionary)
-        #Registra la instancia del servidor
-        self.server.register_instance(self.funtionWrapper)
         print "Directorio de ubicacion activo, mi direccion es:"
         print "(%s, %s)" %(get_ip_address(), port)
+
+        self.s.listen(1)
+        conn,addr = self.s.accept()
+
+        while(1):
+            data = conn = recv(BUFFER_SIZE)
+            if not data:
+                break
+            if data:
+                method, params = get_method(data)
+                if method == 'connect_wrapper':
+                    self.funtionWrapper.connect_wrapper(params[0],params[1],params[2])
+                elif method == 'disconnect_wrapper':
+                    self.funtionWrapper.disconnect_wrapper(params[0])
+                elif method == 'register':
+                    self.funtionWrapper.register(params[0],params[1])
+                elif method == 'login':
+                    self.funtionWrapper.login(params[0],params[1],params[2],params[3])
+                elif method == 'sendMessage_wrapper':
+                    self.funtionWrapper.sendMessage_wrapper(params[0])
+                elif method == 'play_audio_wrapper':
+                    self.funtionWrapper.play_audio_wrapper(params[0])
+                elif method == 'update_contacts':
+                    self.funtionWrapper.update_contacts(params[0])
+                else:
+                    print data+"Not registered"
+
 
 
 class FunctionWrapperDirectory:

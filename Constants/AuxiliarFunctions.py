@@ -66,3 +66,16 @@ def codify_password(password):
 		newpass = newpass + chr(val_ascii)
 	return newpass
 
+
+def get_method(value):
+	message = value.split(METHOD_SEP)
+	method = message[0]
+	params = message[1:]
+	return method,params
+
+def get_message(method,params):
+	message = method+METHOD_SEP
+	for p in params:
+		message = message + METHOD_SEP+ p
+	return message
+
