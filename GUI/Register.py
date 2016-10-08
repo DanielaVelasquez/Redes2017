@@ -115,7 +115,8 @@ class Register(QtGui.QWidget):
 		#except Exception as e:
 			#	QtGui.QMessageBox.warning(self, WARNING, e.message,QtGui.QMessageBox.Ok)
 		
-
+"""
 app = QtGui.QApplication(sys.argv)		
 a = Register(mode = LOCAL)
 sys.exit(app.exec_())
+"""
