@@ -28,26 +28,21 @@ from threading import Thread
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import SIGNAL, QObject
 
-# Restrict to a particular path.
-class RequestHandler(SimpleXMLRPCRequestHandler):
-	rpc_paths = ('/RPC2',)
 """**************************************************
 Clase que genera un servidor de la biblioteca xmlrpc
 con el cual el cliente expondra los metodos que ofrece
 **************************************************"""
 class MyApiServer:
-	def __init__(self,app_receiver,my_port = DEFAULT_PORT,):
+	def __init__(self,app_receiver,my_port = DEFAULT_PORT):
 		#self,Qparent, my_port = DEFAULT_PORT
 		self.port = my_port
 		print "Server connecting to: "+str(get_ip_address())+", "+str(self.port)
 		self.wrapper = FunctionWrapper(app_receiver)
 		
 		self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-		self.s.bind(get_ip_address(),int(self.port))
+		self.s.bind((get_ip_address(),int(self.port)))
+
 		
-	"""**************************************************
-	Inicia el servidor para que atienda peticiones
-	**************************************************"""  
 	def startServer(self):
 		self.s.listen(1)
 		conn,addr = self.s.accept()

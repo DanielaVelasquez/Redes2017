@@ -26,9 +26,6 @@ from Channel.Channels import RequestChannel
 import threading
 import time
 
-# Restrict to a particular path.
-class RequestHandler(SimpleXMLRPCRequestHandler):
-    rpc_paths = ('/RPC2',)
 
 class GeneralDirectory:
     """ Constructor de la clase, si recibe un puerto, entonces
@@ -38,19 +35,22 @@ class GeneralDirectory:
                         número del puerto por el cual recibirá las peticiones
     """
     def __init__(self, port = DEFAULT_PORT):
-        #TODO
         self.client_dictionary = {}
+        TCP_IP = get_ip_address()
+        TCP_PORT = int(port)
+        
         #Inicia el servidor
         self.port = port
 
         self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        self.s.bind(get_ip_address(),port)
+        self.s.bind((TCP_IP, TCP_PORT))
+        self.s.listen(1)
 
         self.funtionWrapper = FunctionWrapperDirectory(self.client_dictionary)
-        print "Directorio de ubicacion activo, mi direccion es:"
-        print "(%s, %s)" %(get_ip_address(), port)
+        print ("Directorio de ubicacion activo, mi direccion es:")
+        print ("(%s, %s))" %(get_ip_address(), port))
 
-        self.s.listen(1)
+        
         conn,addr = self.s.accept()
 
         while(1):
@@ -75,6 +75,7 @@ class GeneralDirectory:
                     self.funtionWrapper.update_contacts(params[0])
                 else:
                     print data+"Not registered"
+        
 
 
 
@@ -116,12 +117,14 @@ class FunctionWrapperDirectory:
 
     def read_users(self):
         archivo = open(FILE_NAME,'r')
+        print "Usuarios registrados"
         for line in archivo:
             l = line.split(SEP,2)
             username = l[0]
             password = l[1]
+            print "username: "+username+" password: "+password
             self.registered_users[username] = password
-        print "usuarios registrados: "+str(self.registered_users)
+        #print "usuarios registrados: "+str(self.registered_users)
 
     def is_registered(self, username):
         return self.registered_users.has_key(username)
@@ -212,10 +215,10 @@ def main(argv):
         local = False
         
     if local:
-        general_server = GeneralDirectory(port = args[0]).server
+        general_server = GeneralDirectory(port = args[0])
     else:
-        general_server = GeneralDirectory().server
-    general_server.serve_forever()
+        general_server = GeneralDirectory()
+    general_server.startServer()
 
 
 if __name__ == '__main__':

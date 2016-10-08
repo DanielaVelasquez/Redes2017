@@ -10,6 +10,8 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
 from Constants.AuxiliarFunctions import *
 from ContactsWindow import ContactsWindow
+
+from Register import Register
 #from Register import Register
 """
 Clase de interfaz grafica que nos permite desplegar la pantalla de logueo
@@ -25,6 +27,7 @@ class LoginGUI(QtGui.QWidget):
 		super(LoginGUI, self).__init__()
 		self.mode = mode
 		self.contacts_window = None
+		self.register_gui = None
 		if my_information and my_contact_information and username:
 			self.contacts_window = ContactsWindow(my_information,my_contact_information,mode,username)
 		else:
@@ -104,10 +107,8 @@ class LoginGUI(QtGui.QWidget):
 
 
 	def register(self):
-		pass
-		#register = Register(self.mode)
-		#register.show()
-		#self.close()
+		self.register_gui = Register(self.mode)
+		self.close()
 	
 	"""
 	Revisa que los campos de texto no esten vacios
