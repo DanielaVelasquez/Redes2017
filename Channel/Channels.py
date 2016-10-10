@@ -77,7 +77,8 @@ class RequestChannel(object):
     **************************************************"""
     def send_text(self, text):
         print "I'm request channel, sending: "+text
-        self.api_client.getProxy().sendMessage_wrapper(text)
+        message = get_message('sendMessage_wrapper',[text])
+        self.api_client.getProxy().send(message)
 
 
     
@@ -87,11 +88,12 @@ class RequestChannel(object):
     **************************************************"""
     def new_connection(self, my_ip, my_port,my_username):
         message = get_message('new_chat_wrapper',[my_ip,my_port,my_username])
-        self.api_client.getProxy().send(message) 
+        self.api_client.getProxy().send(message)   
     
     def remove_connection_with(self,username):
         message = get_message('remove_contact',[username])
-        self.api_client.getProxy().send(message)
+        self.api_client.getProxy().send(message)   
+
 
     def send_audio(self):
         self.call_thread = threading.Thread(target=self.sending_audio)
@@ -122,6 +124,15 @@ class RequestChannel(object):
         self.api_client.getProxy().send(message)
 
     def send_contacts(self,contacts):
+
+        """
+        conts = ""
+        for c in contacts:
+            conts = conts + SEP_LIST
+        print "conts: "+str(conts)
+        """
+        print "Channel sending contacts"+str(contacts)
+
         message = get_message('update_contacts',[contacts])
         self.api_client.getProxy().send(message)
 

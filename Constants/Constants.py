@@ -44,6 +44,7 @@ NAME_CONTACT = 'username'
 IP_CONTACT = 'ip_contact'
 PORT_CONTACT = 'port_contact'
 CHANNEL_CONTACT = 'channel_contact'
+SOCKET_CONTACT = 'socket_channel'
 
 TABLE_ITEMS = 2
 FIRST_ITEM = 0
@@ -161,3 +162,5 @@ CONVERSATION_CLOSED = "La comunicación ha terminado, por favor una nuevamente"
 BUFFER_SIZE = 1024
 METHOD_SEP = "$#"
 BUFFER_SIZE_C = 1024
+
+SEP_LIST = "#"

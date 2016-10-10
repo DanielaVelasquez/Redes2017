@@ -76,7 +76,8 @@ def get_method(value):
 def get_message(method,params):
 	message = method
 	for p in params:
-		message = message + METHOD_SEP+ p
-	print "Mssage: "+message
+		#print"p= "+str(p)
+		message = message + METHOD_SEP+ str(p)
+
 	return message
 

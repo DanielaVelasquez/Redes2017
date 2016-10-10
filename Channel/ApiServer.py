@@ -15,7 +15,8 @@
 #                                                   #
 # Distributed under terms of the MIT license.       #
 #####################################################
-import socket
+import socket,select
+import ast
 #  Mis bibliotecas
 import sys
 from os import path
@@ -41,35 +42,58 @@ class MyApiServer:
 		
 		self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 		self.s.bind((get_ip_address(),int(self.port)))
+		print "Server connecting with "+str((get_ip_address(),int(self.port)))
 
 		
 	def startServer(self):
-		self.s.listen(1)
-		
+		self.s.listen(100)
+		#conn,addr = self.s.accept()
 
+		
+		self.s.listen(500)
+		self.CONNECTION_LIST =[]
+		self.CONNECTION_LIST.append(self.s)
 		while(1):
-			conn,addr = self.s.accept()
-			data = conn.recv(BUFFER_SIZE)
-			if not data:
-				break
-			if data:
-				method, params = get_method(data)
-				if method == 'new_chat_wrapper':
-					self.wrapper.new_chat_wrapper(params[0],params[1],params[2])
-				elif method == 'add_contact':
-					self.wrapper.add_contact(params[0],params[1],params[2])
-				elif method == 'audio_state':
-					self.wrapper.audio_state(params[0],params[1])
-				elif method == 'remove_contact':
-					self.wrapper.remove_contact(params[0])
-				elif method == 'sendMessage_wrapper':
-					self.wrapper.sendMessage_wrapper(params[0])
-				elif method == 'play_audio_wrapper':
-					self.wrapper.play_audio_wrapper(params[0])
-				elif method == 'update_contacts':
-					self.wrapper.update_contacts(params[0])
+			print "Server working"
+			read_sockets,write_sockets,error_sockets = select.select(self.CONNECTION_LIST,[],[])
+			for sock in read_sockets:
+				if sock == self.s:
+					print "Server waiting for connections"
+					sockfd,addr = self.s.accept()
+
+					self.CONNECTION_LIST.append(sockfd)
+					print "Server connected"
+					#last_connections = sockfd
 				else:
-					print data+"Not registered"
+					print "Server got a connection"
+					try:
+						data = sock.recv(BUFFER_SIZE)
+						print "Data found: "+data
+						#if not data:
+						#    break
+						if data:
+							method, params = get_method(data)
+							
+							if method == 'new_chat_wrapper':
+								self.wrapper.new_chat_wrapper(params[0],params[1],params[2])
+							elif method == 'add_contact':
+								self.wrapper.add_contact(params[0],params[1],params[2])
+							elif method == 'audio_state':
+								self.wrapper.audio_state(params[0],params[1])
+							elif method == 'remove_contact':
+								self.wrapper.remove_contact(params[0])
+							elif method == 'sendMessage_wrapper':
+								self.wrapper.sendMessage_wrapper(params[0])
+							elif method == 'play_audio_wrapper':
+								self.wrapper.play_audio_wrapper(params[0])
+							elif method == 'update_contacts':
+								contacts = ast.literal_eval(params[0])
+								self.wrapper.update_contacts(contacts)
+							else:
+								print data+"Not registered"
+					except:
+						pass
+		
 
 
 	def get_wrapper(self):
@@ -183,7 +207,7 @@ o otro medio de interacción con el usuario
 class Receiver(object):
 	 """User: usuario al cual está asociado el recibidor, define para qué usuario trabaja"""
 	 def __init__(self,user):
-	 	 super(Receiver, self).__init__()
+		 super(Receiver, self).__init__()
 		 self.user = user
 		 
 	 def showNewChat(self, contact_ip, contact_port, username):
@@ -201,20 +225,20 @@ class Receiver(object):
 
 	 #Abre la ventana al recibir la señal
 	 def open_window(self):
-	 	raise NotImplementedError()
+		raise NotImplementedError()
 
 	 def remove_contact(self,username):
-	 	raise NotImplementedError()
+		raise NotImplementedError()
 
 	 ####################################################
 	 #Indica se cerró la conexión con el usuario con    #
 	 #nombre de usuario 'username'                      #
 	 ####################################################
 	 def close_connection_with(self, username):
-	 	raise NotImplementedError()
+		raise NotImplementedError()
 
 	 def state_audio(self,username,state):
-	 	raise NotImplementedError()
+		raise NotImplementedError()
 
 	 def show_contacts(self,contacts):
-	 	raise NotImplementedError()
+		raise NotImplementedError()

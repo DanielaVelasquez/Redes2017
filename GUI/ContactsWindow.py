@@ -27,41 +27,41 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 
 		self.username = username
 		self.password = password
-		#try:
-		if mode in LOCAL:
-			self.user = dictionaryUser(username,get_ip_address(),my_information)
-		else:
-			self.user = dictionaryUser(username,my_information,DEFAULT_PORT)
-		
-		self.my_contact_information = my_contact_information
-		self.mode = mode
-		self.directory_channel = None
+		try:
+			if mode in LOCAL:
+				self.user = dictionaryUser(username,get_ip_address(),my_information)
+			else:
+				self.user = dictionaryUser(username,my_information,DEFAULT_PORT)
+			
+			self.my_contact_information = my_contact_information
+			self.mode = mode
+			self.directory_channel = None
 
-		self.connect()
-		print "sender: "+sender
-		if sender == SENDER_REGISTER:
-			print "contacts window registrando usuario"
-			self.directory_channel.register_user(username,password)
-		
-		
+			self.connect()
+			print "sender: "+sender
+			if sender == SENDER_REGISTER:
+				print "contacts window registrando usuario"
+				self.directory_channel.register_user(username,password)
+			
+			
 
 
-		#Chats con lo cuales se ha establecido una conexión
-		#Se manejara un diccionario de {'nombre_usuario':ventana_chat}
-		self.chats = {}
-		#Almacena las concecciones cerradas por el contacto, mantiene la ventana del chat abierta
-		self.closed_by_contact = {}
-		#Nombre del último contacto que pidio hacer conexión
-		self.new_contact_window = None
+			#Chats con lo cuales se ha establecido una conexión
+			#Se manejara un diccionario de {'nombre_usuario':ventana_chat}
+			self.chats = {}
+			#Almacena las concecciones cerradas por el contacto, mantiene la ventana del chat abierta
+			self.closed_by_contact = {}
+			#Nombre del último contacto que pidio hacer conexión
+			self.new_contact_window = None
 
-		#Nombre del ultimo contacto cerro la conexion
-		self.last_contact_closed = None
-		
+			#Nombre del ultimo contacto cerro la conexion
+			self.last_contact_closed = None
+			
 
-		self.initGUI()
-		
-		#except Exception, e:
-		#	QtGui.QMessageBox.warning(self, WARNING, str(e) ,QtGui.QMessageBox.Ok)
+			self.initGUI()
+			
+		except Exception, e:
+			QtGui.QMessageBox.warning(self, WARNING, str(e) ,QtGui.QMessageBox.Ok)
 
 		
 		
@@ -162,11 +162,9 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 	#de usuarios                                #
 	#******************************************#
 	def update_contacts(self):
-		pass
-		"""
 		contacts = self.directory_channel.get_contacts()
 		self.show_contacts(contacts)
-		"""
+		
 
 	#Abre una ventana de chat para el contacto que se indicó
 	def open_window(self):

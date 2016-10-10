@@ -40,6 +40,7 @@ class DirectoryChannel(BidirectionalChannel):
     def get_contacts(self):
         username = self.username
         message = get_message('get_contacts_wrapper',[username])
+        print("Message client: "+message)
         self.get_api_client().getProxy().send(message)
         data = self.get_api_client().getProxy().recv(BUFFER_SIZE_C)
 
@@ -49,6 +50,7 @@ class DirectoryChannel(BidirectionalChannel):
     #**************************************************
     def connect(self):
         message = get_message('connect_wrapper',[str(self.my_ip), str(self.my_port), str(self.username)])
+        print("Message client: "+message)
         self.get_api_client().getProxy().send(message)
     
     #**************************************************#
@@ -56,12 +58,21 @@ class DirectoryChannel(BidirectionalChannel):
     #**************************************************#
     def disconnect(self):
         message = get_message('disconnect_wrapper',[self.username])
+        print("Message client: "+message)
         self.get_api_client().getProxy().send(message)
+
+        self.get_api_client().getProxy().close()
 
     def register_user(self,username,password):
         message = get_message('register',[username,password])
+        print("Message client: "+message)
         self.get_api_client().getProxy().send(message)
 
     def login(self,username,password):
         message = get_message('login',[username,password,str(self.my_ip), str(self.my_port)])
+        print("Message client: "+message)
         self.get_api_client().getProxy().send(message)
+        data = self.get_api_client().getProxy().recv(BUFFER_SIZE)
+        print "Data = "+str(data)
+
+
