@@ -45,10 +45,11 @@ class MyApiServer:
 		
 	def startServer(self):
 		self.s.listen(1)
-		conn,addr = self.s.accept()
+		
 
 		while(1):
-			data = conn = recv(BUFFER_SIZE)
+			conn,addr = self.s.accept()
+			data = conn.recv(BUFFER_SIZE)
 			if not data:
 				break
 			if data:

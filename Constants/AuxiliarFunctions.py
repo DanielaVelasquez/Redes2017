@@ -74,8 +74,9 @@ def get_method(value):
 	return method,params
 
 def get_message(method,params):
-	message = method+METHOD_SEP
+	message = method
 	for p in params:
 		message = message + METHOD_SEP+ p
+	print "Mssage: "+message
 	return message
 

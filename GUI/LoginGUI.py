@@ -96,12 +96,12 @@ class LoginGUI(QtGui.QWidget):
 
 		self.txt_pass.setEchoMode(QtGui.QLineEdit.Password)
 
-		"""
+		
 		self.txt_pass.setText("root")
 		self.txt_user.setText("root")
 		self.txt_contact_information.setText("8000")
 		self.txt_my_information.setText("5000")
-		"""
+		
 
 		self.show()
 

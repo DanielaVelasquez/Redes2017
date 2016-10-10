@@ -86,10 +86,12 @@ class RequestChannel(object):
     con un nuevo contacto 
     **************************************************"""
     def new_connection(self, my_ip, my_port,my_username):
-        self.api_client.getProxy().new_chat_wrapper(my_ip,my_port,my_username)    
+        message = get_message('new_chat_wrapper',[my_ip,my_port,my_username])
+        self.api_client.getProxy().send(message) 
     
     def remove_connection_with(self,username):
-        self.api_client.getProxy().remove_contact(username)
+        message = get_message('remove_contact',[username])
+        self.api_client.getProxy().send(message)
 
     def send_audio(self):
         self.call_thread = threading.Thread(target=self.sending_audio)
@@ -109,16 +111,19 @@ class RequestChannel(object):
             while self.calling:
                 d = self.queue.get()
                 data = xmlrpclib.Binary(d)
-                self.api_client.getProxy().play_audio_wrapper(data) 
+                message = get_message('play_audio_wrapper',[data])
+                self.api_client.getProxy().send(message)
 
     def stop_sending_audio(self):
         self.calling = False
 
     def audio_state(self,username, state):
-        self.api_client.getProxy().audio_state(username,state)
+        message = get_message('audio_state',[username,state])
+        self.api_client.getProxy().send(message)
 
     def send_contacts(self,contacts):
-        self.api_client.getProxy().update_contacts(contacts)
+        message = get_message('update_contacts',[contacts])
+        self.api_client.getProxy().send(message)
 
     """**************************************************
     Metodo que se encarga de mandar audio y video al contacto 
