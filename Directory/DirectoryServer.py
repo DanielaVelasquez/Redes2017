@@ -131,13 +131,11 @@ class FunctionWrapperDirectory:
             username = l[0]
             password = l[1]
             self.registered_users[username] = password
-        print "usuarios registrados: "+str(self.registered_users)
 
     def is_registered(self, username):
         return self.registered_users.has_key(username)
 
     def register(self, username,password):
-        print "Registrando "+username
         if self.is_registered(username):
             raise Exception(USERNAME_REGISTERED)
         else:
@@ -151,7 +149,6 @@ class FunctionWrapperDirectory:
 
     def get_contacts_wrapper(self,  username):
         #Se clona el diccionario de usuarios
-        print "getting contacts "+str(username)
         copy = self.client_dictionary.copy()
         #Se elimina el usuario solicitó información
         if self.client_dictionary.has_key(username):
@@ -166,13 +163,9 @@ class FunctionWrapperDirectory:
     Adiciona un nuevo contacto
     *********************************************"""
     def connect_wrapper(self, ip_string, port_string, username):
-        print "Iniciando usuario: "+username
-        print "usuarios conectados: "+str(self.client_dictionary)
-        print "->self.client_dictionary.has_key(username)"+str(self.client_dictionary.has_key(username))
         #Revisa si existe un usuario con dicho nombre
         if self.client_dictionary.has_key(username):
             #No permite la conexión
-            print "Usuario conectado"
             raise Exception(USERNAME_USED)
         else:
             user = self.user_to_dictionary(username,ip_string,port_string)
@@ -180,14 +173,11 @@ class FunctionWrapperDirectory:
 
 
     def disconnect_wrapper(self, username):
-        print "Desconectando usuario: "+username
         del self.client_dictionary[username]
         #self, ip_string, port_string
 
     def login(self,username,password,ip_string, port_string):
         password = password +"\n"
-        print "login: "+username+" "+password
-        print "registrados "+str(self.registered_users)
         if self.registered_users.has_key(username) and self.registered_users[username] == password:
             self.connect_wrapper(ip_string,port_string,username)
         else:
