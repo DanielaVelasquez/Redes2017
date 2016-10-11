@@ -15,10 +15,8 @@
 #                                                   #
 # Distributed under terms of the MIT license.       #
 #####################################################
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
-
-#           Mis bibliotecas
+import socket, select
+#Mis bibliotecas
 import sys,getopt
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
@@ -28,10 +26,6 @@ from Channel.Channels import RequestChannel
 import threading
 import time
 
-# Restrict to a particular path.
-class RequestHandler(SimpleXMLRPCRequestHandler):
-    rpc_paths = ('/RPC2',)
-
 class GeneralDirectory:
     """ Constructor de la clase, si recibe un puerto, entonces
         Trabajara de manera local, de otra manera, utilizará  la ip
@@ -40,18 +34,59 @@ class GeneralDirectory:
                         número del puerto por el cual recibirá las peticiones
     """
     def __init__(self, port = DEFAULT_PORT):
-        #TODO
         self.client_dictionary = {}
+        TCP_IP = get_ip_address()
+        TCP_PORT = int(port)
+        
         #Inicia el servidor
         self.port = port
-        self.server = SimpleXMLRPCServer((get_ip_address(),int(self.port)),allow_none=True)
 
-        self.funtionWrapper = FunctionWrapperDirectory(self.client_dictionary)
-        #Registra la instancia del servidor
-        self.server.register_instance(self.funtionWrapper)
-        print "Directorio de ubicacion activo, mi direccion es:"
-        print "(%s, %s)" %(get_ip_address(), port)
+        try:
+            self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+            #Conexiones actuales
+            self.users = {}
 
+            self.s.bind((TCP_IP, TCP_PORT))
+            self.s.listen(500)
+
+            self.funtionWrapper = FunctionWrapperDirectory(self.client_dictionary)
+            print ("Directorio de ubicacion activo, mi direccion es:")
+            print ("(%s, %s))" %(get_ip_address(), port))
+            self.run()
+        except Exception as e:
+            print "Error: "+str(e)
+
+    def run(self):
+        while True:
+            conn, addr = self.s.accept()
+            threading.Thread(target = self.run_thread, args = (conn,addr)).start()
+
+    def run_thread(self, conn, addr):
+        print "Directory server connected with "+addr[0]+ ":"+str(addr[1])
+        while True:
+            data = conn.recv(BUFFER_SIZE)
+            print "Data: "+data
+            method, params = get_method(data)
+            if method == 'connect_wrapper':
+                self.funtionWrapper.connect_wrapper(params[0],params[1],params[2])
+            elif method == 'disconnect_wrapper':
+                self.funtionWrapper.disconnect_wrapper(params[0])
+            elif method == 'register':
+                self.funtionWrapper.register(params[0],params[1])
+            elif method == 'login':
+                self.funtionWrapper.login(params[0],params[1],params[2],params[3])
+            elif method == 'sendMessage_wrapper':
+                self.funtionWrapper.sendMessage_wrapper(params[0])
+            elif method == 'play_audio_wrapper':
+                self.funtionWrapper.play_audio_wrapper(params[0])
+            elif method == 'update_contacts':
+                self.funtionWrapper.update_contacts(params[0])
+            elif method == 'get_contacts_wrapper':
+                contacts = self.funtionWrapper.get_contacts_wrapper(params[0])
+                conn.sendall(contacts)
+            else:
+                conn.sendall(METHOD_NOT_REGISTERED)
+        conn.close()
 
 class FunctionWrapperDirectory:
     """ **************************************************
@@ -68,7 +103,7 @@ class FunctionWrapperDirectory:
     def start_thread(self):
         self.update_thread = threading.Thread(target = self.update) 
         self.update_thread.daemon = True
-        self.update_thread.start()
+        #self.update_thread.start()
 
     def update(self):
         while True:
@@ -187,10 +222,10 @@ def main(argv):
         local = False
         
     if local:
-        general_server = GeneralDirectory(port = args[0]).server
+        general_server = GeneralDirectory(port = args[0])
     else:
-        general_server = GeneralDirectory().server
-    general_server.serve_forever()
+        general_server = GeneralDirectory()
+    
 
 
 if __name__ == '__main__':
