@@ -111,7 +111,7 @@ class FunctionWrapperDirectory:
         self.client_dictionary = client_dictionary
         self.registered_users = {}
         self.read_users()
-        self.start_thread()
+        #self.start_thread()
 
     def start_thread(self):
         self.update_thread = threading.Thread(target = self.update) 
