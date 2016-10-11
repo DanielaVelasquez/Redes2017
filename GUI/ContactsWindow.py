@@ -38,14 +38,9 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 			self.directory_channel = None
 
 			self.connect()
-			print "sender: "+sender
 			if sender == SENDER_REGISTER:
-				print "contacts window registrando usuario"
 				self.directory_channel.register_user(username,password)
 			
-			
-
-
 			#Chats con lo cuales se ha establecido una conexión
 			#Se manejara un diccionario de {'nombre_usuario':ventana_chat}
 			self.chats = {}
@@ -56,17 +51,12 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 
 			#Nombre del ultimo contacto cerro la conexion
 			self.last_contact_closed = None
-			
-
 			self.initGUI()
 			
 		except Exception, e:
 			QtGui.QMessageBox.warning(self, WARNING, str(e) ,QtGui.QMessageBox.Ok)
 
 		
-		
-
-	
 	def initGUI(self):		
 		#Creación y configuración del widget
 		self.setWindowTitle(CHAT_WINDOW)
@@ -94,10 +84,10 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 		self.txt_contacts.itemDoubleClicked.connect(self.show_contact)
 
 		#self.connect_general_directory()
+		print "por login"
 		self.directory_channel.login(self.username,self.password)
+		print "login done"
 		self.setting_signal()
-
-
 		self.show()
 		
 		

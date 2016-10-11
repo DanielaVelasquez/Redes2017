@@ -34,15 +34,15 @@ class MyApiClient:
         elif contact_ip is None:
             contact_ip = get_ip_address()
 
-
         TCP_IP = contact_ip
         TCP_PORT = int(contact_port)
 
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        print "CLIENT connecting with "+str((TCP_IP, TCP_PORT))
+        print "Client connecting with "+str((TCP_IP, TCP_PORT))
 
         self.s.connect((TCP_IP, TCP_PORT))
+        
         
         
     """**************************************************

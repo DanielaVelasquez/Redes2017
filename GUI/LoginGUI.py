@@ -135,6 +135,7 @@ class LoginGUI(QtGui.QWidget):
 			password = codify_password(text_password)
 			#print "text_my_information "+text_my_information+"\ntext_my_contact_information "+text_my_contact_information+"\ntext_username "+text_username+"\n"+mode
 			self.contacts_window = ContactsWindow(my_information = text_my_information,my_contact_information=text_my_contact_information,mode=mode,username=text_username,password=password, sender = SENDER_LOGIN)
+			print "Contacts window"
 			self.close()
 
 	"""

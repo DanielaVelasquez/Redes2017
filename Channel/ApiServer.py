@@ -25,7 +25,7 @@ from Constants.AuxiliarFunctions import *
 from Constants.Constants import *
 from RecordAudio import AudioServer
 
-from threading import Thread
+import threading
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import SIGNAL, QObject
 
@@ -35,65 +35,56 @@ con el cual el cliente expondra los metodos que ofrece
 **************************************************"""
 class MyApiServer:
 	def __init__(self,app_receiver,my_port = DEFAULT_PORT):
-		#self,Qparent, my_port = DEFAULT_PORT
-		self.port = my_port
-		print "Server connecting to: "+str(get_ip_address())+", "+str(self.port)
+		
 		self.wrapper = FunctionWrapper(app_receiver)
 		
-		self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-		self.s.bind((get_ip_address(),int(self.port)))
-		print "Server connecting with "+str((get_ip_address(),int(self.port)))
+		TCP_IP = get_ip_address()
+		TCP_PORT = int(my_port)
+		
+		#Inicia el servidor
+		self.port = my_port
 
+		self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+		#Conexiones actuales
+		self.users = {}
+
+		self.s.bind((TCP_IP, TCP_PORT))
+		self.s.listen(500)
+
+		print ("Server at (%s, %s))"%(TCP_IP, TCP_PORT))
 		
 	def startServer(self):
-		self.s.listen(100)
-		#conn,addr = self.s.accept()
-
-		
-		self.s.listen(500)
-		self.CONNECTION_LIST =[]
-		self.CONNECTION_LIST.append(self.s)
-		while(1):
-			print "Server working"
-			read_sockets,write_sockets,error_sockets = select.select(self.CONNECTION_LIST,[],[])
-			for sock in read_sockets:
-				if sock == self.s:
-					print "Server waiting for connections"
-					sockfd,addr = self.s.accept()
-
-					self.CONNECTION_LIST.append(sockfd)
-					print "Server connected"
-					#last_connections = sockfd
+		while True:
+			conn, addr = self.s.accept()
+			threading.Thread(target = self.run_thread, args = (conn,addr)).start()
+	
+	def run_thread(self, conn, addr):
+		print "Client connected with "+addr[0]+ ":"+str(addr[1])
+		while True:
+			try:
+				data = conn.recv(BUFFER_SIZE)
+				print "Data: "+data
+				method, params = get_method(data)
+				if method == 'new_chat_wrapper':
+					self.wrapper.new_chat_wrapper(params[0],params[1],params[2])
+				elif method == 'add_contact':
+					self.wrapper.add_contact(params[0],params[1],params[2])
+				elif method == 'audio_state':
+					self.wrapper.audio_state(params[0],params[1])
+				elif method == 'remove_contact':
+					self.wrapper.remove_contact(params[0])
+				elif method == 'sendMessage_wrapper':
+					self.wrapper.sendMessage_wrapper(params[0])
+				elif method == 'play_audio_wrapper':
+					self.wrapper.play_audio_wrapper(params[0])
+				elif method == 'update_contacts':
+					contacts = ast.literal_eval(params[0])
+					self.wrapper.update_contacts(contacts)
 				else:
-					print "Server got a connection"
-					try:
-						data = sock.recv(BUFFER_SIZE)
-						print "Data found: "+data
-						#if not data:
-						#    break
-						if data:
-							method, params = get_method(data)
-							
-							if method == 'new_chat_wrapper':
-								self.wrapper.new_chat_wrapper(params[0],params[1],params[2])
-							elif method == 'add_contact':
-								self.wrapper.add_contact(params[0],params[1],params[2])
-							elif method == 'audio_state':
-								self.wrapper.audio_state(params[0],params[1])
-							elif method == 'remove_contact':
-								self.wrapper.remove_contact(params[0])
-							elif method == 'sendMessage_wrapper':
-								self.wrapper.sendMessage_wrapper(params[0])
-							elif method == 'play_audio_wrapper':
-								self.wrapper.play_audio_wrapper(params[0])
-							elif method == 'update_contacts':
-								contacts = ast.literal_eval(params[0])
-								self.wrapper.update_contacts(contacts)
-							else:
-								print data+"Not registered"
-					except:
-						pass
-		
+					conn.sendall(METHOD_NOT_REGISTERED)
+			except Exception as e:
+				print "Error: "+str(e)
+			
 
 
 	def get_wrapper(self):

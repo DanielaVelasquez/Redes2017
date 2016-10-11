@@ -42,63 +42,53 @@ class GeneralDirectory:
         #Inicia el servidor
         self.port = port
 
-        self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        self.s.bind((TCP_IP, TCP_PORT))
-        self.s.listen(500)
+        try:
+            self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+            #Conexiones actuales
+            self.users = {}
 
-        self.funtionWrapper = FunctionWrapperDirectory(self.client_dictionary)
-        print ("Directorio de ubicacion activo, mi direccion es:")
-        print ("(%s, %s))" %(get_ip_address(), port))
+            self.s.bind((TCP_IP, TCP_PORT))
+            self.s.listen(500)
 
-        self.CONNECTION_LIST =[]
+            self.funtionWrapper = FunctionWrapperDirectory(self.client_dictionary)
+            print ("Directorio de ubicacion activo, mi direccion es:")
+            print ("(%s, %s))" %(get_ip_address(), port))
+            self.run()
+        except Exception as e:
+            print "Error: "+str(e)
 
-        self.CONNECTION_LIST.append(self.s)
+    def run(self):
+        while True:
+            conn, addr = self.s.accept()
+            threading.Thread(target = self.run_thread, args = (conn,addr)).start()
 
-        self.last_connections = None
+    def run_thread(self, conn, addr):
+        print "Directory server connected with "+addr[0]+ ":"+str(addr[1])
+        while True:
+            data = conn.recv(BUFFER_SIZE)
+            print "Data: "+data
+            method, params = get_method(data)
+            if method == 'connect_wrapper':
+                self.funtionWrapper.connect_wrapper(params[0],params[1],params[2])
+            elif method == 'disconnect_wrapper':
+                self.funtionWrapper.disconnect_wrapper(params[0])
+            elif method == 'register':
+                self.funtionWrapper.register(params[0],params[1])
+            elif method == 'login':
+                self.funtionWrapper.login(params[0],params[1],params[2],params[3])
+            elif method == 'sendMessage_wrapper':
+                self.funtionWrapper.sendMessage_wrapper(params[0])
+            elif method == 'play_audio_wrapper':
+                self.funtionWrapper.play_audio_wrapper(params[0])
+            elif method == 'update_contacts':
+                self.funtionWrapper.update_contacts(params[0])
+            elif method == 'get_contacts_wrapper':
+                contacts = self.funtionWrapper.get_contacts_wrapper(params[0])
+                conn.sendall(contacts)
+            else:
+                conn.sendall(METHOD_NOT_REGISTERED)
+        conn.close()
         
-        while(1):
-            print "Directoy server working"
-            read_sockets,write_sockets,error_sockets = select.select(self.CONNECTION_LIST,[],[])
-            
-            for sock in read_sockets:
-
-                if sock == self.s:
-                    print "Directoy server waiting connections"
-                    sockfd,addr = self.s.accept()
-                    print "Directoy server connected"
-                    self.CONNECTION_LIST.append(sockfd)
-                    
-                else:
-                    try:
-
-                        data = sock.recv(BUFFER_SIZE)
-                        print "Directoy server got a connection"+data
-                        #if not data:
-                        #    break
-                        if data:
-                            print "data: "+data
-                            method, params = get_method(data)
-                            if method == 'connect_wrapper':
-                                self.funtionWrapper.connect_wrapper(params[0],params[1],params[2])
-                            elif method == 'disconnect_wrapper':
-                                self.funtionWrapper.disconnect_wrapper(params[0])
-                            elif method == 'register':
-                                self.funtionWrapper.register(params[0],params[1])
-                            elif method == 'login':
-                                self.funtionWrapper.login(params[0],params[1],params[2],params[3])
-                            elif method == 'sendMessage_wrapper':
-                                self.funtionWrapper.sendMessage_wrapper(params[0])
-                            elif method == 'play_audio_wrapper':
-                                self.funtionWrapper.play_audio_wrapper(params[0])
-                            elif method == 'update_contacts':
-                                self.funtionWrapper.update_contacts(params[0])
-                            else:
-                                print data+"Not registered"
-                    except Exception as e:
-                        print "Error directory server"+str(e)
-            
-        
-
 
 
 class FunctionWrapperDirectory:
@@ -199,8 +189,8 @@ class FunctionWrapperDirectory:
         #self, ip_string, port_string
 
     def login(self,username,password,ip_string, port_string):
+        print "Login: "+username+" "+password
         password = password +"\n"
-        print "login: "+username+" "+password
         #print "registrados "+str(self.registered_users)
         if self.registered_users.has_key(username) and self.registered_users[username] == password:
             self.connect_wrapper(ip_string,port_string,username)
