@@ -60,11 +60,13 @@ class GeneralDirectory:
     def run(self):
         while True:
             conn, addr = self.s.accept()
+            print "\n"
             threading.Thread(target = self.run_thread, args = (conn,addr)).start()
 
     def run_thread(self, conn, addr):
         print "Directory server connected with "+addr[0]+ ":"+str(addr[1])
-        while True:
+        connected = True
+        while connected:
             try:
                 data = conn.recv(BUFFER_SIZE)
                 print "Data: "+data
@@ -76,7 +78,7 @@ class GeneralDirectory:
                 elif method == 'register':
                     self.funtionWrapper.register(params[0],params[1])
                 elif method == 'login':
-                    self.funtionWrapper.login(params[0],params[1],params[2],params[3])
+                    val = self.funtionWrapper.login(params[0],params[1],params[2],params[3])
                 elif method == 'sendMessage_wrapper':
                     self.funtionWrapper.sendMessage_wrapper(params[0])
                 elif method == 'play_audio_wrapper':
@@ -88,8 +90,9 @@ class GeneralDirectory:
                     conn.sendall(contacts)
                 else:
                     conn.sendall(METHOD_NOT_REGISTERED)
+                conn.sendall(val)
             except Exception as e:
-                print "Error "+str(e)
+                connected = False
             
         conn.close()
         
@@ -193,13 +196,13 @@ class FunctionWrapperDirectory:
         #self, ip_string, port_string
 
     def login(self,username,password,ip_string, port_string):
-        print "Login: "+username+" "+password
         password = password +"\n"
         #print "registrados "+str(self.registered_users)
         if self.registered_users.has_key(username) and self.registered_users[username] == password:
             self.connect_wrapper(ip_string,port_string,username)
+            return OK
         else:
-            raise Exception(USER_DATA_WRONG)
+            return USER_DATA_WRONG
 
     def user_to_dictionary(self, username,ip,port):
         user = {}

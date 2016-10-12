@@ -37,11 +37,13 @@ class MyApiClient:
         TCP_IP = contact_ip
         TCP_PORT = int(contact_port)
 
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        print "Client connecting with "+str((TCP_IP, TCP_PORT))
-
-        self.s.connect((TCP_IP, TCP_PORT))
+        try:
+            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            print "Client connecting with "+str((TCP_IP, TCP_PORT))
+            self.s.connect((TCP_IP, TCP_PORT))
+        except Exception as e:
+            raise Exception(PORT_IN_USE)
+        
         
         
         

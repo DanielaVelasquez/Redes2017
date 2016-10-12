@@ -165,3 +165,5 @@ BUFFER_SIZE_C = 1024
 
 SEP_LIST = "#"
 METHOD_NOT_REGISTERED = "Method no registered"
+
+OK = "Ok"

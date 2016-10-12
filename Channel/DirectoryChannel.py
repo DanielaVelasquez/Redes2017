@@ -53,18 +53,23 @@ class DirectoryChannel(BidirectionalChannel):
     #Metodo que se encarga de  conectar al contacto    #
     #**************************************************#
     def disconnect(self):
-        message = get_message('disconnect_wrapper',[self.username])
-        self.get_api_client().getProxy().send(message)
-        self.get_api_client().getProxy().close()
+        try:
+            message = get_message('disconnect_wrapper',[self.username])
+            self.get_api_client().getProxy().send(message)
+            self.get_api_client().getProxy().close()
+        except Exception as e:
+            pass
+       
 
     def register_user(self,username,password):
         message = get_message('register',[username,password])
         self.get_api_client().getProxy().send(message)
 
     def login(self,username,password):
-        print "Login"
         message = get_message('login',[username,password,str(self.my_ip), str(self.my_port)])
         self.get_api_client().getProxy().send(message)
-        
+        data = self.get_api_client().getProxy().recv(BUFFER_SIZE)
+        if data != OK:
+            raise Exception(data)
 
 

@@ -35,23 +35,26 @@ con el cual el cliente expondra los metodos que ofrece
 **************************************************"""
 class MyApiServer:
 	def __init__(self,app_receiver,my_port = DEFAULT_PORT):
+		try:
+			self.wrapper = FunctionWrapper(app_receiver)
 		
-		self.wrapper = FunctionWrapper(app_receiver)
+			TCP_IP = get_ip_address()
+			TCP_PORT = int(my_port)
+			
+			#Inicia el servidor
+			self.port = my_port
+
+			self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+			#Conexiones actuales
+			self.users = {}
+
+			self.s.bind((TCP_IP, TCP_PORT))
+			self.s.listen(500)
+
+			print ("Server at (%s, %s))"%(TCP_IP, TCP_PORT))
+		except Exception as e:
+			raise Exception(PORT_IN_USE)
 		
-		TCP_IP = get_ip_address()
-		TCP_PORT = int(my_port)
-		
-		#Inicia el servidor
-		self.port = my_port
-
-		self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-		#Conexiones actuales
-		self.users = {}
-
-		self.s.bind((TCP_IP, TCP_PORT))
-		self.s.listen(500)
-
-		print ("Server at (%s, %s))"%(TCP_IP, TCP_PORT))
 		
 	def startServer(self):
 		while True:
@@ -60,7 +63,8 @@ class MyApiServer:
 	
 	def run_thread(self, conn, addr):
 		print "Client connected with "+addr[0]+ ":"+str(addr[1])
-		while True:
+		connected = True
+		while connected:
 			try:
 				data = conn.recv(BUFFER_SIZE)
 				print "Data: "+data
@@ -83,7 +87,8 @@ class MyApiServer:
 				else:
 					conn.sendall(METHOD_NOT_REGISTERED)
 			except Exception as e:
-				print "Error: "+str(e)
+				connected = False
+		conn.close()
 			
 
 
