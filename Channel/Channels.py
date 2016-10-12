@@ -113,7 +113,7 @@ class RequestChannel(object):
             while self.calling:
                 d = self.queue.get()
                 data = xmlrpclib.Binary(d)
-                message = get_message('play_audio_wrapper',[data])
+                message = get_message('play_audio_wrapper',[d])
                 self.api_client.getProxy().send(message)
 
     def stop_sending_audio(self):

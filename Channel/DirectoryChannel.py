@@ -24,6 +24,7 @@ from Constants.Constants import *
 from Constants.AuxiliarFunctions import *
 from ApiServer import *
 from Channels import *
+import ast
 
 
 class DirectoryChannel(BidirectionalChannel):
@@ -40,6 +41,9 @@ class DirectoryChannel(BidirectionalChannel):
         message = get_message('get_contacts_wrapper',[self.username])
         self.get_api_client().getProxy().send(message)
         data = self.get_api_client().getProxy().recv(BUFFER_SIZE_C)
+        print "Data get contacts "+data
+        contacts = ast.literal_eval(data)
+        return contacts
 
 
     #**************************************************

@@ -86,11 +86,10 @@ class GeneralDirectory:
                 elif method == 'update_contacts':
                     self.funtionWrapper.update_contacts(params[0])
                 elif method == 'get_contacts_wrapper':
-                    contacts = self.funtionWrapper.get_contacts_wrapper(params[0])
-                    conn.sendall(contacts)
+                    val = self.funtionWrapper.get_contacts_wrapper(params[0])
                 else:
                     conn.sendall(METHOD_NOT_REGISTERED)
-                conn.sendall(val)
+                conn.sendall(str(val))
             except Exception as e:
                 connected = False
             
@@ -108,7 +107,7 @@ class FunctionWrapperDirectory:
         self.client_dictionary = client_dictionary
         self.registered_users = {}
         self.read_users()
-        #self.start_thread()
+        self.start_thread()
 
     def start_thread(self):
         self.update_thread = threading.Thread(target = self.update) 
@@ -126,7 +125,7 @@ class FunctionWrapperDirectory:
                     #print "Contactos conectados "+str(self.client_dictionary)
                     c = self.get_contacts_wrapper(user)
                     try:
-                        print "Enviando: "+user
+                        
                         channel.send_contacts(c)
                     except Exception as e:
                         print "Error: "+str(e)

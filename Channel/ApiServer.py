@@ -67,7 +67,7 @@ class MyApiServer:
 		while connected:
 			try:
 				data = conn.recv(BUFFER_SIZE)
-				print "Data: "+data
+				print "Data server: "+data
 				method, params = get_method(data)
 				if method == 'new_chat_wrapper':
 					self.wrapper.new_chat_wrapper(params[0],params[1],params[2])
