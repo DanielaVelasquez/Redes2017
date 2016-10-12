@@ -65,28 +65,32 @@ class GeneralDirectory:
     def run_thread(self, conn, addr):
         print "Directory server connected with "+addr[0]+ ":"+str(addr[1])
         while True:
-            data = conn.recv(BUFFER_SIZE)
-            print "Data: "+data
-            method, params = get_method(data)
-            if method == 'connect_wrapper':
-                self.funtionWrapper.connect_wrapper(params[0],params[1],params[2])
-            elif method == 'disconnect_wrapper':
-                self.funtionWrapper.disconnect_wrapper(params[0])
-            elif method == 'register':
-                self.funtionWrapper.register(params[0],params[1])
-            elif method == 'login':
-                self.funtionWrapper.login(params[0],params[1],params[2],params[3])
-            elif method == 'sendMessage_wrapper':
-                self.funtionWrapper.sendMessage_wrapper(params[0])
-            elif method == 'play_audio_wrapper':
-                self.funtionWrapper.play_audio_wrapper(params[0])
-            elif method == 'update_contacts':
-                self.funtionWrapper.update_contacts(params[0])
-            elif method == 'get_contacts_wrapper':
-                contacts = self.funtionWrapper.get_contacts_wrapper(params[0])
-                conn.sendall(contacts)
-            else:
-                conn.sendall(METHOD_NOT_REGISTERED)
+            try:
+                data = conn.recv(BUFFER_SIZE)
+                print "Data: "+data
+                method, params = get_method(data)
+                if method == 'connect_wrapper':
+                    self.funtionWrapper.connect_wrapper(params[0],params[1],params[2])
+                elif method == 'disconnect_wrapper':
+                    self.funtionWrapper.disconnect_wrapper(params[0])
+                elif method == 'register':
+                    self.funtionWrapper.register(params[0],params[1])
+                elif method == 'login':
+                    self.funtionWrapper.login(params[0],params[1],params[2],params[3])
+                elif method == 'sendMessage_wrapper':
+                    self.funtionWrapper.sendMessage_wrapper(params[0])
+                elif method == 'play_audio_wrapper':
+                    self.funtionWrapper.play_audio_wrapper(params[0])
+                elif method == 'update_contacts':
+                    self.funtionWrapper.update_contacts(params[0])
+                elif method == 'get_contacts_wrapper':
+                    contacts = self.funtionWrapper.get_contacts_wrapper(params[0])
+                    conn.sendall(contacts)
+                else:
+                    conn.sendall(METHOD_NOT_REGISTERED)
+            except Exception as e:
+                print "Error "+str(e)
+            
         conn.close()
         
 

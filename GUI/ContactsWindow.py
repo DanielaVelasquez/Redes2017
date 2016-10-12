@@ -28,6 +28,7 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 		self.username = username
 		self.password = password
 		try:
+			
 			if mode in LOCAL:
 				self.user = dictionaryUser(username,get_ip_address(),my_information)
 			else:
@@ -38,6 +39,7 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 			self.directory_channel = None
 
 			self.connect()
+
 			if sender == SENDER_REGISTER:
 				self.directory_channel.register_user(username,password)
 			
@@ -51,6 +53,7 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 
 			#Nombre del ultimo contacto cerro la conexion
 			self.last_contact_closed = None
+			
 			self.initGUI()
 			
 		except Exception, e:

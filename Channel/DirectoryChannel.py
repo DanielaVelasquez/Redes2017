@@ -65,7 +65,6 @@ class DirectoryChannel(BidirectionalChannel):
         print "Login"
         message = get_message('login',[username,password,str(self.my_ip), str(self.my_port)])
         self.get_api_client().getProxy().send(message)
-        data = self.get_api_client().getProxy().recv(BUFFER_SIZE)
-        print "Data = "+str(data)
+        
 
 
