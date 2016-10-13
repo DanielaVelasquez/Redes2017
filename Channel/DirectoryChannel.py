@@ -61,6 +61,7 @@ class DirectoryChannel(BidirectionalChannel):
             message = get_message('disconnect_wrapper',[self.username])
             self.get_api_client().getProxy().send(message)
             self.get_api_client().getProxy().close()
+            self.apiServer.stop_server()
         except Exception as e:
             pass
        

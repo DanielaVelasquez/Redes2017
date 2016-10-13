@@ -153,7 +153,7 @@ REGISTER = "Registrar"
 SENDER_REGISTER ="registrar"
 SENDER_LOGIN = "iniciar_sesion"
 
-USER_DATA_WRONG = "Datos de usuario no encontrado"
+USER_DATA_WRONG = "Datos de usuario no encontrados o incorrectos"
 DEFAULT_PORT_2 = 7000
 
 CONVERSATION_CLOSED = "La comunicación ha terminado, por favor una nuevamente"

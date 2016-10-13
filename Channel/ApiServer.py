@@ -51,15 +51,22 @@ class MyApiServer:
 			self.s.bind((TCP_IP, TCP_PORT))
 			self.s.listen(500)
 
+			self.running = False
+
 			print ("Server at (%s, %s))"%(TCP_IP, TCP_PORT))
 		except Exception as e:
 			raise Exception(PORT_IN_USE)
 		
 		
 	def startServer(self):
-		while True:
+		self.running = True
+		while self.running:
 			conn, addr = self.s.accept()
 			threading.Thread(target = self.run_thread, args = (conn,addr)).start()
+		self.s.close()
+
+	def stop_server(self):
+		self.running = False
 	
 	def run_thread(self, conn, addr):
 		print "Client connected with "+addr[0]+ ":"+str(addr[1])
@@ -67,7 +74,7 @@ class MyApiServer:
 		while connected:
 			try:
 				data = conn.recv(BUFFER_SIZE)
-				print "Data server: "+data
+				
 				method, params = get_method(data)
 				if method == 'new_chat_wrapper':
 					self.wrapper.new_chat_wrapper(params[0],params[1],params[2])
@@ -80,6 +87,7 @@ class MyApiServer:
 				elif method == 'sendMessage_wrapper':
 					self.wrapper.sendMessage_wrapper(params[0])
 				elif method == 'play_audio_wrapper':
+					print "Data server: "+data
 					self.wrapper.play_audio_wrapper(params[0])
 				elif method == 'update_contacts':
 					contacts = ast.literal_eval(params[0])
@@ -106,6 +114,8 @@ class FunctionWrapper(QtCore.QThread):
 		#hasta ese momento
 		self.chats_dictionary = {}
 		self.receiver = receiver
+		self.audio_server = AudioServer()
+		
 	  
 	def search_user(self,ip,port):
 		for c in self.chats_dictionary:
@@ -176,7 +186,6 @@ class FunctionWrapper(QtCore.QThread):
 		#TODO
 	
 	def play_audio_wrapper(self,audio):
-		self.audio_server = AudioServer()
 		self.audio_server.playAudio(audio)
 	 
 	""" **************************************************

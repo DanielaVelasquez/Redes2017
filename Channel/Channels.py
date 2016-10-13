@@ -103,20 +103,16 @@ class RequestChannel(object):
     def sending_audio(self):
         if not self.calling:
             self.calling = True
-            self.queue = mp.Queue()
+            
             self.audioRecorder = AudioClient()
-            self.p = threading.Thread(target=self.audioRecorder.feed_queque, args=(self.queue,))
-            #self.p = mp.Process(target=self.audioRecorder.feed_queque, args=(self.queue,))
-            self.p.daemon = True
-            self.p.start()
+            
             #self.proxy = xmlrpclib.ServerProxy(HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/")
             while self.calling:
-                d = self.queue.get()
-                data = xmlrpclib.Binary(d)
-                message = get_message('play_audio_wrapper',[d])
-                self.api_client.getProxy().send(message)
+                data_ar = self.audioRecorder.record(self.api_client.getProxy())
+                message = get_message('play_audio_wrapper',[data_ar])
+                #self.api_client.getProxy().sendall(message) 
 
-    def stop_sending_audio(self):
+    def stops_sending_audio(self):
         self.calling = False
 
     def audio_state(self,username, state):

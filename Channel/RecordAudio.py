@@ -6,6 +6,9 @@ import numpy
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
+from Constants.AuxiliarFunctions import *
+import xmlrpclib
+import socket
 
 #####################################################
 # Clase encargada de la grabación del audio         #
@@ -35,9 +38,21 @@ class AudioClient(object):
         while True:
             frame = []
             for i in range(0,int(RATE/CHUNK *RECORD_SECONDS)):
-                frame.append(self.stream.read(CHUNK))
+                frame.a0ppend(self.stream.read(CHUNK))
             data_ar = numpy.fromstring(''.join(frame),  dtype=numpy.uint8)
             queque.put(data_ar)
+
+    def record(self,s):
+        self.pyaudio = pyaudio.PyAudio()
+        self.pyaudio_format = self.pyaudio.get_format_from_width(WIDTH_PYAUDIO_FORMAT)
+        frame = []
+        self.stream = self.pyaudio.open(format=self.pyaudio_format, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
+        for i in range(0,int(RATE/CHUNK * RECORD_SECONDS)):
+            frame.append(self.stream.read(CHUNK))
+        data_ar = numpy.fromstring(''.join(frame),dtype=numpy.uint8)
+        print "Typo: "+str(type(data_ar))+ "value: "+str(data_ar)
+        message = get_message('play_audio_wrapper',[data_ar])
+        s.sendall(message)
 
 from cStringIO import StringIO
 from numpy.lib import format
@@ -54,6 +69,8 @@ class AudioServer(object):
         super(AudioServer, self).__init__()
 
     def playAudio(self,audio):
+        print "Playing audio: "+str(audio)
+        #audio= xmlrpclib.Binary(audio)
         p = pyaudio.PyAudio()
         FORMAT = p.get_format_from_width(2)
         stream = p.open(format=FORMAT,
@@ -62,7 +79,7 @@ class AudioServer(object):
                         output=True,
                         frames_per_buffer=CHUNK)
 
-        data = audio.data
-        stream.write(data)
-        stream.close()
-        p.terminate()
+        #data = audio.data
+        stream.write(audio)
+        #stream.close()
+        #p.terminate()
