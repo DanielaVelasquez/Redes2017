@@ -81,3 +81,31 @@ def get_message(method,params):
 
 	return message
 
+import time
+def send_message_chunks(s,message):
+	cont = 0
+	chunk = ""
+	j = 1
+	for i in message:
+		
+		if cont<BUFFER_SIZE:
+			cont +=1
+
+		else:
+			cont = 0
+			print "Enviando chunk"+chunk
+			s.send(chunk)
+			chunk = ""
+
+		chunk +=i
+		j +=1
+		if j > len(message):
+			if len(chunk)>0:
+				print "Enviando chunk"+chunk
+				s.send(chunk)
+				time.sleep(0.5)
+
+			print "envien final"
+			s.send(FINAL)
+
+

@@ -24,6 +24,7 @@ class AudioClient(object):
     """
     def __init__(self):
         super(AudioClient, self).__init__()
+        self.calling = False
         
     """"
     Método que se encarga de estar grabando de forma continua el audio y encolarlo.
@@ -43,16 +44,22 @@ class AudioClient(object):
             queque.put(data_ar)
 
     def record(self,s):
-        self.pyaudio = pyaudio.PyAudio()
-        self.pyaudio_format = self.pyaudio.get_format_from_width(WIDTH_PYAUDIO_FORMAT)
-        frame = []
-        self.stream = self.pyaudio.open(format=self.pyaudio_format, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
-        for i in range(0,int(RATE/CHUNK * RECORD_SECONDS)):
-            frame.append(self.stream.read(CHUNK))
-        data_ar = numpy.fromstring(''.join(frame),dtype=numpy.uint8)
-        print "Typo: "+str(type(data_ar))+ "value: "+str(data_ar)
-        message = get_message('play_audio_wrapper',[data_ar])
-        s.sendall(message)
+        self.calling = True
+        p = pyaudio.PyAudio()
+        FORMAT = p.get_format_from_width(2)
+        stream = p.open(format=FORMAT,
+                            channels=CHANNELS,
+                            rate=RATE,
+                            input=True,
+                            frames_per_buffer=CHUNK)
+
+        while self.calling:
+            frame = []
+            for i in range(0,int(RATE/CHUNK *RECORD_SECONDS)):
+                frame.append(stream.read(CHUNK))
+            data_ar = numpy.fromstring(''.join(frame),  dtype=numpy.uint8)
+            
+            s.sendall(data_ar)
 
 from cStringIO import StringIO
 from numpy.lib import format
@@ -69,17 +76,12 @@ class AudioServer(object):
         super(AudioServer, self).__init__()
 
     def playAudio(self,audio):
-        print "Playing audio: "+str(audio)
-        #audio= xmlrpclib.Binary(audio)
+        #print "Playing audio: "+str(audio)
         p = pyaudio.PyAudio()
         FORMAT = p.get_format_from_width(2)
         stream = p.open(format=FORMAT,
-                        channels=CHANNELS,
-                        rate=RATE,
-                        output=True,
-                        frames_per_buffer=CHUNK)
-
-        #data = audio.data
+                            channels=CHANNELS,
+                            rate=RATE,
+                            output=True,
+                            frames_per_buffer=CHUNK)
         stream.write(audio)
-        #stream.close()
-        #p.terminate()

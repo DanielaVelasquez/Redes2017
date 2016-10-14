@@ -153,15 +153,17 @@ REGISTER = "Registrar"
 SENDER_REGISTER ="registrar"
 SENDER_LOGIN = "iniciar_sesion"
 
-USER_DATA_WRONG = "Datos de usuario no encontrados o incorrectos"
+USER_DATA_WRONG = "Datos de usuario no encontrados o incorrectoss"
 DEFAULT_PORT_2 = 7000
 
 CONVERSATION_CLOSED = "La comunicación ha terminado, por favor una nuevamente"
 
 #Sockets
-BUFFER_SIZE = 1024
+BUFFER_SIZE = 20
 METHOD_SEP = "$#"
-BUFFER_SIZE_C = 1024
+BUFFER_SIZE_C = 20
+
+FINAL = "$#@"
 
 SEP_LIST = "#"
 METHOD_NOT_REGISTERED = "Method no registered"

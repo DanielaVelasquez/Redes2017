@@ -25,6 +25,7 @@ from Constants.AuxiliarFunctions import *
 from ApiServer import *
 from Channels import *
 import ast
+import time
 
 
 class DirectoryChannel(BidirectionalChannel):
@@ -39,9 +40,13 @@ class DirectoryChannel(BidirectionalChannel):
     #**************************************************
     def get_contacts(self):
         message = get_message('get_contacts_wrapper',[self.username])
-        self.get_api_client().getProxy().send(message)
-        data = self.get_api_client().getProxy().recv(BUFFER_SIZE_C)
-        print "Data get contacts "+data
+        send_message_chunks(self.api_client.getProxy(),message)
+        #self.get_api_client().getProxy().send(message)
+        chunk = ""
+        data = ""
+        while chunk != FINAL:
+            data +=chunk
+            chunk = self.get_api_client().getProxy().recv(BUFFER_SIZE)
         contacts = ast.literal_eval(data)
         return contacts
 
@@ -51,7 +56,8 @@ class DirectoryChannel(BidirectionalChannel):
     #**************************************************
     def connect(self):
         message = get_message('connect_wrapper',[str(self.my_ip), str(self.my_port), str(self.username)])
-        self.get_api_client().getProxy().send(message)
+        send_message_chunks(self.get_api_client().getProxy(),message)
+        #self.get_api_client().getProxy().send(message)
     
     #**************************************************#
     #Metodo que se encarga de  conectar al contacto    #
@@ -59,7 +65,8 @@ class DirectoryChannel(BidirectionalChannel):
     def disconnect(self):
         try:
             message = get_message('disconnect_wrapper',[self.username])
-            self.get_api_client().getProxy().send(message)
+            send_message_chunks(self.api_client.getProxy(),message)
+            #self.get_api_client().getProxy().send(message)
             self.get_api_client().getProxy().close()
             self.apiServer.stop_server()
         except Exception as e:
@@ -68,12 +75,19 @@ class DirectoryChannel(BidirectionalChannel):
 
     def register_user(self,username,password):
         message = get_message('register',[username,password])
-        self.get_api_client().getProxy().send(message)
+        #self.get_api_client().getProxy().send(message)
+        send_message_chunks(self.api_client.getProxy(),message)
 
     def login(self,username,password):
         message = get_message('login',[username,password,str(self.my_ip), str(self.my_port)])
-        self.get_api_client().getProxy().send(message)
-        data = self.get_api_client().getProxy().recv(BUFFER_SIZE)
+        #self.get_api_client().getProxy().send(message)
+        send_message_chunks(self.get_api_client().getProxy(),message)
+        chunk = ""
+        data = ""
+        while chunk != FINAL:
+            data +=chunk
+            chunk = self.get_api_client().getProxy().recv(BUFFER_SIZE)
+        #data = self.get_api_client().getProxy().recv(BUFFER_SIZE)
         if data != OK:
             raise Exception(data)
 

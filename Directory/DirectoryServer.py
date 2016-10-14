@@ -66,30 +66,42 @@ class GeneralDirectory:
     def run_thread(self, conn, addr):
         print "Directory server connected with "+addr[0]+ ":"+str(addr[1])
         connected = True
+        data = ""
         while connected:
             try:
-                data = conn.recv(BUFFER_SIZE)
-                print "Data: "+data
-                method, params = get_method(data)
-                if method == 'connect_wrapper':
-                    self.funtionWrapper.connect_wrapper(params[0],params[1],params[2])
-                elif method == 'disconnect_wrapper':
-                    self.funtionWrapper.disconnect_wrapper(params[0])
-                elif method == 'register':
-                    self.funtionWrapper.register(params[0],params[1])
-                elif method == 'login':
-                    val = self.funtionWrapper.login(params[0],params[1],params[2],params[3])
-                elif method == 'sendMessage_wrapper':
-                    self.funtionWrapper.sendMessage_wrapper(params[0])
-                elif method == 'play_audio_wrapper':
-                    self.funtionWrapper.play_audio_wrapper(params[0])
-                elif method == 'update_contacts':
-                    self.funtionWrapper.update_contacts(params[0])
-                elif method == 'get_contacts_wrapper':
-                    val = self.funtionWrapper.get_contacts_wrapper(params[0])
+                chunk = conn.recv(BUFFER_SIZE)
+                print "Recibiendo chunk "+chunk
+            
+                if FINAL in chunk:
+                    val = chunk
+                    data += val.replace(FINAL,"")
+                    chunk = FINAL
+                if chunk  == FINAL:
+                    print "Data: "+data
+                    method, params = get_method(data)
+                    if method == 'connect_wrapper':
+                        self.funtionWrapper.connect_wrapper(params[0],params[1],params[2])
+                    elif method == 'disconnect_wrapper':
+                        self.funtionWrapper.disconnect_wrapper(params[0])
+                    elif method == 'register':
+                        self.funtionWrapper.register(params[0],params[1])
+                    elif method == 'login':
+                        val = self.funtionWrapper.login(params[0],params[1],params[2],params[3])
+                        send_message_chunks(conn,str(val))
+                    elif method == 'sendMessage_wrapper':
+                        self.funtionWrapper.sendMessage_wrapper(params[0])
+                    elif method == 'play_audio_wrapper':
+                        self.funtionWrapper.play_audio_wrapper(params[0])
+                    elif method == 'update_contacts':
+                        self.funtionWrapper.update_contacts(params[0])
+                    elif method == 'get_contacts_wrapper':
+                        val = self.funtionWrapper.get_contacts_wrapper(params[0])
+                        send_message_chunks(conn,str(val))
+                    else:
+                        conn.sendall(METHOD_NOT_REGISTERED)
+                    data = ""
                 else:
-                    conn.sendall(METHOD_NOT_REGISTERED)
-                conn.sendall(str(val))
+                    data += chunk
             except Exception as e:
                 connected = False
             
@@ -107,7 +119,7 @@ class FunctionWrapperDirectory:
         self.client_dictionary = client_dictionary
         self.registered_users = {}
         self.read_users()
-        self.start_thread()
+        #self.start_thread()
 
     def start_thread(self):
         self.update_thread = threading.Thread(target = self.update) 
@@ -127,6 +139,7 @@ class FunctionWrapperDirectory:
                     try:
                         
                         channel.send_contacts(c)
+
                     except Exception as e:
                         print "Error: "+str(e)
                         self.disconnect_wrapper(user)
@@ -199,6 +212,7 @@ class FunctionWrapperDirectory:
         #print "registrados "+str(self.registered_users)
         if self.registered_users.has_key(username) and self.registered_users[username] == password:
             self.connect_wrapper(ip_string,port_string,username)
+            print "Conectado: "+username
             return OK
         else:
             return USER_DATA_WRONG

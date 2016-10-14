@@ -71,29 +71,50 @@ class MyApiServer:
 	def run_thread(self, conn, addr):
 		print "Client connected with "+addr[0]+ ":"+str(addr[1])
 		connected = True
+		data = ""
 		while connected:
 			try:
-				data = conn.recv(BUFFER_SIZE)
+				chunk = conn.recv(BUFFER_SIZE_C)
+				"""
+				if chunk != final or METHOD_SEP in chunk:
+					data += chunk
+				"""
+				if METHOD_SEP not in chunk :
+					print "Recibiendo audio"
+					#print "Data server: "+data
+					self.wrapper.play_audio_wrapper(data)
 				
-				method, params = get_method(data)
-				if method == 'new_chat_wrapper':
-					self.wrapper.new_chat_wrapper(params[0],params[1],params[2])
-				elif method == 'add_contact':
-					self.wrapper.add_contact(params[0],params[1],params[2])
-				elif method == 'audio_state':
-					self.wrapper.audio_state(params[0],params[1])
-				elif method == 'remove_contact':
-					self.wrapper.remove_contact(params[0])
-				elif method == 'sendMessage_wrapper':
-					self.wrapper.sendMessage_wrapper(params[0])
-				elif method == 'play_audio_wrapper':
-					print "Data server: "+data
-					self.wrapper.play_audio_wrapper(params[0])
-				elif method == 'update_contacts':
-					contacts = ast.literal_eval(params[0])
-					self.wrapper.update_contacts(contacts)
+				if FINAL in chunk:
+					val = chunk
+					data += val.replace(FINAL,"")
+					chunk = FINAL
+
+				if chunk  == FINAL:
+					#print "Data recived: "+data
+					method, params = get_method(data)
+					if method == 'new_chat_wrapper':
+						self.wrapper.new_chat_wrapper(params[0],params[1],params[2])
+					elif method == 'add_contact':
+						self.wrapper.add_contact(params[0],params[1],params[2])
+					elif method == 'audio_state':
+						self.wrapper.audio_state(params[0],params[1])
+					elif method == 'remove_contact':
+						self.wrapper.remove_contact(params[0])
+					elif method == 'sendMessage_wrapper':
+						self.wrapper.sendMessage_wrapper(params[0])
+					elif method == 'play_audio_wrapper':
+						#print "Data server: "+data
+						self.wrapper.play_audio_wrapper(params[0])
+					elif method == 'update_contacts':
+						contacts = ast.literal_eval(params[0])
+						self.wrapper.update_contacts(contacts)
+					else:
+						print "Not registered method"
+					data = ""
 				else:
-					conn.sendall(METHOD_NOT_REGISTERED)
+					data += chunk
+				
+					
 			except Exception as e:
 				connected = False
 		conn.close()

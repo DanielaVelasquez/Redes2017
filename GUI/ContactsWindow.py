@@ -82,7 +82,7 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 		self.grid.addWidget(self.txt_contacts,2,0,10,10)
 		self.grid.addWidget(self.btn_refresh,12,8,3,2)
 		
-		#self.btn_refresh.clicked.connect(self.update_contacts)
+		self.btn_refresh.clicked.connect(self.update_contacts)
 
 		self.txt_contacts.itemDoubleClicked.connect(self.show_contact)
 
