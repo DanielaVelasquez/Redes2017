@@ -83,29 +83,45 @@ def get_message(method,params):
 
 import time
 def send_message_chunks(s,message):
+	#Contar hasta tamaño de un chunk
 	cont = 0
+	#Chunk a enviar
 	chunk = ""
-	j = 1
 	for i in message:
-		
+		#Si no se ha alcanzado el tamaño del buffer, contar un caracter más
 		if cont<BUFFER_SIZE:
 			cont +=1
-
+		#Si ya se alcanzó, se reincia el conteo y se envia el chunk
 		else:
 			cont = 0
-			print "Enviando chunk"+chunk
 			s.send(chunk)
 			chunk = ""
 
+		#Añadir siempre al chunk un caracter
 		chunk +=i
-		j +=1
-		if j > len(message):
-			if len(chunk)>0:
-				print "Enviando chunk"+chunk
-				s.send(chunk)
-				time.sleep(0.5)
 
-			print "envien final"
-			s.send(FINAL)
+	#Ya se tomó todo el mensaje, revisar si hay información del chunk por enviar
+	if len(chunk)>0:
+		s.send(chunk)
+		time.sleep(0.5)
+
+	#Enviar comando final
+	s.send(FINAL)
+
+def recieve_message(s):
+	#Chunk recibido
+	chunk = ""
+	#Mensaje respuesta
+    data = ""
+    #Mientras no llegue el chunk final
+    while chunk != FINAL:
+        data +=chunk
+        chunk = s.recv(BUFFER_SIZE)
+        #Para separar el FINAL del resto del mensaje
+        if FINAL in chunk:
+            val = chunk
+            data += val.replace(FINAL,"")
+            chunk = FINAL
+    return data
 
 

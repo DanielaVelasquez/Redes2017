@@ -57,7 +57,6 @@ class DirectoryChannel(BidirectionalChannel):
     def connect(self):
         message = get_message('connect_wrapper',[str(self.my_ip), str(self.my_port), str(self.username)])
         send_message_chunks(self.get_api_client().getProxy(),message)
-        #self.get_api_client().getProxy().send(message)
     
     #**************************************************#
     #Metodo que se encarga de  conectar al contacto    #
@@ -66,7 +65,6 @@ class DirectoryChannel(BidirectionalChannel):
         try:
             message = get_message('disconnect_wrapper',[self.username])
             send_message_chunks(self.api_client.getProxy(),message)
-            #self.get_api_client().getProxy().send(message)
             self.get_api_client().getProxy().close()
             self.apiServer.stop_server()
         except Exception as e:
@@ -75,18 +73,21 @@ class DirectoryChannel(BidirectionalChannel):
 
     def register_user(self,username,password):
         message = get_message('register',[username,password])
-        #self.get_api_client().getProxy().send(message)
         send_message_chunks(self.api_client.getProxy(),message)
 
     def login(self,username,password):
         message = get_message('login',[username,password,str(self.my_ip), str(self.my_port)])
-        #self.get_api_client().getProxy().send(message)
         send_message_chunks(self.get_api_client().getProxy(),message)
         chunk = ""
         data = ""
         while chunk != FINAL:
             data +=chunk
             chunk = self.get_api_client().getProxy().recv(BUFFER_SIZE)
+            #Para separar el FINAL del resto del mensaje
+            if FINAL in chunk:
+                val = chunk
+                data += val.replace(FINAL,"")
+                chunk = FINAL
         #data = self.get_api_client().getProxy().recv(BUFFER_SIZE)
         if data != OK:
             raise Exception(data)

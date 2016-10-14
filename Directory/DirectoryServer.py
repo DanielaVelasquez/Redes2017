@@ -71,11 +71,12 @@ class GeneralDirectory:
             try:
                 chunk = conn.recv(BUFFER_SIZE)
                 print "Recibiendo chunk "+chunk
-            
+                #Si se une un simbolo de final en el chunk
                 if FINAL in chunk:
                     val = chunk
                     data += val.replace(FINAL,"")
                     chunk = FINAL
+                #Cuando ya se recibió todo el mensaje
                 if chunk  == FINAL:
                     print "Data: "+data
                     method, params = get_method(data)
@@ -119,7 +120,7 @@ class FunctionWrapperDirectory:
         self.client_dictionary = client_dictionary
         self.registered_users = {}
         self.read_users()
-        #self.start_thread()
+        self.start_thread()
 
     def start_thread(self):
         self.update_thread = threading.Thread(target = self.update) 
