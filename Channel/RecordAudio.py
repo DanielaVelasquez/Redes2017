@@ -39,7 +39,7 @@ class AudioClient(object):
         while True:
             frame = []
             for i in range(0,int(RATE/CHUNK *RECORD_SECONDS)):
-                frame.a0ppend(self.stream.read(CHUNK))
+                frame.append(self.stream.read(CHUNK))
             data_ar = numpy.fromstring(''.join(frame),  dtype=numpy.uint8)
             queque.put(data_ar)
 
@@ -74,14 +74,15 @@ class AudioServer(object):
 
     def __init__(self):
         super(AudioServer, self).__init__()
-
-    def playAudio(self,audio):
-        #print "Playing audio: "+str(audio)
-        p = pyaudio.PyAudio()
-        FORMAT = p.get_format_from_width(2)
-        stream = p.open(format=FORMAT,
+        self.p = pyaudio.PyAudio()
+        self.FORMAT = self.p.get_format_from_width(2)
+        self.stream = self.p.open(format=self.FORMAT,
                             channels=CHANNELS,
                             rate=RATE,
                             output=True,
                             frames_per_buffer=CHUNK)
-        stream.write(audio)
+
+    def playAudio(self,audio):
+        #print "Playing audio: "+str(audio)
+       
+        self.stream.write(audio)

@@ -108,20 +108,21 @@ def send_message_chunks(s,message):
 	#Enviar comando final
 	s.send(FINAL)
 
-def recieve_message(s):
+#Permite recibir un mensaje, se encarga de cortarlo donde sea necesario
+def receieve_message(s):
 	#Chunk recibido
 	chunk = ""
 	#Mensaje respuesta
-    data = ""
-    #Mientras no llegue el chunk final
-    while chunk != FINAL:
-        data +=chunk
-        chunk = s.recv(BUFFER_SIZE)
-        #Para separar el FINAL del resto del mensaje
-        if FINAL in chunk:
-            val = chunk
-            data += val.replace(FINAL,"")
-            chunk = FINAL
-    return data
+	data = ""
+	#Mientras no llegue el chunk final
+	while chunk != FINAL:
+		data +=chunk
+		chunk = s.recv(BUFFER_SIZE)
+		#Para separar el FINAL del resto del mensaje
+		if FINAL in chunk:
+			val = chunk
+			data += val.replace(FINAL,"")
+			chunk = FINAL
+	return data
 
 

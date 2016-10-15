@@ -36,26 +36,25 @@ con el cual el cliente expondra los metodos que ofrece
 class MyApiServer:
 	def __init__(self,app_receiver,my_port = DEFAULT_PORT):
 		try:
+
 			self.wrapper = FunctionWrapper(app_receiver)
-		
 			TCP_IP = get_ip_address()
 			TCP_PORT = int(my_port)
-			
 			#Inicia el servidor
 			self.port = my_port
 
 			self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 			#Conexiones actuales
 			self.users = {}
-
 			self.s.bind((TCP_IP, TCP_PORT))
+
 			self.s.listen(500)
 
 			self.running = False
 
 			print ("Server at (%s, %s))"%(TCP_IP, TCP_PORT))
 		except Exception as e:
-			raise Exception(PORT_IN_USE)
+			raise Exception("API SERVER "+PORT_IN_USE+"\n"+str(e))
 		
 		
 	def startServer(self):
@@ -75,14 +74,10 @@ class MyApiServer:
 		while connected:
 			try:
 				chunk = conn.recv(BUFFER_SIZE_C)
-				"""
-				if chunk != final or METHOD_SEP in chunk:
-					data += chunk
-				"""
-				if METHOD_SEP not in chunk :
-					print "Recibiendo audio"
-					#print "Data server: "+data
-					self.wrapper.play_audio_wrapper(data)
+				if not chunk: break
+				print "Chunk: "+str(chunk)
+				
+				self.wrapper.play_audio_wrapper(data)
 				
 				if FINAL in chunk:
 					val = chunk

@@ -67,7 +67,7 @@ class RequestChannel(object):
             elif contact_ip:
                 self.api_client = MyApiClient(contact_ip= contact_ip)
             else:
-                raise Exception(ERROR_REQUEST_CHANNEL)
+                raise Exception("Request channel "+ERROR_REQUEST_CHANNEL)
 
         self.calling = False
 

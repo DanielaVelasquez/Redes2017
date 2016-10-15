@@ -69,40 +69,33 @@ class GeneralDirectory:
         data = ""
         while connected:
             try:
-                chunk = conn.recv(BUFFER_SIZE)
-                print "Recibiendo chunk "+chunk
-                #Si se une un simbolo de final en el chunk
-                if FINAL in chunk:
-                    val = chunk
-                    data += val.replace(FINAL,"")
-                    chunk = FINAL
-                #Cuando ya se recibió todo el mensaje
-                if chunk  == FINAL:
-                    print "Data: "+data
-                    method, params = get_method(data)
-                    if method == 'connect_wrapper':
-                        self.funtionWrapper.connect_wrapper(params[0],params[1],params[2])
-                    elif method == 'disconnect_wrapper':
-                        self.funtionWrapper.disconnect_wrapper(params[0])
-                    elif method == 'register':
-                        self.funtionWrapper.register(params[0],params[1])
-                    elif method == 'login':
-                        val = self.funtionWrapper.login(params[0],params[1],params[2],params[3])
-                        send_message_chunks(conn,str(val))
-                    elif method == 'sendMessage_wrapper':
-                        self.funtionWrapper.sendMessage_wrapper(params[0])
-                    elif method == 'play_audio_wrapper':
-                        self.funtionWrapper.play_audio_wrapper(params[0])
-                    elif method == 'update_contacts':
-                        self.funtionWrapper.update_contacts(params[0])
-                    elif method == 'get_contacts_wrapper':
-                        val = self.funtionWrapper.get_contacts_wrapper(params[0])
-                        send_message_chunks(conn,str(val))
-                    else:
-                        conn.sendall(METHOD_NOT_REGISTERED)
-                    data = ""
+                data = receieve_message(conn)
+
+                print "Data directory server"+data
+
+                method, params = get_method(data)
+
+                if method == 'connect_wrapper':
+                    self.funtionWrapper.connect_wrapper(params[0],params[1],params[2])
+                elif method == 'disconnect_wrapper':
+                    self.funtionWrapper.disconnect_wrapper(params[0])
+                elif method == 'register':
+                    self.funtionWrapper.register(params[0],params[1])
+                elif method == 'login':
+                    val = self.funtionWrapper.login(params[0],params[1],params[2],params[3])
+                    send_message_chunks(conn,str(val))
+                elif method == 'sendMessage_wrapper':
+                    self.funtionWrapper.sendMessage_wrapper(params[0])
+                elif method == 'play_audio_wrapper':
+                    self.funtionWrapper.play_audio_wrapper(params[0])
+                elif method == 'update_contacts':
+                    self.funtionWrapper.update_contacts(params[0])
+                elif method == 'get_contacts_wrapper':
+                    val = self.funtionWrapper.get_contacts_wrapper(params[0])
+                    send_message_chunks(conn,str(val))
                 else:
-                    data += chunk
+                    conn.sendall(METHOD_NOT_REGISTERED)
+               
             except Exception as e:
                 connected = False
             
@@ -166,7 +159,7 @@ class FunctionWrapperDirectory:
     def register(self, username,password):
         print "Registrando "+username
         if self.is_registered(username):
-            raise Exception(USERNAME_REGISTERED)
+            raise Exception("DIRECTORY SERVER "+USERNAME_REGISTERED)
         else:
             try:
                 password = password +"\n"
@@ -174,7 +167,7 @@ class FunctionWrapperDirectory:
                 archivo.write(username+SEP+password)
                 self.registered_users[username] = password
             except Exception:
-                raise Exception(ERROR_REGISTERING)
+                raise Exception("DIRECTORY SERVER "+ERROR_REGISTERING)
 
     def get_contacts_wrapper(self,  username):
         #Se clona el diccionario de usuarios
@@ -196,7 +189,7 @@ class FunctionWrapperDirectory:
         #Revisa si existe un usuario con dicho nombre
         if self.client_dictionary.has_key(username):
             #No permite la conexión
-            raise Exception(USERNAME_USED)
+            raise Exception("DIRECTORY SERVER "+USERNAME_USED)
         else:
             print "Iniciando usuario: "+username
             user = self.user_to_dictionary(username,ip_string,port_string)

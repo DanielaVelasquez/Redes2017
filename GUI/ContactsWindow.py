@@ -37,7 +37,7 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 			self.my_contact_information = my_contact_information
 			self.mode = mode
 			self.directory_channel = None
-
+			
 			self.connect()
 
 			if sender == SENDER_REGISTER:
@@ -57,7 +57,7 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 			self.initGUI()
 			
 		except Exception, e:
-			QtGui.QMessageBox.warning(self, WARNING, str(e) ,QtGui.QMessageBox.Ok)
+			QtGui.QMessageBox.warning(self, WARNING, "CONTACT WINDOW: "+str(e) ,QtGui.QMessageBox.Ok)
 
 		
 	def initGUI(self):		
@@ -103,12 +103,16 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 		if self.chats.has_key(selected_user):
 			QtGui.QMessageBox.warning(self, WARNING, CHAT_OPEN ,QtGui.QMessageBox.Ok)
 		else:
-			#Crea conexión
-			self.new_window_chat(selected_user)
+			try:
+				#Crea conexión
+				self.new_window_chat(selected_user)
 
-			#Solicita crea la otra ventana
-			chat = self.chats[selected_user]
-			chat.connect()
+				#Solicita crea la otra ventana
+				chat = self.chats[selected_user]
+				chat.connect()
+			except Exception as e:
+				QtGui.QMessageBox.warning(self, WARNING, str(e) ,QtGui.QMessageBox.Ok)
+			
 
 	def add_contact_receiver(self,user):
 		self.directory_channel.get_server().get_wrapper().add_contact(user[IP_CONTACT],user[PORT_CONTACT],user[NAME_CONTACT])

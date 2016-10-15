@@ -88,8 +88,7 @@ class DirectoryChannel(BidirectionalChannel):
                 val = chunk
                 data += val.replace(FINAL,"")
                 chunk = FINAL
-        #data = self.get_api_client().getProxy().recv(BUFFER_SIZE)
         if data != OK:
-            raise Exception(data)
+            raise Exception("LOGIN DIRECTORY CHANNEL "+data)
 
 
