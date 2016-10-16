@@ -77,7 +77,6 @@ class MyApiServer:
 				if not chunk: break
 				
 				if is_audio(chunk):
-					print "Audio"
 					self.wrapper.play_audio_wrapper(chunk)
 					#time.sleep(3)
 				else:
