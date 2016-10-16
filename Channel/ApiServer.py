@@ -16,7 +16,7 @@
 # Distributed under terms of the MIT license.       #
 #####################################################
 import socket,select
-import ast
+import ast,time
 #  Mis bibliotecas
 import sys
 from os import path
@@ -75,39 +75,42 @@ class MyApiServer:
 			try:
 				chunk = conn.recv(BUFFER_SIZE_C)
 				if not chunk: break
-				print "Chunk: "+str(chunk)
 				
-				self.wrapper.play_audio_wrapper(data)
-				
-				if FINAL in chunk:
-					val = chunk
-					data += val.replace(FINAL,"")
-					chunk = FINAL
-
-				if chunk  == FINAL:
-					#print "Data recived: "+data
-					method, params = get_method(data)
-					if method == 'new_chat_wrapper':
-						self.wrapper.new_chat_wrapper(params[0],params[1],params[2])
-					elif method == 'add_contact':
-						self.wrapper.add_contact(params[0],params[1],params[2])
-					elif method == 'audio_state':
-						self.wrapper.audio_state(params[0],params[1])
-					elif method == 'remove_contact':
-						self.wrapper.remove_contact(params[0])
-					elif method == 'sendMessage_wrapper':
-						self.wrapper.sendMessage_wrapper(params[0])
-					elif method == 'play_audio_wrapper':
-						#print "Data server: "+data
-						self.wrapper.play_audio_wrapper(params[0])
-					elif method == 'update_contacts':
-						contacts = ast.literal_eval(params[0])
-						self.wrapper.update_contacts(contacts)
-					else:
-						print "Not registered method"
-					data = ""
+				if is_audio(chunk):
+					print "Audio"
+					self.wrapper.play_audio_wrapper(chunk)
+					#time.sleep(3)
 				else:
-					data += chunk
+
+					if FINAL in chunk:
+						val = chunk
+						data += val.replace(FINAL,"")
+						chunk = FINAL
+
+					if chunk  == FINAL:
+						#print "Data recived: "+data
+						method, params = get_method(data)
+						if method == 'new_chat_wrapper':
+							self.wrapper.new_chat_wrapper(params[0],params[1],params[2])
+						elif method == 'add_contact':
+							self.wrapper.add_contact(params[0],params[1],params[2])
+						elif method == 'audio_state':
+							self.wrapper.audio_state(params[0],params[1])
+						elif method == 'remove_contact':
+							self.wrapper.remove_contact(params[0])
+						elif method == 'sendMessage_wrapper':
+							self.wrapper.sendMessage_wrapper(params[0])
+						elif method == 'play_audio_wrapper':
+							#print "Data server: "+data
+							self.wrapper.play_audio_wrapper(params[0])
+						elif method == 'update_contacts':
+							contacts = ast.literal_eval(params[0])
+							self.wrapper.update_contacts(contacts)
+						else:
+							print "Not registered method "+str(data)
+						data = ""
+					else:
+						data += chunk
 				
 					
 			except Exception as e:
@@ -203,6 +206,7 @@ class FunctionWrapper(QtCore.QThread):
 	
 	def play_audio_wrapper(self,audio):
 		self.audio_server.playAudio(audio)
+		
 	 
 	""" **************************************************
 	Procedimiento que ofrece nuestro servidor, este metodo sera llamado

@@ -159,8 +159,13 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 	#de usuarios                                #
 	#******************************************#
 	def update_contacts(self):
-		contacts = self.directory_channel.get_contacts()
-		self.show_contacts(contacts)
+		try:
+			contacts = self.directory_channel.get_contacts()
+			self.show_contacts(contacts)
+		except Exception as e:
+			QtGui.QMessageBox.warning(self, WARNING, str(e),QtGui.QMessageBox.Ok)
+
+		
 		
 
 	#Abre una ventana de chat para el contacto que se indicó

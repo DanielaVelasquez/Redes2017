@@ -58,7 +58,7 @@ class AudioClient(object):
             for i in range(0,int(RATE/CHUNK *RECORD_SECONDS)):
                 frame.append(stream.read(CHUNK))
             data_ar = numpy.fromstring(''.join(frame),  dtype=numpy.uint8)
-            
+            print "enviando audio "+str(data_ar)
             s.sendall(data_ar)
 
 from cStringIO import StringIO
@@ -81,8 +81,7 @@ class AudioServer(object):
                             rate=RATE,
                             output=True,
                             frames_per_buffer=CHUNK)
+        
 
     def playAudio(self,audio):
-        #print "Playing audio: "+str(audio)
-       
         self.stream.write(audio)

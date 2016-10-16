@@ -125,4 +125,13 @@ def receieve_message(s):
 			chunk = FINAL
 	return data
 
+#Determina si es un audio
+def is_audio(chunk):
+
+	for i in chunk:
+		val_ascii = ord(str(i))
+		if val_ascii < 32 or  val_ascii > 126:
+			return True
+	return False
+
 
