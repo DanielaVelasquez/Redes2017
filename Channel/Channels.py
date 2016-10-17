@@ -99,8 +99,8 @@ class RequestChannel(object):
 
 
     def send_audio(self):
-        self.audioRecorder = AudioClient()
-        self.call_thread = threading.Thread(target=self.audioRecorder.record, args= (self.api_client.getProxy(),))
+        self.audioRecorder = AudioClient(self.api_client.getProxy())
+        self.call_thread = threading.Thread(target=self.audioRecorder.record)
         self.call_thread.daemon = True
         self.call_thread.start()
 
