@@ -18,4 +18,4 @@ ADD . Redes-17
 WORKDIR Redes-17
 
 #Comando a usar
-CMD cd Directory && python DirectoryServer.py -l 5000
+CMD cd Directory && python DirectoryServer.py

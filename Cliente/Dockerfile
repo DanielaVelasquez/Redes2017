@@ -18,4 +18,4 @@ ADD . Redes-17
 WORKDIR Redes-17
 
 #Comando a usar
-CMD python GraphicalUserInterface.py -l
+CMD python GraphicalUserInterface.py
