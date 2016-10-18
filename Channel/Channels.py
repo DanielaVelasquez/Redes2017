@@ -105,7 +105,7 @@ class RequestChannel(object):
         self.call_thread.start()
 
     def stops_sending_audio(self):
-        self.audioRecorder.calling = False
+        self.audioRecorder.stream.stop_stream()
 
     def audio_state(self,username, state):
         message = get_message('audio_state',[username,state])

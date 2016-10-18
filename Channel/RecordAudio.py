@@ -70,13 +70,13 @@ class AudioClient(object):
         p = pyaudio.PyAudio()
         self.calling = True
         FORMAT = p.get_format_from_width(2)
-        stream = p.open(format=FORMAT,
+        self.stream = p.open(format=FORMAT,
                             channels=CHANNELS,
                             rate=RATE,
                             input=True,
                             frames_per_buffer=CHUNK,
                             stream_callback = self.callback_function)
-        stream.start_stream()
+        self.stream.start_stream()
         while self.calling:
             time.sleep(0.1)
 
