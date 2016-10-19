@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 #####################################################
 # PURPOSE: Clase que permite hacer uso de la api del#
 #           contacto                                #
@@ -15,13 +14,12 @@
 #                                                   #
 # Distributed under terms of the MIT license.       #
 #####################################################
-import xmlrpclib
+import socket
 import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
 from Constants.AuxiliarFunctions import *
-
 
 """**************************************************
 Clase que genera un proxy para poder hacer uso de
@@ -33,25 +31,17 @@ class MyApiClient:
             contact_port = DEFAULT_PORT
         elif contact_ip is None:
             contact_ip = get_ip_address()
-
-        self.contact_port = contact_port
-        self.contact_ip = contact_ip
+        TCP_IP = contact_ip
+        TCP_PORT = int(contact_port)
         try:
-            con = HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
-            print "Client coneccting to: "+con
-            self.proxy = xmlrpclib.ServerProxy(con, allow_none=True)
-        except Exception, e:
-        	raise Exception(CONECTION_FAIL)
+            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.s.connect((TCP_IP, TCP_PORT))
+            print "Client connecting with "+str((TCP_IP, TCP_PORT))
+        except Exception as e:
+            raise Exception("API CLIENT "+PORT_IN_USE)        
         
     """**************************************************
     Metodos Get
     **************************************************"""
     def getProxy(self):
-        """"
-        try:
-            con = HTTP+str(self.contact_ip)+":"+str(self.contact_port)+"/"
-            self.proxy = xmlrpclib.ServerProxy(con, allow_none=True)
-        except Exception, e:
-            raise Exception(CONECTION_FAIL)
-        """
-    	return self.proxy
+        return self.s

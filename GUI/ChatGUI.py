@@ -28,8 +28,6 @@ class ChatGUI(QtGui.QWidget):
 		self.my_user = my_user
 		self.my_contact = my_contact
 		self.mode = mode
-
-
 		try:
 			#Canal de comunicación con el contacto
 			self.request_channel = None
@@ -49,7 +47,6 @@ class ChatGUI(QtGui.QWidget):
 		else:
 			self.request_channel = RequestChannel(contact_ip = self.my_contact[IP_CONTACT])
 
-		
 	#********************************************#
 	#Manda a iniciar una nueva conversación      #
 	#********************************************#
@@ -118,47 +115,34 @@ class ChatGUI(QtGui.QWidget):
 	
 	""""
 	Inicia la llamada
+	# Cambiar nombre a llamada, pues se realiza ahora tambien el video
 	"""
 	def send_audio(self):
 		if self.connection_open:
 			try:
 				self.request_channel.send_audio()
+				self.request_channel.send_video()
 				self.txt_conversation.append(CALLING)
 				self.btn_call.hide()
 				self.child = CallGUI(self)
+				# Se utiliza el mismo aviso para el video
 				self.request_channel.audio_state(self.my_user[NAME_CONTACT],CALLING)
 			except Exception as e:
 				QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
 		else:
 			QtGui.QMessageBox.warning(self, WARNING, CONVERSATION_CLOSED,QtGui.QMessageBox.Ok)
-			""""
-		if not self.channel.send_text(CALLING):
-			QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
-		else:
-			self.show_sending_message(CALLING)
-			try:
-				self.channel.call()
-				self.txt_message.setReadOnly(True)
-				self.btn_call.hide()
-				self.btn_send.hide()
-				self.child = CallGUI(self)
-			except Exception:
-				QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
-		"""
+		
 	""""
 	Termina la llamada
 	"""
 	def end_call(self):
-		self.request_channel.stop_sending_audio()
+		self.request_channel.stops_sending_audio()
 		self.btn_call.show()
 		self.btn_send.show()
 		self.txt_message.setReadOnly(False)
 		self.txt_conversation.append(CALL_END)
 		self.request_channel.audio_state(self.my_user[NAME_CONTACT],CALL_END)
-		#self.txt_message.setText("LLAMADA TERMINADA")
-		#self.send_message()
 
-	
 	"""
 	Define los eventos que ocurriran cuando se presionen teclas del teclado
 	"""
@@ -166,14 +150,13 @@ class ChatGUI(QtGui.QWidget):
 		if event.key() == QtCore.Qt.Key_Escape:
 			self.close()
 		if event.key() == QtCore.Qt.Key_Return or event.key() == QtCore.Qt.Key_Enter:
-			self.sendMessage()
+			self.send_message()
 
 	##############################################
 	#Muestra los mensajes que le han enviado     #
 	##############################################
 	def show_receiving_message(self, message):
 		self.txt_conversation.append(self.my_contact[NAME_CONTACT]+": "+message)
-
 
 	def closeEvent(self, evnt):
 		if self.connection_open:
@@ -198,7 +181,6 @@ class ChatGUI(QtGui.QWidget):
 
 	def show_state_audio(self,state):
 		self.txt_conversation.append(self.my_contact[NAME_CONTACT]+" -> "+state)
-
 
 """
 Clase que muestra la pantalla de llamada de voz

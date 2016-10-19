@@ -26,10 +26,7 @@ DEFAULT_POSTION_Y =350
 INFO_HEIGTH = 40
 INFO_WIDTH = CHAT_WIDTH
 CHAT_PORT = 5000
-### Audio
-#TODO 
-### Video
-#TODO
+
 ### Directorio
 SERVER_PORT =  7000
 MESSAGE_IP = 0
@@ -44,11 +41,11 @@ NAME_CONTACT = 'username'
 IP_CONTACT = 'ip_contact'
 PORT_CONTACT = 'port_contact'
 CHANNEL_CONTACT = 'channel_contact'
+SOCKET_CONTACT = 'socket_channel'
 
 TABLE_ITEMS = 2
 FIRST_ITEM = 0
 SECOND_ITEM = 1
-
 
 #Nombres para etiquetas login local y remoto
 MY_PORT_NUMBER_TITLE = "Cual es mi puerto?:"
@@ -104,7 +101,7 @@ RECORD_SECONDS = 2
 
 WIDTH_PYAUDIO_FORMAT = 2
 
-
+BUFFER_SIZE_VIDEO = 1024
 FRAME_NAME = 'frame'
 EXIT_NUM = 1
 EXIT_KEY = 'q'
@@ -144,7 +141,6 @@ SEP = " : "
 USERNAME_REGISTERED ="El nombre de usuario ya existe"
 ERROR_REGISTERING = "El usuario no pudo ser registrado"
 
-
 SLEEP = 5
 
 REGISTER = "Registrar"
@@ -152,7 +148,19 @@ REGISTER = "Registrar"
 SENDER_REGISTER ="registrar"
 SENDER_LOGIN = "iniciar_sesion"
 
-USER_DATA_WRONG = "Datos de usuario no encontrado"
+USER_DATA_WRONG = "Datos de usuario no encontrados o incorrectoss"
 DEFAULT_PORT_2 = 7000
 
 CONVERSATION_CLOSED = "La comunicación ha terminado, por favor una nuevamente"
+
+#Sockets
+BUFFER_SIZE = 20
+METHOD_SEP = "$#"
+BUFFER_SIZE_C = 20
+
+FINAL = "$#@"
+
+SEP_LIST = "#"
+METHOD_NOT_REGISTERED = "Method no registered"
+
+OK = "Ok"

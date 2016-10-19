@@ -21,8 +21,7 @@ class LoginGUI(QtGui.QWidget):
 	""""
 	mode: Modo de logueo que se va a realizar, sea local
 	o remoto
-	"""
-	
+	"""	
 	def __init__(self,my_information=None,my_contact_information=None,mode=REMOTE,username = None):
 		super(LoginGUI, self).__init__()
 		self.mode = mode
@@ -32,16 +31,13 @@ class LoginGUI(QtGui.QWidget):
 			self.contacts_window = ContactsWindow(my_information,my_contact_information,mode,username)
 		else:
 			self.initGUI()
-
-		
-
 		
 	""""
 	Inicia los elementos de la GUI, solicitando el 
 	número del puerto del usuario y el número del
 	puerto del contacto o las direccion de ip de contacto
 	"""
-	def initGUI(self):		
+	def initGUI(self):
 		#Creación y configuración del widget
 		self.setWindowTitle(LOGIN_WINDOW)
 		self.setGeometry(DEFAULT_POSITION_X, DEFAULT_POSITION_Y, LOGIN_WIDTH, LOGIN_HEIGHT)
@@ -66,13 +62,12 @@ class LoginGUI(QtGui.QWidget):
 
 		self.lb_my_information = QtGui.QLabel(lb_my_title,self)
 		if self.mode in LOCAL:
-			self.txt_my_information = QtGui.QLineEdit(self)		
-			
+			self.txt_my_information = QtGui.QLineEdit(self)
+
 		self.lb_contact_information = QtGui.QLabel(lb_contac_title,self)
 		self.txt_contact_information = QtGui.QLineEdit(self)
 
 		self.btn_login = QtGui.QPushButton(LOGIN_TITLE,self)
-
 		self.btn_register = QtGui.QPushButton(REGISTER,self)
 
 		#Configuración elementos de la GUI		
@@ -96,15 +91,12 @@ class LoginGUI(QtGui.QWidget):
 
 		self.txt_pass.setEchoMode(QtGui.QLineEdit.Password)
 
-		"""
 		self.txt_pass.setText("root")
 		self.txt_user.setText("root")
 		self.txt_contact_information.setText("8000")
 		self.txt_my_information.setText("5000")
-		"""
 
 		self.show()
-
 
 	def register(self):
 		self.register_gui = Register(self.mode)
@@ -135,6 +127,7 @@ class LoginGUI(QtGui.QWidget):
 			password = codify_password(text_password)
 			#print "text_my_information "+text_my_information+"\ntext_my_contact_information "+text_my_contact_information+"\ntext_username "+text_username+"\n"+mode
 			self.contacts_window = ContactsWindow(my_information = text_my_information,my_contact_information=text_my_contact_information,mode=mode,username=text_username,password=password, sender = SENDER_LOGIN)
+			print "Contacts window"
 			self.close()
 
 	"""

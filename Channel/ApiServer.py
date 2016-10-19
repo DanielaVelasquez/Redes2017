@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 #####################################################
 # PURPOSE: Clase que permite mandar un mensaje al   #
 #           contacto                                #
@@ -15,8 +14,8 @@
 #                                                   #
 # Distributed under terms of the MIT license.       #
 #####################################################
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
+import socket,select
+import ast,time
 #  Mis bibliotecas
 import sys
 from os import path
@@ -24,36 +23,114 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.AuxiliarFunctions import *
 from Constants.Constants import *
 from RecordAudio import AudioServer
+from RecordVideo import VideoServer
 
-from threading import Thread
+import threading
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import SIGNAL, QObject
 
-# Restrict to a particular path.
-class RequestHandler(SimpleXMLRPCRequestHandler):
-	rpc_paths = ('/RPC2',)
+import struct
+import pickle
+
 """**************************************************
 Clase que genera un servidor de la biblioteca xmlrpc
 con el cual el cliente expondra los metodos que ofrece
 **************************************************"""
 class MyApiServer:
-	def __init__(self,app_receiver,my_port = DEFAULT_PORT,):
-		#self,Qparent, my_port = DEFAULT_PORT
-		self.port = my_port
-		print "Server connecting to: "+str(get_ip_address())+", "+str(self.port)
-		self.server = SimpleXMLRPCServer((get_ip_address(),int(self.port)),allow_none=True)
-		self.wrapper = FunctionWrapper(app_receiver)
-		self.server.register_instance(self.wrapper)
-	  
-	"""**************************************************
-	Inicia el servidor para que atienda peticiones
-	**************************************************"""  
+	def __init__(self,app_receiver,my_port = DEFAULT_PORT):
+		try:
+			self.wrapper = FunctionWrapper(app_receiver)
+			TCP_IP = get_ip_address()
+			TCP_PORT = int(my_port)
+			#Inicia el servidor
+			self.port = my_port
+			self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+			#Conexiones actuales
+			self.users = {}
+			self.s.bind((TCP_IP, TCP_PORT))
+			self.s.listen(500)
+			self.running = False
+			print ("Server at (%s, %s))"%(TCP_IP, TCP_PORT))
+		except Exception as e:
+			raise Exception("API SERVER "+PORT_IN_USE+"\n"+str(e))		
+		
 	def startServer(self):
-		self.server.serve_forever()
+		self.running = True
+		while self.running:
+			conn, addr = self.s.accept()
+			threading.Thread(target = self.run_thread, args = (conn,addr)).start()
+		self.s.close()
+
+	def stop_server(self):
+		self.running = False
+	
+	def run_thread(self, conn, addr):
+		print "Client connected with "+addr[0]+ ":"+str(addr[1])
+		connected = True
+		payload_size = struct.calcsize("L")
+		data = ""
+		while connected:
+			try:
+				chunk = conn.recv(BUFFER_SIZE_C)
+
+				if not chunk:
+					break
+				
+				if is_audio(chunk):
+					self.wrapper.play_audio_wrapper(chunk)
+					#time.sleep(3)
+
+				else:
+					# Frame de video recibido
+					if len(data) >= payload_size:
+						packed_msg_size = data[:payload_size]
+						data = data[payload_size:]
+						msg_size = struct.unpack("L", packed_msg_size)[0]
+						while len(data) < msg_size:
+							data += conn.recv[BUFFER_SIZE_VIDEO]
+						frame_data = data[:msg_size]
+						data = data[msg_size:]
+						frame = pickle.loads(frame_data)
+						self.wrapper.play_video_wrapper(frame)
+						
+					if FINAL in chunk:
+						val = chunk
+						data += val.replace(FINAL,"")
+						chunk = FINAL
+
+					if chunk  == FINAL:
+						#print "Data recived: "+data
+						method, params = get_method(data)
+						if method == 'new_chat_wrapper':
+							self.wrapper.new_chat_wrapper(params[0],params[1],params[2])
+						elif method == 'add_contact':
+							self.wrapper.add_contact(params[0],params[1],params[2])
+						elif method == 'audio_state':
+							self.wrapper.audio_state(params[0],params[1])
+						elif method == 'remove_contact':
+							self.wrapper.remove_contact(params[0])
+						elif method == 'sendMessage_wrapper':
+							self.wrapper.sendMessage_wrapper(params[0])
+						elif method == 'play_audio_wrapper':
+							#print "Data server: "+data
+							self.wrapper.play_audio_wrapper(params[0])
+						elif method == 'update_contacts':
+							contacts = ast.literal_eval(params[0])
+							self.wrapper.update_contacts(contacts)
+						else:
+							print "Not registered method "+str(data)
+						data = ""
+
+					else:
+						data += chunk
+
+
+			except Exception as e:
+				connected = False
+		conn.close()
 
 	def get_wrapper(self):
 		return self.wrapper
-
 
 class FunctionWrapper(QtCore.QThread):
 	""" **************************************************
@@ -65,6 +142,8 @@ class FunctionWrapper(QtCore.QThread):
 		#hasta ese momento
 		self.chats_dictionary = {}
 		self.receiver = receiver
+		self.audio_server = AudioServer()
+		self.video_server = VideoServer()	
 	  
 	def search_user(self,ip,port):
 		for c in self.chats_dictionary:
@@ -77,8 +156,6 @@ class FunctionWrapper(QtCore.QThread):
 	def audio_state(self,username,state):
 		self.receiver.state_audio(username,state)
 
-
-
 	"""**************************************************
 	Metodo que sera llamado cuando un contacto quiera establecer
 	conexion con este cliente
@@ -87,12 +164,10 @@ class FunctionWrapper(QtCore.QThread):
 		user = dictionaryUser(username,contact_ip,contact_port)
 		self.chats_dictionary[username] = user
 		self.receiver.showNewChat(contact_ip, contact_port, username)
-		#Emite la señal para que se cree la ventana
-		
+		#Emite la señal para que se cree la ventana		
 		self.emit(SIGNAL(SIGNAL_CREATE_WINDOW))
 		#Un cliente mando a llamar a esta instancia, crea una ventana de
-		#chat para automaticamente
-		#TODO
+		#chat automaticamente
 
 	def add_contact(self,contact_ip,contact_port,username):
 		user = dictionaryUser(username,contact_ip,contact_port)
@@ -102,13 +177,10 @@ class FunctionWrapper(QtCore.QThread):
 	#Método que es llamado por un contacto cuando     #
 	#quiere indicar que no se van a comunicar más     #
 	###################################################
-	def remove_contact(self, username):
-
-		
+	def remove_contact(self, username):		
 		if self.chats_dictionary.has_key(username):
 			del self.chats_dictionary[username]
-			self.receiver.remove_contact(username)
-		
+			self.receiver.remove_contact(username)		
 
 	""" **************************************************
 	Procedimiento que ofrece nuestro servidor, este metodo sera llamado
@@ -122,8 +194,7 @@ class FunctionWrapper(QtCore.QThread):
 		message_split = split_message_header(message)
 		text = message_split[MESSAGE_TEXT]
 		user = message_split[MESSAGE_USER]
-		self.receiver.showMessage(user,text)
-		
+		self.receiver.showMessage(user,text)		
 		
 	""" **************************************************
 	Procedimiento que ofrece nuestro servidor, este metodo sera llamado
@@ -132,11 +203,9 @@ class FunctionWrapper(QtCore.QThread):
 	************************************************** """
 	def echo(self, message):
 		pass
-		#TODO
 	
 	def play_audio_wrapper(self,audio):
-		self.audio_server = AudioServer()
-		self.audio_server.playAudio(audio)
+		self.audio_server.playAudio(audio)		
 	 
 	""" **************************************************
 	Procedimiento que ofrece nuestro servidor, este metodo sera llamado
@@ -144,12 +213,10 @@ class FunctionWrapper(QtCore.QThread):
 	hacer lo necesario para reproducir el video en la ventana adecuada
 	************************************************** """
 	def play_video_wrapper(self,frame):
-		pass
-		#TODO
+		self.video_server.reproduce(frame)		
 
 	def update_contacts(self,contact):
 		self.receiver.show_contacts(contact)
-
 
 #***************************************************************************************************************
 """""
@@ -162,15 +229,14 @@ o otro medio de interacción con el usuario
 class Receiver(object):
 	 """User: usuario al cual está asociado el recibidor, define para qué usuario trabaja"""
 	 def __init__(self,user):
-	 	 super(Receiver, self).__init__()
+		 super(Receiver, self).__init__()
 		 self.user = user
 		 
 	 def showNewChat(self, contact_ip, contact_port, username):
 		 raise NotImplementedError()
 
 	 def showMessage(self, user,message):
-		 raise NotImplementedError()
-		
+		 raise NotImplementedError()		
 	
 	 def play_audio(self,audio):
 		 raise NotImplementedError()
@@ -180,20 +246,20 @@ class Receiver(object):
 
 	 #Abre la ventana al recibir la señal
 	 def open_window(self):
-	 	raise NotImplementedError()
+		raise NotImplementedError()
 
 	 def remove_contact(self,username):
-	 	raise NotImplementedError()
+		raise NotImplementedError()
 
 	 ####################################################
 	 #Indica se cerró la conexión con el usuario con    #
 	 #nombre de usuario 'username'                      #
 	 ####################################################
 	 def close_connection_with(self, username):
-	 	raise NotImplementedError()
+		raise NotImplementedError()
 
 	 def state_audio(self,username,state):
-	 	raise NotImplementedError()
+		raise NotImplementedError()
 
 	 def show_contacts(self,contacts):
-	 	raise NotImplementedError()
+		raise NotImplementedError()
