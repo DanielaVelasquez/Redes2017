@@ -96,12 +96,12 @@ class LoginGUI(QtGui.QWidget):
 
 		self.txt_pass.setEchoMode(QtGui.QLineEdit.Password)
 
-		
+		"""
 		self.txt_pass.setText("root")
 		self.txt_user.setText("root")
 		self.txt_contact_information.setText("8000")
 		self.txt_my_information.setText("5000")
-		
+		"""
 
 		self.show()
 
@@ -135,7 +135,6 @@ class LoginGUI(QtGui.QWidget):
 			password = codify_password(text_password)
 			#print "text_my_information "+text_my_information+"\ntext_my_contact_information "+text_my_contact_information+"\ntext_username "+text_username+"\n"+mode
 			self.contacts_window = ContactsWindow(my_information = text_my_information,my_contact_information=text_my_contact_information,mode=mode,username=text_username,password=password, sender = SENDER_LOGIN)
-			print "Contacts window"
 			self.close()
 
 	"""
