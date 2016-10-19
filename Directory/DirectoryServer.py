@@ -42,39 +42,43 @@ class GeneralDirectory:
         #Inicia el servidor
         self.port = port
 
-        try:
-            self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-            #Conexiones actuales
-            self.users = {}
+        #try:
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM,socket.IPPROTO_UDP)
+        #Conexiones actuales
+        self.users = {}
 
-            self.s.bind((TCP_IP, TCP_PORT))
-            self.s.listen(500)
+        self.s.bind((TCP_IP, TCP_PORT))
 
-            self.funtionWrapper = FunctionWrapperDirectory(self.client_dictionary)
-            print ("Directorio de ubicacion activo, mi direccion es:")
-            print ("(%s, %s))" %(get_ip_address(), port))
-            self.run()
-        except Exception as e:
-            print "Error: "+str(e)
+        self.funtionWrapper = FunctionWrapperDirectory(self.client_dictionary)
+        print ("Directorio de ubicacion activo, mi direccion es:")
+        print ("(%s, %s))" %(get_ip_address(), port))
+        self.run()
+        #except Exception as e:
+        #    print "Error: "+str(e)
 
     def run(self):
+        users = {}
         while True:
-            conn, addr = self.s.accept()
-            print "\n"
-            threading.Thread(target = self.run_thread, args = (conn,addr)).start()
+            chunk, addr = self.s.recvfrom(BUFFER_SIZE)
+            
+            #Si el final está en el chunk
+            if FINAL in chunk:
+                val = chunk
+                data = val.replace(FINAL,"")
+                chunk = FINAL
+            else:
+                data = chunk
+            #Si ya se recibió mensajes de esa dirección junta los datos
+            if users.has_key(addr):
+                users[addr] = users[addr] + data
+            else:
+                users[addr] = data
 
-    def run_thread(self, conn, addr):
-        print "Directory server connected with "+addr[0]+ ":"+str(addr[1])
-        connected = True
-        data = ""
-        while connected:
-            try:
-                data = receieve_message(conn)
+            if chunk == FINAL:
+                val = None
+                print "\n"+str(users[addr])+" "+str(addr)
 
-                print "Data directory server"+data
-
-                method, params = get_method(data)
-
+                method, params = get_method(users[addr])
                 if method == 'connect_wrapper':
                     self.funtionWrapper.connect_wrapper(params[0],params[1],params[2])
                 elif method == 'disconnect_wrapper':
@@ -83,7 +87,6 @@ class GeneralDirectory:
                     self.funtionWrapper.register(params[0],params[1])
                 elif method == 'login':
                     val = self.funtionWrapper.login(params[0],params[1],params[2],params[3])
-                    send_message_chunks(conn,str(val))
                 elif method == 'sendMessage_wrapper':
                     self.funtionWrapper.sendMessage_wrapper(params[0])
                 elif method == 'play_audio_wrapper':
@@ -92,16 +95,15 @@ class GeneralDirectory:
                     self.funtionWrapper.update_contacts(params[0])
                 elif method == 'get_contacts_wrapper':
                     val = self.funtionWrapper.get_contacts_wrapper(params[0])
-                    send_message_chunks(conn,str(val))
                 else:
-                    conn.sendall(METHOD_NOT_REGISTERED)
-               
-            except Exception as e:
-                connected = False
+                    self.s.sendto(METHOD_NOT_REGISTERED,addr)
+                
+                if val == None:
+                    val = OK
+                self.s.sendto(val,addr)
+                self.s.sendto(FINAL,addr)
+                del users[addr]
             
-        conn.close()
-        
-
 
 class FunctionWrapperDirectory:
     """ **************************************************

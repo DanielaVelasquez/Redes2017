@@ -41,12 +41,7 @@ class DirectoryChannel(BidirectionalChannel):
     def get_contacts(self):
         message = get_message('get_contacts_wrapper',[self.username])
         send_message_chunks(self.api_client.getProxy(),message)
-        #self.get_api_client().getProxy().send(message)
-        chunk = ""
-        data = ""
-        while chunk != FINAL:
-            data +=chunk
-            chunk = self.get_api_client().getProxy().recv(BUFFER_SIZE)
+        data = receieve_message(self.api_client.getProxy())
         contacts = ast.literal_eval(data)
         return contacts
 
@@ -77,18 +72,8 @@ class DirectoryChannel(BidirectionalChannel):
 
     def login(self,username,password):
         message = get_message('login',[username,password,str(self.my_ip), str(self.my_port)])
-        send_message_chunks(self.get_api_client().getProxy(),message)
-        chunk = ""
-        data = ""
-        while chunk != FINAL:
-            data +=chunk
-            chunk = self.get_api_client().getProxy().recv(BUFFER_SIZE)
-            #Para separar el FINAL del resto del mensaje
-            if FINAL in chunk:
-                val = chunk
-                data += val.replace(FINAL,"")
-                chunk = FINAL
-        if data != OK:
-            raise Exception("LOGIN DIRECTORY CHANNEL "+data)
+        send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
+        
+        data = receieve_message(self.api_client.getProxy(),False)
 
 

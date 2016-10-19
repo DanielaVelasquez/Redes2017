@@ -123,7 +123,7 @@ class RequestChannel(object):
         print "Channel sending contacts"+str(contacts)
 
         message = get_message('update_contacts',[contacts])
-        send_message_chunks(self.api_client.getProxy(),message)
+        send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
         #self.api_client.getProxy().send(message)
 
     """**************************************************

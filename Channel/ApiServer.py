@@ -43,12 +43,10 @@ class MyApiServer:
 			#Inicia el servidor
 			self.port = my_port
 
-			self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+			self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM,socket.IPPROTO_UDP)
 			#Conexiones actuales
 			self.users = {}
 			self.s.bind((TCP_IP, TCP_PORT))
-
-			self.s.listen(500)
 
 			self.running = False
 
@@ -60,7 +58,7 @@ class MyApiServer:
 	def startServer(self):
 		self.running = True
 		while self.running:
-			conn, addr = self.s.accept()
+			conn, addr = self.s.recvfrom(BUFFER_SIZE)
 			threading.Thread(target = self.run_thread, args = (conn,addr)).start()
 		self.s.close()
 
@@ -114,7 +112,6 @@ class MyApiServer:
 					
 			except Exception as e:
 				connected = False
-		conn.close()
 			
 
 

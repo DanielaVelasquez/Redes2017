@@ -34,11 +34,13 @@ class MyApiClient:
         elif contact_ip is None:
             contact_ip = get_ip_address()
 
+        self.contact_port = int(contact_port)
+        self.contact_ip = contact_ip
         TCP_IP = contact_ip
         TCP_PORT = int(contact_port)
 
         try:
-            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM,socket.IPPROTO_UDP)
             self.s.connect((TCP_IP, TCP_PORT))
             print "Client connecting with "+str((TCP_IP, TCP_PORT))
         except Exception as e:
@@ -52,3 +54,6 @@ class MyApiClient:
     **************************************************"""
     def getProxy(self):
         return self.s
+
+    def get_address(self):
+        return (self.contact_ip,self.contact_port)

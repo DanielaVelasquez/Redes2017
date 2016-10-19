@@ -82,7 +82,7 @@ def get_message(method,params):
 	return message
 
 import time
-def send_message_chunks(s,message):
+def send_message_chunks(s,message,ip_addres):
 	#Contar hasta tamaño de un chunk
 	cont = 0
 	#Chunk a enviar
@@ -94,7 +94,7 @@ def send_message_chunks(s,message):
 		#Si ya se alcanzó, se reincia el conteo y se envia el chunk
 		else:
 			cont = 0
-			s.send(chunk)
+			s.sendto(chunk,ip_addres)
 			chunk = ""
 
 		#Añadir siempre al chunk un caracter
@@ -109,7 +109,7 @@ def send_message_chunks(s,message):
 	s.send(FINAL)
 
 #Permite recibir un mensaje, se encarga de cortarlo donde sea necesario
-def receieve_message(s):
+def receieve_message(s,want_message):
 	#Chunk recibido
 	chunk = ""
 	#Mensaje respuesta
@@ -117,13 +117,17 @@ def receieve_message(s):
 	#Mientras no llegue el chunk final
 	while chunk != FINAL:
 		data +=chunk
-		chunk = s.recv(BUFFER_SIZE)
+		chunk,addr = s.recvfrom(BUFFER_SIZE)
 		#Para separar el FINAL del resto del mensaje
 		if FINAL in chunk:
 			val = chunk
 			data += val.replace(FINAL,"")
 			chunk = FINAL
-	return data
+	if want_message:
+		return data
+	else:
+		if data != OK:
+			raise Exception(data)
 
 #Determina si es un audio
 def is_audio(chunk):
