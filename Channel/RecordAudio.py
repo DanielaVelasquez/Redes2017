@@ -9,6 +9,8 @@ from Constants.Constants import *
 from Constants.AuxiliarFunctions import *
 import xmlrpclib
 import socket
+import time
+from ApiClient import *
 
 #####################################################
 # Clase encargada de la grabación del audio         #
@@ -25,7 +27,7 @@ class AudioClient(object):
     def __init__(self,s = None):
         super(AudioClient, self).__init__()
         self.calling = False
-        self.socket = s
+        self.client_socket = s
         
     """"
     Método que se encarga de estar grabando de forma continua el audio y encolarlo.
@@ -43,27 +45,12 @@ class AudioClient(object):
                 frame.append(self.stream.read(CHUNK))
             data_ar = numpy.fromstring(''.join(frame),  dtype=numpy.uint8)
             queque.put(data_ar)
-    """
-    def record(self,s):
-        self.calling = True
-        p = pyaudio.PyAudio()
-        FORMAT = p.get_format_from_width(2)
-        stream = p.open(format=FORMAT,
-                            channels=CHANNELS,
-                            rate=RATE,
-                            input=True,
-                            frames_per_buffer=CHUNK)
-
-        while self.calling:
-            frame = []
-            for i in range(0,int(RATE/CHUNK *RECORD_SECONDS)):
-                frame.append(stream.read(CHUNK))
-            data_ar = numpy.fromstring(''.join(frame),  dtype=numpy.uint8)
-            s.sendall(data_ar)
-    """
+    
     def callback_function(self, in_data, frame_count, time_info, flag):
         audio_data = numpy.fromstring(in_data, dtype = numpy.float32)
-        self.socket.sendall(audio_data)
+        self.client_socket.getProxy()
+        print "sending: "+str(audio_data)
+        send_message_chunks(self.client_socket.getProxy(),str(audio_data),self.client_socket.get_address())
         return (audio_data, pyaudio.paContinue)
 
     def record(self):

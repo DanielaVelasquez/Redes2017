@@ -83,30 +83,29 @@ def get_message(method,params):
 
 import time
 def send_message_chunks(s,message,ip_addres):
-	#Contar hasta tamaño de un chunk
+	#print "enviando: "+str(message)
 	cont = 0
 	#Chunk a enviar
 	chunk = ""
 	for i in message:
-		#Si no se ha alcanzado el tamaño del buffer, contar un caracter más
-		if cont<BUFFER_SIZE:
-			cont +=1
 		#Si ya se alcanzó, se reincia el conteo y se envia el chunk
-		else:
+		if len(chunk) == BUFFER_SIZE:
 			cont = 0
 			s.sendto(chunk,ip_addres)
 			chunk = ""
+		
+
 
 		#Añadir siempre al chunk un caracter
 		chunk +=i
 
 	#Ya se tomó todo el mensaje, revisar si hay información del chunk por enviar
 	if len(chunk)>0:
-		s.send(chunk)
-		time.sleep(0.5)
+		s.sendto(chunk,ip_addres)
+		#time.sleep(0.5)
 
 	#Enviar comando final
-	s.send(FINAL)
+	s.sendto(FINAL,ip_addres)
 
 #Permite recibir un mensaje, se encarga de cortarlo donde sea necesario
 def receieve_message(s,want_message):

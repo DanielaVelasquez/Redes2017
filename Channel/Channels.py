@@ -76,11 +76,9 @@ class RequestChannel(object):
     el cual se estableció la conexion
     **************************************************"""
     def send_text(self, text):
-        print "I'm request channel, sending: "+text
         message = get_message('sendMessage_wrapper',[text])
-        send_message_chunks(self.api_client.getProxy(),message)
-        #self.api_client.getProxy().send(message)
-
+        send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
+        
 
     
     """**************************************************
@@ -89,17 +87,15 @@ class RequestChannel(object):
     **************************************************"""
     def new_connection(self, my_ip, my_port,my_username):
         message = get_message('new_chat_wrapper',[my_ip,my_port,my_username])
-        send_message_chunks(self.api_client.getProxy(),message)
-        #self.api_client.getProxy().send(message)   
-    
+        send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
+        
     def remove_connection_with(self,username):
         message = get_message('remove_contact',[username])
-        send_message_chunks(self.api_client.getProxy(),message)
-        #self.api_client.getProxy().send(message)   
-
+        send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
+        
 
     def send_audio(self):
-        self.audioRecorder = AudioClient(self.api_client.getProxy())
+        self.audioRecorder = AudioClient(self.api_client)
         self.call_thread = threading.Thread(target=self.audioRecorder.record)
         self.call_thread.daemon = True
         self.call_thread.start()
@@ -109,22 +105,13 @@ class RequestChannel(object):
 
     def audio_state(self,username, state):
         message = get_message('audio_state',[username,state])
-        send_message_chunks(self.api_client.getProxy(),message)
-        #self.api_client.getProxy().send(message)
-
+        send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
+        
     def send_contacts(self,contacts):
-
-        """
-        conts = ""
-        for c in contacts:
-            conts = conts + SEP_LIST
-        print "conts: "+str(conts)
-        """
-        print "Channel sending contacts"+str(contacts)
-
         message = get_message('update_contacts',[contacts])
         send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
-        #self.api_client.getProxy().send(message)
+        
+        
 
     """**************************************************
     Metodo que se encarga de mandar audio y video al contacto 

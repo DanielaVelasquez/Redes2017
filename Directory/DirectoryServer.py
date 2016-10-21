@@ -100,8 +100,7 @@ class GeneralDirectory:
                 
                 if val == None:
                     val = OK
-                self.s.sendto(val,addr)
-                self.s.sendto(FINAL,addr)
+                send_message_chunks(self.s,str(val)+FINAL,addr)
                 del users[addr]
             
 
@@ -123,9 +122,9 @@ class FunctionWrapperDirectory:
         self.update_thread.start()
 
     def update(self):
+        print "inicie"
         while True:
             try:
-                #print "usuarios conectados: "+str(self.client_dictionary)
                 for user in self.client_dictionary:
                     d = self.client_dictionary[user]
                     channel = d[CHANNEL_CONTACT]
@@ -137,14 +136,14 @@ class FunctionWrapperDirectory:
                         channel.send_contacts(c)
 
                     except Exception as e:
-                        print "Error: "+str(e)
+                        print "Error sending: "+str(e)
                         self.disconnect_wrapper(user)
             except Exception as er:
                 print "Error updating"+str(er)
             #print "usuarios registrados: "+str(self.registered_users)+"\n"
             #print "usuarios conectados: "+str(self.client_dictionary)
-                
             time.sleep(SLEEP)
+        
 
     def read_users(self):
         archivo = open(FILE_NAME,'r')

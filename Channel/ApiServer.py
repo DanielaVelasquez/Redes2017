@@ -57,64 +57,55 @@ class MyApiServer:
 		
 	def startServer(self):
 		self.running = True
+		users = {}
 		while self.running:
-			conn, addr = self.s.recvfrom(BUFFER_SIZE)
-			threading.Thread(target = self.run_thread, args = (conn,addr)).start()
+			chunk, addr = self.s.recvfrom(BUFFER_SIZE)
+			if is_audio(str(chunk)):
+				self.wrapper.play_audio_wrapper(chunk)
+			else:
+				print "no audio "+str(chunk)
+				#Si el final está en el chunk
+				if FINAL in chunk:
+					val = chunk
+					data = val.replace(FINAL,"")
+					chunk = FINAL
+				else:
+					data = chunk
+				#Si ya se recibió mensajes de esa dirección junta los datos
+				if users.has_key(addr):
+					users[addr] = users[addr] + data
+				else:
+					users[addr] = data
+
+				if chunk == FINAL:
+					#print "\n"+str(users[addr])+" "+str(addr)
+					#print "Data recived: "+data
+					method, params = get_method(users[addr])
+					if method == 'new_chat_wrapper':
+						self.wrapper.new_chat_wrapper(params[0],params[1],params[2])
+					elif method == 'add_contact':
+						self.wrapper.add_contact(params[0],params[1],params[2])
+					elif method == 'audio_state':
+						self.wrapper.audio_state(params[0],params[1])
+					elif method == 'remove_contact':
+						self.wrapper.remove_contact(params[0])
+					elif method == 'sendMessage_wrapper':
+						self.wrapper.sendMessage_wrapper(params[0])
+					elif method == 'play_audio_wrapper':
+						#print "Data server: "+data
+						self.wrapper.play_audio_wrapper(params[0])
+					elif method == 'update_contacts':
+						contacts = ast.literal_eval(params[0])
+						self.wrapper.update_contacts(contacts)
+					else:
+						print "Not registered method "+str(data)
+					
+					del users[addr]
+			#threading.Thread(target = self.run_thread, args = (conn,addr)).start()
 		self.s.close()
 
 	def stop_server(self):
 		self.running = False
-	
-	def run_thread(self, conn, addr):
-		print "Client connected with "+addr[0]+ ":"+str(addr[1])
-		connected = True
-		data = ""
-		while connected:
-			try:
-				chunk = conn.recv(BUFFER_SIZE_C)
-				if not chunk: break
-				
-				if is_audio(chunk):
-					self.wrapper.play_audio_wrapper(chunk)
-					#time.sleep(3)
-				else:
-
-					if FINAL in chunk:
-						val = chunk
-						data += val.replace(FINAL,"")
-						chunk = FINAL
-
-					if chunk  == FINAL:
-						#print "Data recived: "+data
-						method, params = get_method(data)
-						if method == 'new_chat_wrapper':
-							self.wrapper.new_chat_wrapper(params[0],params[1],params[2])
-						elif method == 'add_contact':
-							self.wrapper.add_contact(params[0],params[1],params[2])
-						elif method == 'audio_state':
-							self.wrapper.audio_state(params[0],params[1])
-						elif method == 'remove_contact':
-							self.wrapper.remove_contact(params[0])
-						elif method == 'sendMessage_wrapper':
-							self.wrapper.sendMessage_wrapper(params[0])
-						elif method == 'play_audio_wrapper':
-							#print "Data server: "+data
-							self.wrapper.play_audio_wrapper(params[0])
-						elif method == 'update_contacts':
-							contacts = ast.literal_eval(params[0])
-							self.wrapper.update_contacts(contacts)
-						else:
-							print "Not registered method "+str(data)
-						data = ""
-					else:
-						data += chunk
-				
-					
-			except Exception as e:
-				connected = False
-			
-
-
 	def get_wrapper(self):
 		return self.wrapper
 

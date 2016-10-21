@@ -39,11 +39,19 @@ class DirectoryChannel(BidirectionalChannel):
     #Metodo que se encarga de obtener lista de contactos
     #**************************************************
     def get_contacts(self):
-        message = get_message('get_contacts_wrapper',[self.username])
-        send_message_chunks(self.api_client.getProxy(),message)
-        data = receieve_message(self.api_client.getProxy())
-        contacts = ast.literal_eval(data)
-        return contacts
+        get_contacts = False
+        while not get_contacts:
+            try:
+                message = get_message('get_contacts_wrapper',[self.username])
+                send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
+                data = receieve_message(self.api_client.getProxy(),True)
+                print "get_contacts_wrapper "+str(data)
+                contacts = ast.literal_eval(data)
+                get_contacts = True
+                return contacts
+            except Exception as e:
+                get_contacts = False
+            
 
 
     #**************************************************
@@ -51,7 +59,8 @@ class DirectoryChannel(BidirectionalChannel):
     #**************************************************
     def connect(self):
         message = get_message('connect_wrapper',[str(self.my_ip), str(self.my_port), str(self.username)])
-        send_message_chunks(self.get_api_client().getProxy(),message)
+        send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
+        receieve_message(self.api_client.getProxy(),False)
     
     #**************************************************#
     #Metodo que se encarga de  conectar al contacto    #
@@ -59,7 +68,8 @@ class DirectoryChannel(BidirectionalChannel):
     def disconnect(self):
         try:
             message = get_message('disconnect_wrapper',[self.username])
-            send_message_chunks(self.api_client.getProxy(),message)
+            send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
+            receieve_message(self.api_client.getProxy(),False)
             self.get_api_client().getProxy().close()
             self.apiServer.stop_server()
         except Exception as e:
@@ -68,12 +78,12 @@ class DirectoryChannel(BidirectionalChannel):
 
     def register_user(self,username,password):
         message = get_message('register',[username,password])
-        send_message_chunks(self.api_client.getProxy(),message)
+        send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
+        receieve_message(self.api_client.getProxy(),False)
 
     def login(self,username,password):
         message = get_message('login',[username,password,str(self.my_ip), str(self.my_port)])
         send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
-        
-        data = receieve_message(self.api_client.getProxy(),False)
+        receieve_message(self.api_client.getProxy(),False)
 
 
