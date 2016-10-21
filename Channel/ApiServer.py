@@ -59,7 +59,7 @@ class MyApiServer:
 		self.running = True
 		users = {}
 		while self.running:
-			chunk, addr = self.s.recvfrom(BUFFER_SIZE)
+			chunk, addr = self.s.recvfrom(CHUNK * CHANNELS * 2)
 			if is_audio(str(chunk)):
 				self.wrapper.play_audio_wrapper(chunk)
 			else:

@@ -50,7 +50,7 @@ class AudioClient(object):
         audio_data = numpy.fromstring(in_data, dtype = numpy.float32)
         self.client_socket.getProxy()
         print "sending: "+str(audio_data)
-        send_message_chunks(self.client_socket.getProxy(),str(audio_data),self.client_socket.get_address())
+        self.client_socket.getProxy().sendto(audio_data,self.client_socket.get_address())
         return (audio_data, pyaudio.paContinue)
 
     def record(self):
