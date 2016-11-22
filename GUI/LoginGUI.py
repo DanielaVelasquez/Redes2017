@@ -16,13 +16,11 @@ from Register import Register
 """
 Clase de interfaz grafica que nos permite desplegar la pantalla de logueo
 """
-class LoginGUI(QtGui.QWidget):
-	
+class LoginGUI(QtGui.QWidget):	
 	""""
 	mode: Modo de logueo que se va a realizar, sea local
 	o remoto
-	"""
-	
+	"""	
 	def __init__(self,my_information=None,my_contact_information=None,mode=REMOTE,username = None):
 		super(LoginGUI, self).__init__()
 		self.mode = mode
@@ -32,9 +30,6 @@ class LoginGUI(QtGui.QWidget):
 			self.contacts_window = ContactsWindow(my_information,my_contact_information,mode,username)
 		else:
 			self.initGUI()
-
-		
-
 		
 	""""
 	Inicia los elementos de la GUI, solicitando el 
@@ -95,16 +90,13 @@ class LoginGUI(QtGui.QWidget):
 		self.btn_register.clicked.connect(self.register)
 
 		self.txt_pass.setEchoMode(QtGui.QLineEdit.Password)
-
 		
 		self.txt_pass.setText("root")
 		self.txt_user.setText("root")
 		self.txt_contact_information.setText("8000")
-		self.txt_my_information.setText("5000")
-		
+		self.txt_my_information.setText("5000")		
 
 		self.show()
-
 
 	def register(self):
 		self.register_gui = Register(self.mode)

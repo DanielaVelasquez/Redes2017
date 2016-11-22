@@ -27,8 +27,7 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 
 		self.username = username
 		self.password = password
-		try:
-				
+		try:				
 			if mode in LOCAL:
 				self.user = dictionaryUser(username,get_ip_address(),my_information)
 			else:
@@ -54,11 +53,9 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 			#Nombre del ultimo contacto cerro la conexion
 			self.last_contact_closed = None
 			
-			self.initGUI()
-			
+			self.initGUI()			
 		except Exception, e:
 			QtGui.QMessageBox.warning(self, WARNING, "CONTACT WINDOW: "+str(e) ,QtGui.QMessageBox.Ok)
-
 		
 	def initGUI(self):		
 		#Creación y configuración del widget
@@ -89,8 +86,7 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 		self.directory_channel.login(self.username,self.password)
 		self.setting_signal()
 		self.show()
-		
-		
+
 	#******************************************#
 	#Establece la conexión con el contacto     #
 	#******************************************#
@@ -103,20 +99,17 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 			try:
 				#Crea conexión
 				self.new_window_chat(selected_user)
-
-				#Solicita crea la otra ventana
+				#Solicita crear la otra ventana
 				chat = self.chats[selected_user]
 				chat.connect()
 			except Exception as e:
 				QtGui.QMessageBox.warning(self, WARNING, "Error estableciendo conexión, por favor intenta de nuevo" ,QtGui.QMessageBox.Ok)
-			
 
 	def add_contact_receiver(self,user):
 		self.directory_channel.get_server().get_wrapper().add_contact(user[IP_CONTACT],user[PORT_CONTACT],user[NAME_CONTACT])
 	
 	def new_window_chat(self,selected_user):
 		contacts = self.directory_channel.get_contacts()
-
 		#Si el contacto aún está conectado, dado que la lista
 		#no está sincronizada con el servidor, puede que el 
 		#contacto ya no esté activo
@@ -129,15 +122,13 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 			#self.update_contacts()
 			QtGui.QMessageBox.warning(self, WARNING, CONECTION_FAIL,QtGui.QMessageBox.Ok)
 
-
 	#******************************************#
 	#Realiza la conexión con el directorio     #
 	#general de contactos                      #
 	#******************************************#
 	def connect_general_directory(self):
 		self.directory_channel.connect()
-		try:
-			
+		try:			
 			self.update_contacts()
 		except Exception as e:
 			pass
@@ -147,8 +138,6 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 			self.directory_channel = DirectoryChannel(self, my_port = self.user[PORT_CONTACT], directory_port = self.my_contact_information, username = self.user[NAME_CONTACT])
 		else:
 			self.directory_channel = DirectoryChannel(self,directory_ip = self.my_contact_information,  username = self.user[NAME_CONTACT])
-
-		
 
 	#*******************************************#
 	#Actualiza la lista de contactos disponibles#
@@ -160,10 +149,7 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 			contacts = self.directory_channel.get_contacts()
 			self.show_contacts(contacts)
 		except Exception as e:
-			QtGui.QMessageBox.warning(self, WARNING, str(e),QtGui.QMessageBox.Ok)
-
-		
-		
+			QtGui.QMessageBox.warning(self, WARNING, str(e),QtGui.QMessageBox.Ok)		
 
 	#Abre una ventana de chat para el contacto que se indicó
 	def open_window(self):
@@ -179,17 +165,8 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 	def closeEvent(self, evnt):
 		self.directory_channel.disconnect()
 
-	"""	
-	def disable_chat(self):
-		if self.last_contact_closed:
-			if self.closed_by_contact.has_key(self.last_contact_closed):
-				chat = self.closed_by_contact[self.last_contact_closed]
-				chat.disable_window()
-	"""
+	#---------------Métodos heredados---------------------------------	
 
-
-	#---------------Métodos heredados---------------------------------
-	
 	def showNewChat(self, contact_ip, contact_port, username):
 		self.new_contact_window = username
 
@@ -224,4 +201,3 @@ class ContactsWindow(QtGui.QWidget,Receiver):
 				self.txt_contacts.addItem(item)
 		except Exception as e:
 			pass
-	 	

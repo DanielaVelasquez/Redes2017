@@ -34,7 +34,6 @@ BUFFER_SIZE = 20  # Normally 1024, but we want fast response
 my_socket = ''
 frames = []
 
-
 def main ():
     global my_socket
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM,socket.IPPROTO_UDP)

@@ -30,7 +30,7 @@ from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
 from Constants.Constants import *
-#from RecordAudio import record_audio_queue
+
 """**************************************************
 Las instancias de esta clase contendran los metodos
 necesarios para hacer uso de los metodos
@@ -78,8 +78,6 @@ class RequestChannel(object):
     def send_text(self, text):
         message = get_message('sendMessage_wrapper',[text])
         send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
-        
-
     
     """**************************************************
     Metodo que se encarga de mandar iniciar una conversacion
@@ -93,7 +91,6 @@ class RequestChannel(object):
         message = get_message('remove_contact',[username])
         send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
         
-
     def send_audio(self):
         self.audioRecorder = AudioClient(self.api_client)
         self.call_thread = threading.Thread(target=self.audioRecorder.record)
@@ -110,8 +107,6 @@ class RequestChannel(object):
     def send_contacts(self,contacts):
         message = get_message('update_contacts',[contacts])
         send_message_chunks(self.get_api_client().getProxy(),message,self.get_api_client().get_address())
-        
-        
 
     """**************************************************
     Metodo que se encarga de mandar audio y video al contacto 
@@ -125,9 +120,6 @@ class RequestChannel(object):
     **************************************************"""
     def get_api_client(self):
         return self.api_client
-
-    
-
 
 #***************************************************************************************************************
 import threading
@@ -155,6 +147,7 @@ class BidirectionalChannel(RequestChannel):
     """**************************************************
     Metodos Get
     **************************************************"""
-    """"def get_api_server(self):
+    """"
+    def get_api_server(self):
         return self.api_server_thread
     """

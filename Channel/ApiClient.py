@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 #####################################################
 # PURPOSE: Clase que permite hacer uso de la api del#
 #           contacto                                #
@@ -22,7 +21,6 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from Constants.Constants import *
 from Constants.AuxiliarFunctions import *
 
-
 """**************************************************
 Clase que genera un proxy para poder hacer uso de
 los procedimientos remotos que ofrece la api del contacto
@@ -40,20 +38,17 @@ class MyApiClient:
         TCP_PORT = int(contact_port)
 
         try:
-            self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM,socket.IPPROTO_UDP)
-            self.s.connect((TCP_IP, TCP_PORT))
             #print "Client connecting with "+str((TCP_IP, TCP_PORT))
+            self.proxy = socket.socket(socket.AF_INET, socket.SOCK_DGRAM,socket.IPPROTO_UDP)
+            self.proxy.connect((TCP_IP, TCP_PORT))
         except Exception as e:
             raise Exception("API CLIENT "+PORT_IN_USE)
-        
-        
-        
-        
+
     """**************************************************
     Metodos Get
     **************************************************"""
     def getProxy(self):
-        return self.s
+        return self.proxy
 
     def get_address(self):
-        return (self.contact_ip,self.contact_port)
+        return (self.contact_ip, self.contact_port)

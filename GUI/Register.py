@@ -20,13 +20,10 @@ class Register(QtGui.QWidget):
 	""""
 	Inicia los elementos de la GUI 
 	"""
-	def initGUI(self):
-		
-		#Creación y configuración del widget
-		
+	def initGUI(self):		
+		#Creación y configuración del widget		
 		self.setWindowTitle(TITLE_ADD_USER)
 		self.resize(250,150)
-		#self.move(500,300)
 		
 		#Configuración layout
 		self.grid = QtGui.QGridLayout()
@@ -81,8 +78,7 @@ class Register(QtGui.QWidget):
 		self.txt_pass_confrm.setEchoMode(QtGui.QLineEdit.Password)
 
 		#Configuración eventos
-		self.btn_add.clicked.connect(self.create_user)
-		
+		self.btn_add.clicked.connect(self.create_user)		
 		
 		self.show()
 
@@ -90,15 +86,13 @@ class Register(QtGui.QWidget):
 	Realiza el llamado a la calculadora para registrar un nuevo 
 	usuario, previamente verificando que ninguno de los campos 
 	este vacio
-	"""	
-	
+	"""		
 	def create_user(self):
 		user = str(self.txt_user.text())
 		pas = str(self.txt_pass.text())
 		conf = str(self.txt_pass_confrm.text())
 		directory = str(self.txt_directory.text())
 		my_information = str(self.txt_my_information.text())
-
 		#Si las contraseñas no coinciden
 		if pas != conf:
 			QtGui.QMessageBox.warning(self, WARNING, PASSWORD_PROBLEM,QtGui.QMessageBox.Ok)
@@ -107,16 +101,5 @@ class Register(QtGui.QWidget):
 			QtGui.QMessageBox.warning(self, WARNING, INCOMPLETE_INFORMATION,QtGui.QMessageBox.Ok)
 		#De lo contrario tratará de establecer la conexión
 		else:
-			#try:
-			#Codifica la contraseña
-			password = codify_password(pas)
-			
+			password = codify_password(pas)			
 			self.contact_window = ContactsWindow(my_information,directory,self.mode,user,password, sender = SENDER_REGISTER)
-		#except Exception as e:
-			#	QtGui.QMessageBox.warning(self, WARNING, e.message,QtGui.QMessageBox.Ok)
-		
-"""
-app = QtGui.QApplication(sys.argv)		
-a = Register(mode = LOCAL)
-sys.exit(app.exec_())
-"""

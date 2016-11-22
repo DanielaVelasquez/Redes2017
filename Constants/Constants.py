@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 #####################################################
 # PURPOSE: Archivo con constantes                   #
 #                                                   #
@@ -15,6 +14,7 @@
 # Distributed under terms of the MIT license.       #
 #####################################################
 import pyaudio
+
 CHAT_WIDTH = 500
 CHAT_HEIGHT = 500
 LOGIN_WIDTH = 250
@@ -26,10 +26,8 @@ DEFAULT_POSTION_Y =350
 INFO_HEIGTH = 40
 INFO_WIDTH = CHAT_WIDTH
 CHAT_PORT = 5000
-### Audio
-#TODO 
-### Video
-#TODO
+
+
 ### Directorio
 SERVER_PORT =  7000
 MESSAGE_IP = 0
@@ -105,6 +103,7 @@ RECORD_SECONDS = 2
 
 WIDTH_PYAUDIO_FORMAT = 2
 
+# Video
 
 FRAME_NAME = 'frame'
 EXIT_NUM = 1
@@ -144,7 +143,6 @@ SEP = " : "
 
 USERNAME_REGISTERED ="El nombre de usuario ya existe"
 ERROR_REGISTERING = "El usuario no pudo ser registrado"
-
 
 SLEEP = 5
 

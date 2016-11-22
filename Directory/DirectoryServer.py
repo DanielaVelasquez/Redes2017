@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 #####################################################
 # PURPOSE: Clase que manejara los clientes que se   #
 #          conectan y desconectan al sistema        #
@@ -15,8 +14,9 @@
 #                                                   #
 # Distributed under terms of the MIT license.       #
 #####################################################
+
 import socket, select
-#           Mis bibliotecas
+# Mis bibliotecas
 import sys,getopt
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
@@ -26,41 +26,37 @@ from Channel.Channels import RequestChannel
 import threading
 import time
 
-
 class GeneralDirectory:
-    """ Constructor de la clase, si recibe un puerto, entonces
-        Trabajara de manera local, de otra manera, utilizará  la ip
-        con la que cuenta.
+    """
+    Constructor de la clase, si recibe un puerto, entonces
+    Trabajara de manera local, de otra manera, utilizará  la ip
+    con la que cuenta.
         @param port <int> Si trabaja de manera local, representa el
-                        número del puerto por el cual recibirá las peticiones
+                    número del puerto por el cual recibirá las peticiones
     """
     def __init__(self, port = DEFAULT_PORT):
         self.client_dictionary = {}
         TCP_IP = get_ip_address()
-        TCP_PORT = int(port)
-        
+        TCP_PORT = int(port)        
         #Inicia el servidor
         self.port = port
-
-        #try:
         self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM,socket.IPPROTO_UDP)
         #Conexiones actuales
         self.users = {}
-
         self.s.bind((TCP_IP, TCP_PORT))
 
         self.funtionWrapper = FunctionWrapperDirectory(self.client_dictionary)
         print ("Directorio de ubicacion activo, mi direccion es:")
         print ("(%s, %s))" %(get_ip_address(), port))
         self.run()
-        #except Exception as e:
-        #    print "Error: "+str(e)
 
+    """
+    Identifica los datos recibidos y realiza la accion correspondiente
+    """
     def run(self):
         users = {}
         while True:
-            chunk, addr = self.s.recvfrom(BUFFER_SIZE)
-            
+            chunk, addr = self.s.recvfrom(BUFFER_SIZE)            
             #Si el final está en el chunk
             if FINAL in chunk:
                 val = chunk
@@ -70,7 +66,7 @@ class GeneralDirectory:
                 data = chunk
             #Si ya se recibió mensajes de esa dirección junta los datos
             if users.has_key(addr):
-                users[addr] = users[addr] + data
+                users[addr] = users[addr]+data
             else:
                 users[addr] = data
 
@@ -100,17 +96,18 @@ class GeneralDirectory:
                 
                 if val == None:
                     val = OK
-                send_message_chunks(self.s,str(val)+FINAL,addr)
+                send_message_chunks(self.s, str(val)+FINAL, addr)
                 del users[addr]
             
 
 class FunctionWrapperDirectory:
     """ **************************************************
     Constructor de la clase
-    @clients_dictionary (Diccionario) Contiene la información de
-                todos los clientes (Usa username como llave, y contiene el nombre del usuario)
+    @param client_dictionary    (Diccionario) Contiene la información de
+                                todos los clientes
+                                (Usa username como llave, y contiene el nombre del usuario)
     ************************************************** """
-    def __init__(self,client_dictionary):
+    def __init__(self, client_dictionary):
         self.client_dictionary = client_dictionary
         self.registered_users = {}
         self.read_users()
@@ -121,20 +118,20 @@ class FunctionWrapperDirectory:
         self.update_thread.daemon = True
         self.update_thread.start()
 
+    """
+
+    """
     def update(self):
         print "inicie"
         while True:
             try:
                 for user in self.client_dictionary:
                     d = self.client_dictionary[user]
-                    channel = d[CHANNEL_CONTACT]
-                   
+                    channel = d[CHANNEL_CONTACT]                   
                     #print "Contactos conectados "+str(self.client_dictionary)
                     c = self.get_contacts_wrapper(user)
-                    try:
-                        
+                    try:                        
                         channel.send_contacts(c)
-
                     except Exception as e:
                         print "Error sending: "+str(e)
                         self.disconnect_wrapper(user)
@@ -142,9 +139,10 @@ class FunctionWrapperDirectory:
                 print "Error updating"+str(er)
             #print "usuarios registrados: "+str(self.registered_users)+"\n"
             #print "usuarios conectados: "+str(self.client_dictionary)
-            time.sleep(SLEEP)
-        
+            time.sleep(SLEEP)        
 
+    """
+    """
     def read_users(self):
         archivo = open(FILE_NAME,'r')
         for line in archivo:
@@ -154,9 +152,13 @@ class FunctionWrapperDirectory:
             self.registered_users[username] = password
         #print "usuarios registrados: "+str(self.registered_users)
 
+    """
+    """
     def is_registered(self, username):
         return self.registered_users.has_key(username)
 
+    """
+    """
     def register(self, username,password):
         print "Registrando "+username
         if self.is_registered(username):
@@ -170,6 +172,8 @@ class FunctionWrapperDirectory:
             except Exception:
                 raise Exception("DIRECTORY SERVER "+ERROR_REGISTERING)
 
+    """
+    """
     def get_contacts_wrapper(self,  username):
         #Se clona el diccionario de usuarios
         copy = self.client_dictionary.copy()
@@ -181,12 +185,11 @@ class FunctionWrapperDirectory:
                 del inf[CHANNEL_CONTACT]
                 copy[u] = inf
             return copy
-        #TODO
+
     """"********************************************
     Adiciona un nuevo contacto
     *********************************************"""
-    def connect_wrapper(self, ip_string, port_string, username):
-        
+    def connect_wrapper(self, ip_string, port_string, username):        
         #Revisa si existe un usuario con dicho nombre
         if self.client_dictionary.has_key(username):
             #No permite la conexión
@@ -196,12 +199,16 @@ class FunctionWrapperDirectory:
             user = self.user_to_dictionary(username,ip_string,port_string)
             self.client_dictionary[username] = user
 
+    """
 
+    """
     def disconnect_wrapper(self, username):
         print "Desconectando usuario: "+username
         del self.client_dictionary[username]
         #self, ip_string, port_string
 
+    """
+    """
     def login(self,username,password,ip_string, port_string):
         password = password +"\n"
         #print "registrados "+str(self.registered_users)
@@ -212,6 +219,8 @@ class FunctionWrapperDirectory:
         else:
             return USER_DATA_WRONG
 
+    """
+    """
     def user_to_dictionary(self, username,ip,port):
         user = {}
         user[NAME_CONTACT] = username
@@ -219,12 +228,8 @@ class FunctionWrapperDirectory:
         user[PORT_CONTACT] = port
         #Crea el canal de comunicación
         user[CHANNEL_CONTACT] = RequestChannel(contact_ip = ip, contact_port = port, sender = True)
-
         #user[SOCKET_CONTACT] = self.last_connections
-
         return user
-
-
 
 # **************************************************
 #  Definicion de la funcion principal
@@ -247,8 +252,6 @@ def main(argv):
         general_server = GeneralDirectory(port = args[0])
     else:
         general_server = GeneralDirectory()
-    #general_server.startServer()
-
 
 if __name__ == '__main__':
     main(sys.argv[1:])

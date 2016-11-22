@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 #####################################################
 # PURPOSE: Clase que permite mandar un mensaje al   #
 #           contacto                                #
@@ -15,6 +14,7 @@
 #                                                   #
 # Distributed under terms of the MIT license.       #
 #####################################################
+
 import socket,select
 import ast,time
 #  Mis bibliotecas
@@ -36,24 +36,19 @@ con el cual el cliente expondra los metodos que ofrece
 class MyApiServer:
 	def __init__(self,app_receiver,my_port = DEFAULT_PORT):
 		try:
-
 			self.wrapper = FunctionWrapper(app_receiver)
 			TCP_IP = get_ip_address()
 			TCP_PORT = int(my_port)
 			#Inicia el servidor
 			self.port = my_port
-
 			self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM,socket.IPPROTO_UDP)
 			#Conexiones actuales
 			self.users = {}
 			self.s.bind((TCP_IP, TCP_PORT))
-
 			self.running = False
-
 			print ("Server at (%s, %s))"%(TCP_IP, TCP_PORT))
 		except Exception as e:
 			raise Exception("API SERVER "+PORT_IN_USE+"\n"+str(e))
-		
 		
 	def startServer(self):
 		self.running = True
